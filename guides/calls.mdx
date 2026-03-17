@@ -1,0 +1,57 @@
+---
+title: "Call Sessions"
+description: "Monitor, filter, and review every conversation handled by your Agni agents."
+---
+
+The **Call Sessions** page serves as your centralized ledger for all voice interactions across your organization. Whether you are running high-volume outbound campaigns, fielding inbound customer support calls, or testing your web widget, every session is logged here in real time.
+
+<Frame>
+  <img src="/images/call-sessions-overview.png" alt="Agni Call Sessions Page" />
+</Frame>
+
+## Session Metrics
+
+At the top of the dashboard, a quick-glance summary provides the real-time status of your call volume:
+
+<CardGroup cols={4}>
+  <Card title="Total Calls" icon="phone">
+    The cumulative number of all call sessions.
+  </Card>
+  <Card title="Completed" icon="check">
+    Calls that successfully reached their natural conclusion.
+  </Card>
+  <Card title="Failed" icon="xmark">
+    Calls that dropped, failed to connect, or encountered an error.
+  </Card>
+  <Card title="In Progress" icon="spinner">
+    Live calls currently being handled by your agents.
+  </Card>
+</CardGroup>
+
+## Call Channels
+
+Agni consolidates traffic from multiple channels into a single view. You can filter the main table using the quick tabs above the list:
+
+- **Web:** Calls initiated directly through your embedded Agni web widget.
+- **Inbound:** Phone calls received by your provisioned Telephony numbers.
+- **Outbound:** Phone calls initiated by your agents (e.g., via campaigns or API triggers).
+
+## Call Data & Insights
+
+For every session, the table captures granular data to help you evaluate agent performance and customer sentiment:
+
+- **Caller:** The phone number or web session ID of the user.
+- **Status:** The current state of the call (e.g., Completed, Failed, In Progress).
+- **Channel:** The origin of the call (Web, PSTN, SIP).
+- **Duration:** The total length of the conversation.
+- **Sentiment:** An AI-generated assessment of the caller's mood (e.g., Positive, Neutral, Negative) determined by post-call analysis.
+- **Agent:** The specific AI agent that handled the interaction.
+- **Time:** The timestamp of when the call was initiated.
+
+## Search, Filter, and Export
+
+To manage large volumes of call data, utilize the toolbar located above the table:
+
+1. **Search:** Look up specific calls by phone number, agent name, or session ID.
+2. **Date Range & Filters:** Narrow down your view by selecting specific timeframes (e.g., *Today*, *Last 7 days*) or applying advanced filters to isolate calls by status or sentiment.
+3. **Export:** Click the **Export** button in the top right to download your filtered call logs as a CSV for external analysis or CRM integration.

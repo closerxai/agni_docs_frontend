@@ -27,6 +27,18 @@
             "pages": [
               "index"
             ]
+          },
+          {
+            "group": "Getting Started",
+            "pages": [
+              "guides/authentication",
+              "guides/dashboard",
+              "guides/analytics",
+              "guides/calls",
+              "guides/appointments",
+              "guides/inbound-calls",
+              "guides/agents"
+            ]
           }
         ]
       },

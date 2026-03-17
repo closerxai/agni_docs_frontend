@@ -1,0 +1,45 @@
+---
+title: "Platform Analytics"
+description: "Gain comprehensive insights into your voice AI performance, call outcomes, and agent metrics."
+---
+
+The **Analytics** page provides a deep dive into the operational health and effectiveness of your voice infrastructure. It allows you to monitor volume, track success rates, and export data for external reporting.
+
+<Frame>
+  <img src="/images/analytics-overview.png" alt="Agni Analytics Dashboard" />
+</Frame>
+
+## Performance KPIs
+
+At the top of the Analytics page, four high-level metrics give you an immediate snapshot of your platform's performance based on your selected date range:
+
+<CardGroup cols={2}>
+  <Card title="Total Calls" icon="phone">
+    The absolute volume of inbound and outbound calls processed by your infrastructure.
+  </Card>
+  <Card title="Avg. Duration" icon="clock">
+    The average length of your real-time conversations.
+  </Card>
+  <Card title="Success Rate" icon="bullseye">
+    The percentage of calls where the agent successfully completed its configured objective (e.g., booking an appointment or resolving a query).
+  </Card>
+  <Card title="Active Agents" icon="users">
+    The number of unique AI agents that fielded calls during the selected period.
+  </Card>
+</CardGroup>
+
+## Visualization & Trends
+
+Agni provides four interactive charts to help you visualize data trends and optimize your agents:
+
+* **Usage Trend:** Tracks total voice minutes consumed over weekly or monthly intervals. Because Agni operates on a flat $0.07/min pricing model, this chart directly correlates to your platform spend.
+* **Call Volume:** Visualizes the frequency of calls over your chosen time period, helping you identify peak traffic hours and concurrency demands.
+* **Outcomes:** A comparative breakdown of successful versus failed calls, allowing you to quickly spot routing issues or prompt inefficiencies.
+* **Agent Performance:** Compares success rates across different agent deployments. Use this to A/B test system prompts, voices, or tool configurations.
+
+## Filtering and Exporting Data
+
+In the top right corner of the dashboard, you can control the scope of your analytics:
+
+1. **Date Range Picker:** Filter your data by predefined ranges (e.g., *Last 30 days*, *Last 7 days*) or select a custom timeframe.
+2. **Export:** Click the **Export** button to download your current analytics view as a CSV file for ingestion into your CRM, billing software, or internal reporting tools.

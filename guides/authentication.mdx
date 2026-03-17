@@ -1,0 +1,100 @@
+---
+title: "Authentication"
+description: "Create your organization and access the Agni workspace."
+---
+
+Welcome to Agni. To start building production-grade voice AI agents, you need an active workspace. This guide covers how to register your organization, verify your identity, and manage access.
+
+## Create an Account
+
+The creation process registers a new Agni organization and sets up your initial administrator account.
+
+<Frame>
+  <img src="/images/auth-create-account.png" alt="Agni Create Account Page" />
+</Frame>
+
+### Registration Steps
+
+<Steps>
+  <Step title="Navigate to Sign Up">
+    Open the [Agni Web App](https://app.ravan.ai) and click **Create an account**.
+  </Step>
+  <Step title="Choose Authentication Method">
+    You can securely click **Sign up with Google** for single sign-on (which bypasses manual email verification), or proceed with a standard email registration.
+  </Step>
+  <Step title="Enter Organization & Personal Details">
+    If using email, provide your **Organization Name**, **First Name**, and **Last Name**. Your organization acts as the top-level container for your agents, phone numbers, and billing.
+  </Step>
+  <Step title="Set Credentials">
+    Enter a valid work **Email** and a secure **Password** (minimum 8 characters), then click **Create account**.
+  </Step>
+  <Step title="Verify Your Email">
+    If you registered via email, you will be redirected to the verification screen. Check your inbox for an email from Agni AI.
+    
+    <Frame>
+      <img src="/images/auth-verify-screen.png" alt="Email Verification Screen" />
+    </Frame>
+
+    You can either click the **Verify Account** button directly in the email, or copy the 6-digit code provided and enter it manually into the verification screen.
+    
+    <Note>
+      **Security Note:** Verification codes are only valid for 10 minutes. If your code expires or you do not receive the email, click **Didn't receive the code? Resend** on the verification screen.
+    </Note>
+  </Step>
+  <Step title="Complete Registration">
+    Once verified, you will be routed directly to your new workspace dashboard.
+  </Step>
+</Steps>
+
+<Note>
+  If your email is already registered to an existing workspace, Agni will prompt you to sign in instead.
+</Note>
+
+---
+
+## Log In
+
+Access your existing Agni workspace to manage agents, configure telephony, and retrieve your API keys.
+
+<Frame>
+  <img src="/images/auth-login.png" alt="Agni Login Page" />
+</Frame>
+
+### Sign In Steps
+
+<Steps>
+  <Step title="Navigate to Login">
+    Open the [Agni Login Page](https://app.ravan.ai/login).
+  </Step>
+  <Step title="Authenticate">
+    Click **Continue with Google** if your account is linked to Google Workspace, or enter your registered **Email** and **Password**.
+  </Step>
+  <Step title="Access Workspace">
+    Click **Sign in** to access your dashboard.
+  </Step>
+</Steps>
+
+<Note>
+  If you lose access to your account, use the **Forgot?** link above the password field to initiate a secure password reset workflow.
+</Note>
+
+## Next Steps
+
+Once authenticated, you will need to generate an API key from your dashboard to interact with Agni programmatically. 
+
+<CardGroup cols={2}>
+  <Card
+    title="API Authentication"
+    icon="key"
+    href="/api-reference/introduction"
+  >
+    Learn how to authenticate your API requests using your X-Api-Key.
+  </Card>
+  <Card
+    title="Create an Agent"
+    icon="robot"
+    href="/api-reference/agents/create"
+  >
+    Deploy your first real-time voice agent via the API.
+  </Card>
+</CardGroup>
