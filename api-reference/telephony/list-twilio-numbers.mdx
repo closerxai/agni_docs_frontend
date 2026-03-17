@@ -1,0 +1,84 @@
+---
+title: "List Twilio Owned Numbers"
+openapi: "GET /api/v1/twilio-owned-numbers/"
+description: "List Twilio Owned Numbers."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object[]">
+  Returned data.
+
+  <Expandable title="data[]">
+    <ResponseField name="sid" type="string">
+      Twilio SID
+    </ResponseField>
+
+    <ResponseField name="phone_number" type="string">
+      Phone number in E.164 format
+    </ResponseField>
+
+    <ResponseField name="friendly_name" type="string">
+      Friendly label
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      Number status
+    </ResponseField>
+
+    <ResponseField name="date_created" type="string">
+      Date created in Twilio
+    </ResponseField>
+
+    <ResponseField name="voice" type="boolean">
+      Voice capability enabled
+    </ResponseField>
+
+    <ResponseField name="sms" type="boolean">
+      SMS capability enabled
+    </ResponseField>
+
+    <ResponseField name="mms" type="boolean">
+      MMS capability enabled
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": [
+    {
+      "sid": "example",
+      "phone_number": "+14155550100",
+      "friendly_name": "Support Bot",
+      "status": "active",
+      "date_created": "example",
+      "voice": true,
+      "sms": true,
+      "mms": true
+    }
+  ]
+}
+```
+
+</ResponseExample>

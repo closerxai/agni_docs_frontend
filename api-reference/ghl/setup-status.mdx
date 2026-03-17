@@ -1,0 +1,94 @@
+---
+title: "GHL Setup Status"
+openapi: "GET /api/v1/ghl/setup/status"
+description: "GHL Setup Status."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Current GHL setup status details.
+
+  <Expandable title="data">
+    <ResponseField name="ghl_connected" type="boolean">
+      ghl_connected field.
+    </ResponseField>
+  
+    <ResponseField name="location_id" type="string">
+      location_id field.
+    </ResponseField>
+  
+    <ResponseField name="company_id" type="string">
+      company_id field.
+    </ResponseField>
+  
+    <ResponseField name="token_valid" type="boolean">
+      token_valid field.
+    </ResponseField>
+  
+    <ResponseField name="agents_created" type="boolean">
+      agents_created field.
+    </ResponseField>
+  
+    <ResponseField name="agent_count" type="integer">
+      agent_count field.
+    </ResponseField>
+  
+    <ResponseField name="setup_complete" type="boolean">
+      setup_complete field.
+    </ResponseField>
+  
+    <ResponseField name="message" type="string">
+      message field.
+    </ResponseField>
+  
+    <ResponseField name="next_step" type="string">
+      One of: CONNECT_GHL, CREATE_AGENT, or empty string when fully set up
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+
+`next_step` values:
+- `CONNECT_GHL`: GHL is not connected yet.
+- `CREATE_AGENT`: Connected, but no agents have calendars assigned.
+- `""` (empty string): Setup is complete.
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {
+    "ghl_connected": true,
+    "location_id": "id_123",
+    "company_id": "id_123",
+    "token_valid": true,
+    "agents_created": true,
+    "agent_count": 1,
+    "setup_complete": true,
+    "message": "Request completed successfully",
+    "next_step": ""
+  }
+}
+```
+
+</ResponseExample>
+

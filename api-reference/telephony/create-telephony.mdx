@@ -1,0 +1,111 @@
+---
+title: "Create Telephony Type"
+openapi: "POST /api/v1/create/telephony/"
+description: "Create Telephony Type."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Body
+
+<ParamField body="type" type="string">
+  Telephony provider type (e.g. twilio, vonage)
+</ParamField>
+
+<ParamField body="owner_type" type="string">
+  Owner type (e.g. organization, user)
+</ParamField>
+
+<ParamField body="friendly_name" type="string">
+  Human-readable label for this telephony config
+</ParamField>
+
+<ParamField body="client_id" type="string">
+  Provider client/account ID
+</ParamField>
+
+<ParamField body="client_secret" type="string">
+  Provider client secret or auth token
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Returned data.
+
+  <Expandable title="data">
+    <ResponseField name="id" type="string">
+      id field.
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      type field.
+    </ResponseField>
+
+    <ResponseField name="owner_type" type="string">
+      owner_type field.
+    </ResponseField>
+
+    <ResponseField name="friendly_name" type="string">
+      friendly_name field.
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      status field.
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string">
+      created_at field.
+    </ResponseField>
+
+    <ResponseField name="termination_uri" type="string">
+      termination_uri field.
+    </ResponseField>
+
+    <ResponseField name="sip_username" type="string">
+      sip_username field.
+    </ResponseField>
+
+    <ResponseField name="sip_password" type="string">
+      sip_password field.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {
+    "id": "id_123",
+    "type": "twilio",
+    "owner_type": "twilio",
+    "friendly_name": "Support Bot",
+    "status": "active",
+    "created_at": "2026-03-14T12:00:00Z",
+    "termination_uri": "sip:example@provider.com",
+    "sip_username": "sip-user",
+    "sip_password": "secret-password"
+  }
+}
+```
+
+</ResponseExample>

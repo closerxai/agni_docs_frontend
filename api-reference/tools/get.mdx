@@ -1,0 +1,85 @@
+---
+title: "Get Agent Tool"
+openapi: "GET /api/v1/tools/{id}/"
+description: "Get Agent Tool."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  Tool ID
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Returned data.
+
+  <Expandable title="data">
+    <ResponseField name="id" type="string">
+      Unique tool ID
+    </ResponseField>
+
+    <ResponseField name="organization_id" type="string">
+      Organization this tool belongs to
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Tool name
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Tool description
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      Tool type (e.g. webhook, function)
+    </ResponseField>
+
+    <ResponseField name="definition" type="object">
+      Tool definition schema
+    </ResponseField>
+
+    <ResponseField name="is_active" type="boolean">
+      Whether the tool is active
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {
+    "id": "id_123",
+    "organization_id": "organization_123",
+    "name": "Support Bot",
+    "description": "Example description",
+    "type": "twilio",
+    "definition": {},
+    "is_active": true
+  }
+}
+```
+
+</ResponseExample>

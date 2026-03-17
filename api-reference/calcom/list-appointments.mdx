@@ -1,0 +1,138 @@
+---
+title: "List Cal.com Appointments"
+openapi: "GET /api/v1/calcom/appointments"
+description: "List Cal.com Appointments."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Query Parameters
+
+<ParamField query="status" type="string">
+  Filter by status
+</ParamField>
+
+<ParamField query="agent_id" type="string">
+  Filter by agent ID
+</ParamField>
+
+<ParamField query="limit" type="integer">
+  Number of results to return (max 200)
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  data field.
+
+  <Expandable title="data">
+    <ResponseField name="appointments" type="object[]">
+      appointments field.
+  
+      <Expandable title="appointments[]">
+        <ResponseField name="id" type="string">
+          id field.
+        </ResponseField>
+    
+        <ResponseField name="organization_id" type="string">
+          organization_id field.
+        </ResponseField>
+    
+        <ResponseField name="agent_id" type="string">
+          agent_id field.
+        </ResponseField>
+    
+        <ResponseField name="calcom_booking_uid" type="string">
+          calcom_booking_uid field.
+        </ResponseField>
+    
+        <ResponseField name="attendee_name" type="string">
+          attendee_name field.
+        </ResponseField>
+    
+        <ResponseField name="attendee_email" type="string">
+          attendee_email field.
+        </ResponseField>
+    
+        <ResponseField name="attendee_phone" type="string">
+          attendee_phone field.
+        </ResponseField>
+    
+        <ResponseField name="attendee_timezone" type="string">
+          attendee_timezone field.
+        </ResponseField>
+    
+        <ResponseField name="start_time" type="string">
+          start_time field.
+        </ResponseField>
+    
+        <ResponseField name="end_time" type="string">
+          end_time field.
+        </ResponseField>
+    
+        <ResponseField name="duration_minutes" type="integer">
+          duration_minutes field.
+        </ResponseField>
+    
+        <ResponseField name="meeting_url" type="string">
+          meeting_url field.
+        </ResponseField>
+    
+        <ResponseField name="status" type="string">
+          status field.
+        </ResponseField>
+    </Expandable>
+    </ResponseField>
+  
+    <ResponseField name="count" type="integer">
+      count field.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {
+    "appointments": [
+      {
+        "id": "id_123",
+        "organization_id": "id_123",
+        "agent_id": "id_123",
+        "calcom_booking_uid": "id_123",
+        "attendee_name": "example",
+        "attendee_email": "alex@example.com",
+        "attendee_phone": "+14155550100",
+        "attendee_timezone": "2026-03-14T12:00:00Z",
+        "start_time": "2026-03-14T12:00:00Z",
+        "end_time": "2026-03-14T12:00:00Z",
+        "duration_minutes": 1,
+        "meeting_url": "https://example.com/meeting",
+        "status": "active"
+      }
+    ],
+    "count": 1
+  }
+}
+```
+
+</ResponseExample>

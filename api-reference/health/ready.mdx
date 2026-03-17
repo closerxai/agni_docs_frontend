@@ -1,0 +1,32 @@
+---
+title: "Readiness Check"
+openapi: "GET /ready"
+description: "Readiness Check."
+---
+
+### Response
+
+<ResponseField name="status" type="string">
+  Readiness status
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "status": "ready"
+}
+```
+
+</ResponseExample>
+
+<ResponseExample>
+
+```json 503
+{
+  "status": "unready",
+  "error": "database connection failed"
+}
+```
+
+</ResponseExample>

@@ -1,0 +1,82 @@
+---
+title: "List GHL Calendars"
+openapi: "GET /api/v1/ghl/setup/calendars"
+description: "List GHL Calendars."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  data field.
+
+  <Expandable title="data">
+    <ResponseField name="calendars" type="object[]">
+      calendars field.
+  
+      <Expandable title="calendars[]">
+        <ResponseField name="id" type="string">
+          id field.
+        </ResponseField>
+    
+        <ResponseField name="name" type="string">
+          name field.
+        </ResponseField>
+    
+        <ResponseField name="description" type="string">
+          description field.
+        </ResponseField>
+    
+        <ResponseField name="locationId" type="string">
+          locationId field.
+        </ResponseField>
+    
+        <ResponseField name="serviceTitle" type="string">
+          serviceTitle field.
+        </ResponseField>
+    </Expandable>
+    </ResponseField>
+  
+    <ResponseField name="count" type="integer">
+      count field.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {
+    "calendars": [
+      {
+        "id": "id_123",
+        "name": "example",
+        "description": "example",
+        "locationId": "id_123",
+        "serviceTitle": "integration_service"
+      }
+    ],
+    "count": 1
+  }
+}
+```
+
+</ResponseExample>

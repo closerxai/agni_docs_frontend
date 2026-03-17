@@ -1,0 +1,82 @@
+---
+title: "Buy Phone Number"
+openapi: "POST /api/v1/phone-numbers/buy/"
+description: "Buy Phone Number."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Body
+
+<ParamField body="phone_number" type="string">
+  Phone number to purchase (E.164 format)
+</ParamField>
+
+<ParamField body="price" type="number">
+  Purchase price
+</ParamField>
+
+<ParamField body="per_minute_price_inbound" type="integer">
+  Per-minute inbound call price
+</ParamField>
+
+<ParamField body="per_minute_price_outbound" type="integer">
+  Per-minute outbound call price
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Returned data.
+
+  <Expandable title="data">
+    <ResponseField name="phone_number" type="string">
+      The purchased phone number
+    </ResponseField>
+
+    <ResponseField name="price" type="number">
+      Price paid
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      Purchase status
+    </ResponseField>
+
+    <ResponseField name="purchased_at" type="string">
+      Timestamp of purchase
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {
+    "phone_number": "+14155550100",
+    "price": 1.99,
+    "status": "active",
+    "purchased_at": "2026-03-14T12:00:00Z"
+  }
+}
+```
+
+</ResponseExample>

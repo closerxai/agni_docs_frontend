@@ -1,0 +1,127 @@
+---
+title: "List GHL Appointments"
+openapi: "GET /api/v1/ghl/appointments"
+description: "List GHL Appointments."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Query Parameters
+
+<ParamField query="agent_id" type="string">
+  Filter by agent ID
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filter by appointment status
+</ParamField>
+
+<ParamField query="limit" type="integer">
+  Number of results to return (max 200)
+</ParamField>
+
+<ParamField query="org_id" type="string">
+  Organization ID (fallback)
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  data field.
+
+  <Expandable title="data">
+    <ResponseField name="appointments" type="object[]">
+      appointments field.
+  
+      <Expandable title="appointments[]">
+        <ResponseField name="id" type="string">
+          id field.
+        </ResponseField>
+    
+        <ResponseField name="ghl_appointment_id" type="string">
+          ghl_appointment_id field.
+        </ResponseField>
+    
+        <ResponseField name="contact_id" type="string">
+          contact_id field.
+        </ResponseField>
+    
+        <ResponseField name="agent_id" type="string">
+          agent_id field.
+        </ResponseField>
+    
+        <ResponseField name="agent_name" type="string">
+          agent_name field.
+        </ResponseField>
+    
+        <ResponseField name="contact_name" type="string">
+          contact_name field.
+        </ResponseField>
+    
+        <ResponseField name="contact_email" type="string">
+          contact_email field.
+        </ResponseField>
+    
+        <ResponseField name="contact_phone" type="string">
+          contact_phone field.
+        </ResponseField>
+    
+        <ResponseField name="appointment_time" type="string">
+          appointment_time field.
+        </ResponseField>
+    
+        <ResponseField name="status" type="string">
+          status field.
+        </ResponseField>
+    </Expandable>
+    </ResponseField>
+  
+    <ResponseField name="count" type="integer">
+      count field.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {
+    "appointments": [
+      {
+        "id": "id_123",
+        "ghl_appointment_id": "id_123",
+        "contact_id": "id_123",
+        "agent_id": "id_123",
+        "agent_name": "example",
+        "contact_name": "example",
+        "contact_email": "alex@example.com",
+        "contact_phone": "+14155550100",
+        "appointment_time": "2026-03-14T12:00:00Z",
+        "status": "active"
+      }
+    ],
+    "count": 1
+  }
+}
+```
+
+</ResponseExample>

@@ -1,0 +1,84 @@
+---
+title: "List Cal.com Event Types"
+openapi: "GET /api/v1/calcom/event-types"
+description: "List Cal.com Event Types."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object[]">
+  data field.
+
+  <Expandable title="data[]">
+    <ResponseField name="id" type="string">
+      id field.
+    </ResponseField>
+  
+    <ResponseField name="slug" type="string">
+      slug field.
+    </ResponseField>
+  
+    <ResponseField name="title" type="string">
+      title field.
+    </ResponseField>
+  
+    <ResponseField name="description" type="string">
+      description field.
+    </ResponseField>
+  
+    <ResponseField name="duration_minutes" type="integer">
+      duration_minutes field.
+    </ResponseField>
+  
+    <ResponseField name="price" type="number">
+      price field.
+    </ResponseField>
+  
+    <ResponseField name="currency" type="string">
+      currency field.
+    </ResponseField>
+  
+    <ResponseField name="is_active" type="boolean">
+      is_active field.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": [
+    {
+      "id": "id_123",
+      "slug": "intro-call",
+      "title": "example",
+      "description": "example",
+      "duration_minutes": 1,
+      "price": 99.5,
+      "currency": "USD",
+      "is_active": true
+    }
+  ]
+}
+```
+
+</ResponseExample>

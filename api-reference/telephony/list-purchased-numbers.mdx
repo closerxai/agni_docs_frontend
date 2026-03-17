@@ -1,0 +1,135 @@
+---
+title: "List Purchased Numbers"
+openapi: "GET /api/v1/phone-numbers/list"
+description: "List Purchased Numbers."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Query Parameters
+
+<ParamField query="region" type="string">
+  Region filter
+</ParamField>
+
+<ParamField query="iso_country" type="string">
+  ISO country code filter
+</ParamField>
+
+<ParamField query="is_active" type="boolean">
+  Filter by active status
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object[]">
+  Returned data.
+
+  <Expandable title="data[]">
+    <ResponseField name="id" type="string">
+      Record ID
+    </ResponseField>
+
+    <ResponseField name="telephony_id" type="string">
+      Associated telephony ID
+    </ResponseField>
+
+    <ResponseField name="subscription_id" type="string">
+      Associated subscription ID
+    </ResponseField>
+
+    <ResponseField name="inbound_trunk_id" type="string">
+      Inbound SIP trunk ID
+    </ResponseField>
+
+    <ResponseField name="outbound_trunk_id" type="string">
+      Outbound SIP trunk ID
+    </ResponseField>
+
+    <ResponseField name="number" type="string">
+      Phone number in E.164 format
+    </ResponseField>
+
+    <ResponseField name="friendly_name" type="string">
+      Human-readable label
+    </ResponseField>
+
+    <ResponseField name="per_minute_price_inbound" type="integer">
+      Per-minute inbound price
+    </ResponseField>
+
+    <ResponseField name="per_minute_price_outbound" type="integer">
+      Per-minute outbound price
+    </ResponseField>
+
+    <ResponseField name="price" type="integer">
+      Monthly price
+    </ResponseField>
+
+    <ResponseField name="region" type="string">
+      Region
+    </ResponseField>
+
+    <ResponseField name="iso_country" type="string">
+      ISO country code
+    </ResponseField>
+
+    <ResponseField name="is_active" type="boolean">
+      Whether the number is active
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string">
+      Creation timestamp
+    </ResponseField>
+
+    <ResponseField name="updated_at" type="string">
+      Last update timestamp
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": [
+    {
+      "id": "id_123",
+      "telephony_id": "telephony_123",
+      "subscription_id": "subscription_123",
+      "inbound_trunk_id": "inbound_trunk_123",
+      "outbound_trunk_id": "outbound_trunk_123",
+      "number": "+14155550100",
+      "friendly_name": "Support Bot",
+      "per_minute_price_inbound": 1,
+      "per_minute_price_outbound": 1,
+      "price": 1,
+      "region": "example",
+      "iso_country": "US",
+      "is_active": true,
+      "created_at": "2026-03-14T12:00:00Z",
+      "updated_at": "2026-03-14T12:00:00Z"
+    }
+  ]
+}
+```
+
+</ResponseExample>

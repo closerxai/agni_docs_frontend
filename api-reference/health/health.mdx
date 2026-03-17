@@ -1,0 +1,31 @@
+---
+title: "Health Check"
+openapi: "GET /health"
+description: "Health Check."
+---
+
+### Response
+
+<ResponseField name="status" type="string">
+  Health status
+</ResponseField>
+
+<ResponseField name="service" type="string">
+  Service name
+</ResponseField>
+
+<ResponseField name="time" type="string">
+  Current UTC timestamp
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "status": "healthy",
+  "service": "integration_service",
+  "time": "2026-03-14T12:00:00Z"
+}
+```
+
+</ResponseExample>

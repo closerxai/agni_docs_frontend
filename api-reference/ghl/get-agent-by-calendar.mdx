@@ -1,0 +1,75 @@
+---
+title: "Get GHL Agent by Calendar"
+openapi: "GET /api/v1/ghl/setup/agents/calendar/{calendar_id}"
+description: "Get GHL Agent by Calendar."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Path Parameters
+
+<ParamField path="calendar_id" type="string" required>
+  GHL Calendar ID
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  data field.
+
+  <Expandable title="data">
+    <ResponseField name="agent_id" type="string">
+      agent_id field.
+    </ResponseField>
+  
+    <ResponseField name="agent_name" type="string">
+      agent_name field.
+    </ResponseField>
+  
+    <ResponseField name="calendar_id" type="string">
+      calendar_id field.
+    </ResponseField>
+  
+    <ResponseField name="is_active" type="boolean">
+      is_active field.
+    </ResponseField>
+  
+    <ResponseField name="created_at" type="string">
+      created_at field.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {
+    "agent_id": "id_123",
+    "agent_name": "example",
+    "calendar_id": "id_123",
+    "is_active": true,
+    "created_at": "example"
+  }
+}
+```
+
+</ResponseExample>

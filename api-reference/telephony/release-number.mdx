@@ -1,0 +1,65 @@
+---
+title: "Release Phone Number"
+openapi: "DELETE /api/v1/phone-numbers/{phone_number}/release/"
+description: "Release Phone Number."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Path Parameters
+
+<ParamField path="phone_number" type="string" required>
+  The phone number to release (E.164 format, e.g. +12025551234)
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Returned data.
+
+  <Expandable title="data">
+    <ResponseField name="phone_number" type="string">
+      The released phone number
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      Release status
+    </ResponseField>
+
+    <ResponseField name="released_at" type="string">
+      Timestamp of release
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {
+    "phone_number": "+14155550100",
+    "status": "active",
+    "released_at": "example"
+  }
+}
+```
+
+</ResponseExample>

@@ -1,0 +1,43 @@
+---
+title: "Disconnect Cal.com"
+openapi: "POST /api/v1/calcom/disconnect"
+description: "Disconnect Cal.com."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  data field.
+
+  <Expandable title="data">
+    No fields are defined for this object in the schema.
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {}
+}
+```
+
+</ResponseExample>

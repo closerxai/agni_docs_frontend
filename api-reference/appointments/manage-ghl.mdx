@@ -1,0 +1,189 @@
+---
+title: "Manage GHL Appointment"
+openapi: "POST /api/v1/ghl/appointments/manage"
+description: "Manage an appointment request for the AI agent; no X-Api-Key is required, and `org_id` is provided in the request body."
+---
+
+### Body
+
+<ParamField body="action" type="string" required>
+  The appointment action to perform. Required for all requests. Allowed values: `book`, `reschedule`, `cancel`, `suggest`, `availability`. For `cancel` and `reschedule`, provide `appointment_id`. For `book`, provide `name`, and either `email` or `phone`. For `suggest` and `availability`, use `days_ahead` to control the search window.
+</ParamField>
+
+<ParamField body="agent_id" type="string" required>
+  UUID of the agent handling the appointment
+</ParamField>
+
+<ParamField body="org_id" type="string" required>
+  UUID of the organization
+</ParamField>
+
+<ParamField body="name" type="string">
+  Customer full name (required for book)
+</ParamField>
+
+<ParamField body="email" type="string">
+  Customer email (required for book if no phone)
+</ParamField>
+
+<ParamField body="phone" type="string">
+  Customer phone in E.164 format (required for book if no email)
+</ParamField>
+
+<ParamField body="appointment_datetime" type="string">
+  ISO 8601 datetime for book or reschedule
+</ParamField>
+
+<ParamField body="appointment_id" type="string">
+  Existing appointment ID (required for cancel and reschedule)
+</ParamField>
+
+<ParamField body="call_session_id" type="string">
+  Optional call session ID for book
+</ParamField>
+
+<ParamField body="notes" type="string">
+  Optional notes for the appointment
+</ParamField>
+
+<ParamField body="days_ahead" type="integer">
+  Days ahead to look for available slots (default: 7, max: 30). Used for suggest and availability.
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Natural language message to relay directly to the user
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  data field.
+
+  <Expandable title="data">
+    <ResponseField name="success" type="boolean">
+      success field.
+    </ResponseField>
+  
+    <ResponseField name="message" type="string">
+      message field.
+    </ResponseField>
+  
+    <ResponseField name="summary" type="string">
+      Short label (e.g. Appointment confirmed, Cancelled, Rescheduled)
+    </ResponseField>
+  
+    <ResponseField name="action" type="string">
+      The action that was performed
+    </ResponseField>
+  
+    <ResponseField name="appointment_id" type="string">
+      Appointment ID (returned for book, reschedule, cancel)
+    </ResponseField>
+  
+    <ResponseField name="date_time" type="string">
+      Confirmed appointment datetime in ISO 8601
+    </ResponseField>
+  
+    <ResponseField name="agent_name" type="string">
+      Name of the agent handling the appointment
+    </ResponseField>
+  
+    <ResponseField name="action_required" type="string">
+      Next action required if the request could not be completed (e.g. reschedule)
+    </ResponseField>
+  
+    <ResponseField name="available_slots" type="object[]">
+      Available time slots grouped by date (returned for suggest, availability, and slot-unavailable responses)
+  
+      <Expandable title="available_slots[]">
+        <ResponseField name="date" type="string">
+          Date in YYYY-MM-DD format
+        </ResponseField>
+    
+        <ResponseField name="date_label" type="string">
+          Human-readable date label (e.g. Today, Tomorrow)
+        </ResponseField>
+    
+        <ResponseField name="slots" type="string[]">
+          Available time slots (e.g. 9:00 AM)
+        </ResponseField>
+    </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Appointment confirmed successfully",
+  "data": {
+    "success": true,
+    "message": "Booked successfully",
+    "summary": "Appointment confirmed",
+    "action": "book",
+    "appointment_id": "appt_123",
+    "date_time": "2026-03-20T14:00:00Z",
+    "agent_name": "Dr. Rivera",
+    "action_required": "",
+    "available_slots": [
+      {
+        "date": "2026-03-21",
+        "date_label": "Tomorrow",
+        "slots": [
+          "9:00 AM",
+          "11:30 AM"
+        ]
+      }
+    ]
+  }
+}
+```
+
+</ResponseExample>
+
+<ResponseExample>
+
+```json 422
+{
+  "success": false,
+  "message": "Requested slot is unavailable",
+  "error": {
+    "code": "SLOT_UNAVAILABLE",
+    "message": "The selected time is no longer available",
+    "details": {
+      "summary": "Please choose a different slot",
+      "action": "book",
+      "action_required": "reschedule",
+      "agent_name": "Dr. Rivera",
+      "available_slots": [
+        {
+          "date": "2026-03-21",
+          "date_label": "Tomorrow",
+          "slots": [
+            "10:00 AM",
+            "1:00 PM"
+          ]
+        },
+        {
+          "date": "2026-03-22",
+          "date_label": "Friday",
+          "slots": [
+            "9:30 AM",
+            "3:00 PM"
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+</ResponseExample>

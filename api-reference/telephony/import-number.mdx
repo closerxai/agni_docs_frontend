@@ -1,0 +1,115 @@
+---
+title: "Import Phone Number"
+openapi: "POST /api/v1/phone-numbers/import/"
+description: "Import Phone Number."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Body
+
+<ParamField body="phone" type="string">
+  Phone number to import (E.164 format)
+</ParamField>
+
+<ParamField body="type" type="string">
+  Type of phone number (e.g. sip, pstn)
+</ParamField>
+
+<ParamField body="name" type="string">
+  Friendly name for the number
+</ParamField>
+
+<ParamField body="termination_uri" type="string">
+  SIP termination URI
+</ParamField>
+
+<ParamField body="sip_username" type="string">
+  SIP username for authentication
+</ParamField>
+
+<ParamField body="sip_password" type="string">
+  SIP password for authentication
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Returned data.
+
+  <Expandable title="data">
+    <ResponseField name="id" type="string">
+      id field.
+    </ResponseField>
+
+    <ResponseField name="phone" type="string">
+      phone field.
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      type field.
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      name field.
+    </ResponseField>
+
+    <ResponseField name="termination_uri" type="string">
+      termination_uri field.
+    </ResponseField>
+
+    <ResponseField name="sip_username" type="string">
+      sip_username field.
+    </ResponseField>
+
+    <ResponseField name="sip_password" type="string">
+      sip_password field.
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      status field.
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string">
+      created_at field.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {
+    "id": "id_123",
+    "phone": "+14155550100",
+    "type": "twilio",
+    "name": "Support Bot",
+    "termination_uri": "sip:example@provider.com",
+    "sip_username": "sip-user",
+    "sip_password": "secret-password",
+    "status": "active",
+    "created_at": "2026-03-14T12:00:00Z"
+  }
+}
+```
+
+</ResponseExample>

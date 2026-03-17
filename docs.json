@@ -1,0 +1,173 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Agni",
+  "colors": {
+    "primary": "#FF4500",
+    "light": "#FF7F50",
+    "dark": "#CC3700"
+  },
+  "favicon": "/favicon.svg",
+  "api": {
+    "mdx": {
+      "server": "https://api.ravan.ai",
+      "auth": {
+        "method": "key",
+        "name": "X-Api-Key"
+      }
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Welcome to Agni",
+            "pages": [
+              "index",
+              "quickstart",
+              "development"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Introduction",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Agent API",
+            "pages": [
+              "api-reference/agents/get",
+              "api-reference/agents/list",
+              "api-reference/agents/create",
+              "api-reference/agents/update",
+              "api-reference/agents/update-status",
+              "api-reference/agents/delete"
+            ]
+          },
+          {
+            "group": "Agent Tool API",
+            "pages": [
+              "api-reference/tools/get",
+              "api-reference/tools/list",
+              "api-reference/tools/create",
+              "api-reference/tools/update",
+              "api-reference/tools/delete"
+            ]
+          },
+          {
+            "group": "Widget Settings API",
+            "pages": [
+              "api-reference/widget-settings/get",
+              "api-reference/widget-settings/list",
+              "api-reference/widget-settings/create",
+              "api-reference/widget-settings/update",
+              "api-reference/widget-settings/delete"
+            ]
+          },
+          {
+            "group": "Phone Number & Telephony API",
+            "pages": [
+              "api-reference/telephony/list-available-numbers",
+              "api-reference/telephony/buy-number",
+              "api-reference/telephony/release-number",
+              "api-reference/telephony/list-purchased-numbers",
+              "api-reference/telephony/import-number",
+              "api-reference/telephony/create-telephony",
+              "api-reference/telephony/list-twilio-numbers"
+            ]
+          },
+          {
+            "group": "Appointment API",
+            "pages": [
+              "api-reference/appointments/manage-ghl",
+              "api-reference/appointments/manage-calcom"
+            ]
+          },
+          {
+            "group": "GHL Integration API",
+            "pages": [
+              "api-reference/ghl/list-appointments",
+              "api-reference/ghl/get-appointment",
+              "api-reference/ghl/oauth-authorize",
+              "api-reference/ghl/oauth-callback",
+              "api-reference/ghl/setup-status",
+              "api-reference/ghl/list-calendars",
+              "api-reference/ghl/get-agent-by-calendar",
+              "api-reference/ghl/disconnect"
+            ]
+          },
+          {
+            "group": "Cal.com Integration API",
+            "pages": [
+              "api-reference/calcom/oauth-connect",
+              "api-reference/calcom/oauth-callback",
+              "api-reference/calcom/status",
+              "api-reference/calcom/list-event-types",
+              "api-reference/calcom/lookup-event-type",
+              "api-reference/calcom/list-appointments",
+              "api-reference/calcom/disconnect"
+            ]
+          },
+          {
+            "group": "Health API",
+            "pages": [
+              "api-reference/health/health",
+              "api-reference/health/ready"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Demo",
+          "href": "https://ravan.ai/demo",
+          "icon": "microphone"
+        },
+        {
+          "anchor": "Website",
+          "href": "https://ravan.ai",
+          "icon": "globe"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Contact",
+        "href": "mailto:hi@ravan.ai"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Login",
+      "href": "https://app.ravan.ai"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/ravan_ai",
+      "github": "https://github.com/ravanai",
+      "linkedin": "https://linkedin.com/company/ravanai"
+    }
+  }
+}

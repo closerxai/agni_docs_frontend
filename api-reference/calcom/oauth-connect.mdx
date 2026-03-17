@@ -1,0 +1,23 @@
+---
+title: "Cal.com OAuth Connect"
+openapi: "GET /api/v1/calcom/oauth/connect"
+description: "Cal.com OAuth Connect."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Query Parameters
+
+<ParamField query="organization_id" type="string" required>
+  Your organization ID
+</ParamField>
+
+---
+
+This endpoint redirects the browser. No JSON response body is returned.

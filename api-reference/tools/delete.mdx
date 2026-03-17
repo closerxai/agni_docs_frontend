@@ -1,0 +1,42 @@
+---
+title: "Delete Agent Tool"
+openapi: "DELETE /api/v1/tools/{id}/"
+description: "Delete Agent Tool."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  Tool ID
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully"
+}
+```
+
+</ResponseExample>

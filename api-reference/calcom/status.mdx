@@ -1,0 +1,67 @@
+---
+title: "Cal.com Connection Status"
+openapi: "GET /api/v1/calcom/status"
+description: "Cal.com Connection Status."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  data field.
+
+  <Expandable title="data">
+    <ResponseField name="connected" type="boolean">
+      connected field.
+    </ResponseField>
+  
+    <ResponseField name="status" type="string">
+      One of: active, not_connected
+    </ResponseField>
+  
+    <ResponseField name="token_expires" type="string">
+      Token expiry timestamp (when connected)
+    </ResponseField>
+  
+    <ResponseField name="error" type="string">
+      error field.
+    </ResponseField>
+  
+    <ResponseField name="message" type="string">
+      Returned when not connected
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {
+    "connected": true,
+    "status": "active",
+    "token_expires": "2026-03-14T12:00:00Z",
+    "error": "database connection failed",
+    "message": "Request completed successfully"
+  }
+}
+```
+
+</ResponseExample>

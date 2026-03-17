@@ -1,0 +1,750 @@
+{
+  "agents/create.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const agentResponse = await client.agent.create({\n    organization_id: \"org_9f2k1\",\n    widget_settings_id: 12,\n    name: \"Support line\",\n    agent_name: \"Ava\",\n    model: \"gpt-4.1-mini\",\n    voice_id: \"alloy\",\n    temperature: 0.4,\n    enable_voicemail_detection: true,\n    ivr_options: {\n      \"1\": \"sales\",\n      \"2\": \"support\"\n    },\n    selected_tools: {\n      \"crm_lookup\": true\n    },\n    start_speaker: \"agent\"\n  });\n\n  console.log(agentResponse.id);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X POST \"https://api.ravan.ai/api/v1/agents/\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"organization_id\": \"org_9f2k1\",\n      \"widget_settings_id\": 12,\n      \"name\": \"Support line\",\n      \"agent_name\": \"Ava\",\n      \"model\": \"gpt-4.1-mini\",\n      \"voice_id\": \"alloy\",\n      \"temperature\": 0.4,\n      \"enable_voicemail_detection\": true,\n      \"ivr_options\": {\n        \"1\": \"sales\",\n        \"2\": \"support\"\n      },\n      \"selected_tools\": {\n        \"crm_lookup\": true\n      },\n      \"start_speaker\": \"agent\"\n    }'"
+      }
+    ],
+    "responseExamples": {
+      "201": {
+        "success": true,
+        "message": "Agent created successfully",
+        "data": {
+          "id": 101,
+          "organization_id": "org_9f2k1",
+          "name": "Support line",
+          "agent_name": "Ava",
+          "status": "AGENT_STATUS_ACTIVE",
+          "created_at": "2026-03-06T06:22:11Z",
+          "updated_at": "2026-03-06T06:22:11Z"
+        }
+      },
+      "400": {
+        "success": false,
+        "message": "Validation Error: 'organization_id' is required"
+      },
+      "401": {
+        "success": false,
+        "message": "Unauthorized: Invalid API Key"
+      }
+    }
+  },
+  "agents/delete.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  await client.agent.delete(\"101\", {\n    organization_id: \"org_9f2k1\"\n  });\n\n  // Returns void on successful deletion"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X DELETE \"https://api.ravan.ai/api/v1/agents/101?organization_id=org_9f2k1\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "404": {
+        "success": false,
+        "message": "Not Found: Agent '101' does not exist"
+      }
+    }
+  },
+  "agents/get.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const agent = await client.agent.get(\"101\", {\n    organization_id: \"org_9f2k1\"\n  });\n\n  console.log(agent.name);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X GET \"https://api.ravan.ai/api/v1/agents/101?organization_id=org_9f2k1\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Agent fetched successfully",
+        "data": {
+          "id": 101,
+          "organization_id": "org_9f2k1",
+          "name": "Support line",
+          "agent_name": "Ava",
+          "status": "AGENT_STATUS_ACTIVE",
+          "model": "gpt-4.1-mini",
+          "created_at": "2026-03-06T06:22:11Z",
+          "updated_at": "2026-03-06T08:10:44Z"
+        }
+      },
+      "404": {
+        "success": false,
+        "message": "Not Found: Agent '101' does not exist"
+      }
+    }
+  },
+  "agents/list.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const agents = await client.agent.list({\n    organization_id: \"org_9f2k1\",\n    offset: 0,\n    limit: 20\n  });\n\n  console.log(agents.data);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X GET \"https://api.ravan.ai/api/v1/agents?organization_id=org_9f2k1&limit=20&offset=0\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Agents fetched successfully",
+        "data": [
+          {
+            "id": 101,
+            "organization_id": "org_9f2k1",
+            "name": "Support line",
+            "agent_name": "Ava",
+            "status": "AGENT_STATUS_ACTIVE"
+          }
+        ],
+        "meta": {
+          "total": 1,
+          "limit": 20,
+          "offset": 0
+        }
+      },
+      "400": {
+        "success": false,
+        "message": "Validation Error: 'organization_id' is required"
+      }
+    }
+  },
+  "agents/update-status.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const agentResponse = await client.agent.updateStatus(\"101\", {\n    organization_id: \"org_9f2k1\",\n    status: \"AGENT_STATUS_INACTIVE\"\n  });\n\n  console.log(agentResponse.status);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X PATCH \"https://api.ravan.ai/api/v1/agents/101/status\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"organization_id\": \"org_9f2k1\",\n      \"status\": \"AGENT_STATUS_INACTIVE\"\n    }'"
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Agent status updated successfully",
+        "data": {
+          "id": 101,
+          "organization_id": "org_9f2k1",
+          "status": "AGENT_STATUS_INACTIVE"
+        }
+      },
+      "404": {
+        "success": false,
+        "message": "Not Found: Agent '101' does not exist"
+      }
+    }
+  },
+  "agents/update.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const agentResponse = await client.agent.update(\"101\", {\n    organization_id: \"org_9f2k1\",\n    name: \"Support line - EN\",\n    temperature: 0.35,\n    enable_voicemail_detection: true,\n    analysis_summary_prompt: \"Summarize blockers and follow-ups.\",\n    start_speaker: \"agent\"\n  });\n\n  console.log(agentResponse.updated_at);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X PATCH \"https://api.ravan.ai/api/v1/agents/101\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"organization_id\": \"org_9f2k1\",\n      \"name\": \"Support line - EN\",\n      \"temperature\": 0.35,\n      \"enable_voicemail_detection\": true,\n      \"analysis_summary_prompt\": \"Summarize blockers and follow-ups.\",\n      \"start_speaker\": \"agent\"\n    }'"
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Agent updated successfully",
+        "data": {
+          "id": 101,
+          "organization_id": "org_9f2k1",
+          "name": "Support line - EN",
+          "status": "AGENT_STATUS_ACTIVE",
+          "updated_at": "2026-03-06T09:01:03Z"
+        }
+      },
+      "404": {
+        "success": false,
+        "message": "Not Found: Agent '101' does not exist"
+      }
+    }
+  },
+  "introduction.mdx": {
+    "requestExamples": [],
+    "responseExamples": {}
+  },
+  "telephony/buy-number.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const numberResponse = await client.phoneNumber.buy({\n    phone_number: \"+14155552671\",\n    price: 1.0,\n    per_minute_price_inbound: 1,\n    per_minute_price_outbound: 2\n  });\n\n  console.log(numberResponse.phone_number);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X POST \"https://api.ravan.ai/api/v1/phone-numbers/buy\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"phone_number\": \"+14155552671\",\n      \"price\": 1.0,\n      \"per_minute_price_inbound\": 1,\n      \"per_minute_price_outbound\": 2\n    }'"
+      }
+    ],
+    "responseExamples": {
+      "201": {
+        "success": true,
+        "message": "Phone number purchased successfully",
+        "data": {
+          "phone_number": "+14155552671",
+          "price": 1,
+          "status": "active",
+          "purchased_at": "2026-03-06T12:00:00Z"
+        }
+      },
+      "400": {
+        "success": false,
+        "message": "Validation Error: 'phone_number' format invalid"
+      },
+      "422": {
+        "success": false,
+        "message": "Pricing Error: 'price' exceeds expected limit"
+      }
+    }
+  },
+  "telephony/create-telephony.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const config = await client.telephony.createProvider({\n    type: \"twilio\",\n    owner_type: \"organization\",\n    friendly_name: \"My Twilio Account\",\n    client_id: \"ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\",\n    client_secret: \"your_auth_token_here\"\n  });\n\n  console.log(config.id);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X POST \"https://api.ravan.ai/api/v1/create/telephony\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"type\": \"twilio\",\n      \"owner_type\": \"organization\",\n      \"friendly_name\": \"My Twilio Account\",\n      \"client_id\": \"ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\",\n      \"client_secret\": \"your_auth_token_here\"\n    }'"
+      }
+    ],
+    "responseExamples": {
+      "201": {
+        "success": true,
+        "message": "Telephony type configured successfully",
+        "data": {
+          "id": "tel_config_8x9",
+          "type": "twilio",
+          "owner_type": "organization",
+          "friendly_name": "My Twilio Account",
+          "status": "verified",
+          "created_at": "2026-03-06T12:00:00Z"
+        }
+      },
+      "400": {
+        "success": false,
+        "message": "Validation Error: 'client_id' and 'client_secret' are required for Twilio."
+      }
+    }
+  },
+  "telephony/import-number.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const importedNumber = await client.telephony.importNumber({\n    phone: \"+14155552671\",\n    type: \"sip\",\n    name: \"Main SIP Trunk\",\n    termination_uri: \"sip:14155552671@sip.example.com\",\n    sip_username: \"admin\",\n    sip_password: \"secr3t\"\n  });\n\n  console.log(importedNumber.status);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X POST \"https://api.ravan.ai/api/v1/phone-numbers/import\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"phone\": \"+14155552671\",\n      \"type\": \"sip\",\n      \"name\": \"Main SIP Trunk\",\n      \"termination_uri\": \"sip:14155552671@sip.example.com\",\n      \"sip_username\": \"admin\",\n      \"sip_password\": \"secr3t\"\n    }'"
+      }
+    ],
+    "responseExamples": {
+      "201": {
+        "success": true,
+        "message": "Phone number imported successfully",
+        "data": {
+          "id": "imp_9f4k",
+          "phone": "+14155552671",
+          "type": "sip",
+          "name": "Main SIP Trunk",
+          "termination_uri": "sip:14155552671@sip.example.com",
+          "sip_username": "admin",
+          "status": "active",
+          "created_at": "2026-03-06T12:00:00Z"
+        }
+      },
+      "400": {
+        "success": false,
+        "message": "Validation Error: 'termination_uri' is invalid"
+      }
+    }
+  },
+  "telephony/list-available-numbers.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const availableNumbers = await client.telephony.listAvailableNumbers(\"US\", {\n    page_size: 10,\n    region: \"CA\"\n  });\n\n  console.log(availableNumbers.data);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X GET \"https://api.ravan.ai/api/v1/available-numbers/US?page_size=10&region=CA\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Available numbers fetched successfully",
+        "data": [
+          {
+            "iso_country": "US",
+            "phone_number": "+14155552671",
+            "price": 100,
+            "per_minute_price_outbound": 2,
+            "per_minute_price_inbound": 1
+          }
+        ]
+      },
+      "400": {
+        "success": false,
+        "message": "Validation Error: Unsupported 'iso_country' code"
+      }
+    }
+  },
+  "telephony/list-purchased-numbers.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const numbers = await client.telephony.listPurchasedNumbers({\n    iso_country: \"US\",\n    is_active: true\n  });\n\n  console.log(numbers.data);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X GET \"https://api.ravan.ai/api/v1/list-phone-numbers?iso_country=US&is_active=true\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Purchased numbers fetched successfully",
+        "data": [
+          {
+            "id": "num_289x",
+            "telephonyId": "tel_abc",
+            "subscriptionId": "sub_def",
+            "inboundTrunkId": "trnk_in_1",
+            "outboundTrunkId": "trnk_out_1",
+            "number": "+14155552671",
+            "friendlyName": "Main Support Line",
+            "perMinutePriceInbound": 1,
+            "perMinutePriceOutbound": 2,
+            "price": 100,
+            "region": "CA",
+            "isoCountry": "US",
+            "isActive": true,
+            "createdAt": "2026-03-06T12:00:00Z",
+            "updatedAt": "2026-03-06T12:00:00Z"
+          }
+        ]
+      }
+    }
+  },
+  "telephony/list-twilio-numbers.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const numbers = await client.telephony.listTwilioNumbers();\n  console.log(numbers.data);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X GET \"https://api.ravan.ai/api/v1/twilio-owned-numbers\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Twilio-owned numbers fetched successfully",
+        "data": [
+          {
+            "sid": "PNXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "phone_number": "+14155552671",
+            "friendly_name": "Main Support Line",
+            "status": "in-use",
+            "date_created": "2026-03-01T12:00:00Z",
+            "voice": true,
+            "sms": false,
+            "mms": false
+          }
+        ]
+      }
+    }
+  },
+  "telephony/release-number.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const call = await client.telephony.releaseNumber(\"+14155552671\");\n  console.log(call.status);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X DELETE \"https://api.ravan.ai/api/v1/phone-numbers/+14155552671/release\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Phone number released successfully",
+        "data": {
+          "phone_number": "+14155552671",
+          "status": "released",
+          "released_at": "2026-03-06T12:05:00Z"
+        }
+      },
+      "404": {
+        "success": false,
+        "message": "Not Found: The specified phone number does not exist or does not belong to your organization."
+      }
+    }
+  },
+  "tools/create.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const toolResponse = await client.tool.create({\n    organization_id: \"org_9f2k1\",\n    name: \"crm_lookup\",\n    description: \"Fetch customer profile from CRM\",\n    type: \"http\",\n    definition: {\n      url: \"https://api.example.com/customers/{phone}\",\n      method: \"GET\"\n    }\n  });\n\n  console.log(toolResponse.id);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X POST \"https://api.ravan.ai/api/v1/tools\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"organization_id\": \"org_9f2k1\",\n      \"name\": \"crm_lookup\",\n      \"description\": \"Fetch customer profile from CRM\",\n      \"type\": \"http\",\n      \"definition\": {\n        \"url\": \"https://api.example.com/customers/{phone}\",\n        \"method\": \"GET\"\n      }\n    }'"
+      }
+    ],
+    "responseExamples": {
+      "201": {
+        "success": true,
+        "message": "Tool created successfully",
+        "data": {
+          "id": 21,
+          "organization_id": "org_9f2k1",
+          "name": "crm_lookup",
+          "description": "Fetch customer profile from CRM",
+          "type": "http",
+          "definition": {
+            "url": "https://api.example.com/customers/{phone}",
+            "method": "GET"
+          },
+          "is_active": true
+        }
+      },
+      "400": {
+        "success": false,
+        "message": "Validation Error: 'name' must be alphanumeric"
+      }
+    }
+  },
+  "tools/delete.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  await client.tool.delete(\"21\", {\n    organization_id: \"org_9f2k1\"\n  });\n\n  // Returns void on successful deletion"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X DELETE \"https://api.ravan.ai/api/v1/tools/21?organization_id=org_9f2k1\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "404": {
+        "success": false,
+        "message": "Not Found: Tool '21' does not exist"
+      }
+    }
+  },
+  "tools/get.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const tool = await client.tool.get(\"21\", {\n    organization_id: \"org_9f2k1\"\n  });\n\n  console.log(tool.name);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X GET \"https://api.ravan.ai/api/v1/tools/21?organization_id=org_9f2k1\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Tool fetched successfully",
+        "data": {
+          "id": 21,
+          "organization_id": "org_9f2k1",
+          "name": "crm_lookup",
+          "description": "Fetch customer profile from CRM",
+          "type": "http",
+          "definition": {
+            "url": "https://api.example.com/customers/{phone}",
+            "method": "GET"
+          },
+          "is_active": true
+        }
+      },
+      "404": {
+        "success": false,
+        "message": "Not Found: Tool '21' does not exist"
+      }
+    }
+  },
+  "tools/list.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const tools = await client.tool.list({\n    organization_id: \"org_9f2k1\",\n    offset: 0,\n    limit: 20\n  });\n\n  console.log(tools.data);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X GET \"https://api.ravan.ai/api/v1/tools?organization_id=org_9f2k1&limit=20&offset=0\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Tools fetched successfully",
+        "data": [
+          {
+            "id": 21,
+            "organization_id": "org_9f2k1",
+            "name": "crm_lookup",
+            "description": "Fetch customer profile from CRM",
+            "type": "http",
+            "definition": {
+              "url": "https://api.example.com/customers/{phone}",
+              "method": "GET"
+            },
+            "is_active": true
+          }
+        ],
+        "meta": {
+          "total": 1,
+          "limit": 20,
+          "offset": 0
+        }
+      },
+      "400": {
+        "success": false,
+        "message": "Validation Error: 'organization_id' is required"
+      }
+    }
+  },
+  "tools/update.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const toolResponse = await client.tool.update(\"21\", {\n    organization_id: \"org_9f2k1\",\n    name: \"crm_lookup\",\n    description: \"Fetch and summarize customer profile\",\n    type: \"http\",\n    definition: {\n      \"url\": \"https://api.example.com/customers/{phone}\",\n      \"method\": \"GET\",\n      \"timeout_ms\": 2000\n    }\n  });\n\n  console.log(toolResponse.name);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X PATCH \"https://api.ravan.ai/api/v1/tools/21\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"organization_id\": \"org_9f2k1\",\n      \"name\": \"crm_lookup\",\n      \"description\": \"Fetch and summarize customer profile\",\n      \"type\": \"http\",\n      \"definition\": {\n        \"url\": \"https://api.example.com/customers/{phone}\",\n        \"method\": \"GET\",\n        \"timeout_ms\": 2000\n      }\n    }'"
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Tool updated successfully",
+        "data": {
+          "id": 21,
+          "organization_id": "org_9f2k1",
+          "name": "crm_lookup",
+          "description": "Fetch and summarize customer profile",
+          "type": "http",
+          "is_active": true
+        }
+      },
+      "404": {
+        "success": false,
+        "message": "Not Found: Tool '21' does not exist"
+      }
+    }
+  },
+  "widget-settings/create.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const widgetConfig = await client.widget.create({\n    bot_name: \"Ava\",\n    bot_auto_start: true,\n    bot_position: \"BOT_POSITION_BOTTOM_RIGHT\",\n    bot_logo: \"https://cdn.ravan.ai/bot-logo.svg\",\n    custom_form_fields: {\n      \"company\": {\n        \"type\": \"text\",\n        \"required\": true\n      }\n    },\n    theme: {\n      \"primary\": \"#16A34A\"\n    },\n    language: \"en\",\n    consent_content: \"By continuing, you agree to recording.\",\n    consent_title: \"Consent\"\n  });\n\n  console.log(widgetConfig.id);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X POST \"https://api.ravan.ai/api/v1/widget-settings\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"bot_name\": \"Ava\",\n      \"bot_auto_start\": true,\n      \"bot_position\": \"BOT_POSITION_BOTTOM_RIGHT\",\n      \"bot_logo\": \"https://cdn.ravan.ai/bot-logo.svg\",\n      \"custom_form_fields\": {\n        \"company\": {\n          \"type\": \"text\",\n          \"required\": true\n        }\n      },\n      \"theme\": {\n        \"primary\": \"#16A34A\"\n      },\n      \"language\": \"en\",\n      \"consent_content\": \"By continuing, you agree to recording.\",\n      \"consent_title\": \"Consent\"\n    }'"
+      }
+    ],
+    "responseExamples": {
+      "201": {
+        "success": true,
+        "message": "Widget settings created successfully",
+        "data": {
+          "id": 12,
+          "bot_name": "Ava",
+          "bot_auto_start": true,
+          "bot_position": "BOT_POSITION_BOTTOM_RIGHT",
+          "language": "en",
+          "is_active": true,
+          "created_at": "2026-03-06T06:40:00Z",
+          "updated_at": "2026-03-06T06:40:00Z"
+        }
+      },
+      "400": {
+        "success": false,
+        "message": "Validation Error: 'bot_position' must be a valid BOT_POSITION enum"
+      }
+    }
+  },
+  "widget-settings/delete.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  await client.widget.delete(\"12\");\n\n  // Returns void on successful deletion"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X DELETE \"https://api.ravan.ai/api/v1/widget-settings/12\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "404": {
+        "success": false,
+        "message": "Not Found: Widget settings '12' not found"
+      }
+    }
+  },
+  "widget-settings/get.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const widgetConfig = await client.widget.get(\"12\");\n  console.log(widgetConfig.bot_name);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X GET \"https://api.ravan.ai/api/v1/widget-settings/12\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Widget settings fetched successfully",
+        "data": {
+          "id": 12,
+          "bot_name": "Ava",
+          "bot_auto_start": true,
+          "bot_position": "BOT_POSITION_BOTTOM_RIGHT",
+          "language": "en",
+          "is_active": true,
+          "created_at": "2026-03-05T12:00:00Z",
+          "updated_at": "2026-03-06T08:00:00Z"
+        }
+      },
+      "404": {
+        "success": false,
+        "message": "Not Found: Widget settings '12' not found"
+      }
+    }
+  },
+  "widget-settings/list.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const widgetSettings = await client.widget.list();\n  console.log(widgetSettings.data);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X GET \"https://api.ravan.ai/api/v1/widget-settings\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Widget settings fetched successfully",
+        "data": [
+          {
+            "id": 12,
+            "bot_name": "Ava",
+            "bot_auto_start": true,
+            "bot_position": "BOT_POSITION_BOTTOM_RIGHT",
+            "language": "en",
+            "is_active": true
+          }
+        ]
+      },
+      "401": {
+        "success": false,
+        "message": "Unauthorized"
+      }
+    }
+  },
+  "widget-settings/update.mdx": {
+    "requestExamples": [
+      {
+        "lang": "javascript",
+        "label": "JavaScript",
+        "source": "import Agni from 'agni-sdk';\n\n  const client = new Agni({\n    apiKey: 'YOUR_AGNI_API_KEY',\n  });\n\n  const widgetConfig = await client.widget.update(\"12\", {\n    bot_name: \"Ava Support\",\n    bot_auto_start: false,\n    bot_position: \"BOT_POSITION_BOTTOM_LEFT\",\n    bot_logo: \"https://cdn.ravan.ai/bot-logo-v2.svg\",\n    custom_form_fields: {\n      \"company\": {\n        \"type\": \"text\",\n        \"required\": true\n      },\n      \"email\": {\n        \"type\": \"email\",\n        \"required\": true\n      }\n    },\n    theme: {\n      \"primary\": \"#15803D\"\n    },\n    language: \"en\"\n  });\n\n  console.log(widgetConfig.updated_at);"
+      },
+      {
+        "lang": "curl",
+        "label": "cURL",
+        "source": "curl -X PATCH \"https://api.ravan.ai/api/v1/widget-settings/12\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"bot_name\": \"Ava Support\",\n      \"bot_auto_start\": false,\n      \"bot_position\": \"BOT_POSITION_BOTTOM_LEFT\",\n      \"bot_logo\": \"https://cdn.ravan.ai/bot-logo-v2.svg\",\n      \"custom_form_fields\": {\n        \"company\": {\n          \"type\": \"text\",\n          \"required\": true\n        },\n        \"email\": {\n          \"type\": \"email\",\n          \"required\": true\n        }\n      },\n      \"theme\": {\n        \"primary\": \"#15803D\"\n      },\n      \"language\": \"en\"\n    }'"
+      }
+    ],
+    "responseExamples": {
+      "200": {
+        "success": true,
+        "message": "Widget settings updated successfully",
+        "data": {
+          "id": 12,
+          "bot_name": "Ava Support",
+          "bot_auto_start": false,
+          "bot_position": "BOT_POSITION_BOTTOM_LEFT",
+          "language": "en",
+          "is_active": true,
+          "updated_at": "2026-03-06T09:20:00Z"
+        }
+      },
+      "404": {
+        "success": false,
+        "message": "Not Found: Widget settings '12' not found"
+      }
+    }
+  }
+}

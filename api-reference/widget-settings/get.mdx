@@ -1,0 +1,120 @@
+---
+title: "Get Widget Settings"
+openapi: "GET /api/v1/widget-settings/{id}/"
+description: "Get Widget Settings."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Path Parameters
+
+<ParamField path="id" type="string" required>
+  Widget Settings ID
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Returned data.
+
+  <Expandable title="data">
+    <ResponseField name="id" type="string">
+      Unique widget settings ID
+    </ResponseField>
+
+    <ResponseField name="bot_name" type="string">
+      Display name of the bot
+    </ResponseField>
+
+    <ResponseField name="bot_auto_start" type="boolean">
+      Whether the bot starts automatically
+    </ResponseField>
+
+    <ResponseField name="bot_position" type="string">
+      bot_position field. Allowed values: `BOT_POSITION_UNSPECIFIED`, `BOT_POSITION_BOTTOM_RIGHT`, `BOT_POSITION_BOTTOM_LEFT`, `BOT_POSITION_TOP_RIGHT`, `BOT_POSITION_TOP_LEFT`.
+    </ResponseField>
+
+    <ResponseField name="bot_logo" type="string">
+      URL of the bot logo image
+    </ResponseField>
+
+    <ResponseField name="svg_logo" type="string">
+      SVG logo content
+    </ResponseField>
+
+    <ResponseField name="custom_form_fields" type="object">
+      Custom form field configuration
+    </ResponseField>
+
+    <ResponseField name="theme" type="object">
+      Widget theme configuration
+    </ResponseField>
+
+    <ResponseField name="language" type="string">
+      Language code (e.g. en, fr)
+    </ResponseField>
+
+    <ResponseField name="consent_content" type="string">
+      Consent modal body text
+    </ResponseField>
+
+    <ResponseField name="consent_title" type="string">
+      Consent modal title
+    </ResponseField>
+
+    <ResponseField name="is_active" type="boolean">
+      Whether these widget settings are active
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string">
+      Creation timestamp
+    </ResponseField>
+
+    <ResponseField name="updated_at" type="string">
+      Last update timestamp
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": {
+    "id": "id_123",
+    "bot_name": "Support Bot",
+    "bot_auto_start": true,
+    "bot_position": "BOT_POSITION_BOTTOM_RIGHT",
+    "bot_logo": "https://example.com/logo.png",
+    "svg_logo": "https://example.com/logo.png",
+    "custom_form_fields": {},
+    "theme": {},
+    "language": "en",
+    "consent_content": "example",
+    "consent_title": "example",
+    "is_active": true,
+    "created_at": "2026-03-14T12:00:00Z",
+    "updated_at": "2026-03-14T12:00:00Z"
+  }
+}
+```
+
+</ResponseExample>

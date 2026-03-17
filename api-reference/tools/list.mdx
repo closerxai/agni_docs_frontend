@@ -1,0 +1,114 @@
+---
+title: "List Agent Tools"
+openapi: "GET /api/v1/tools/"
+description: "List Agent Tools."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Query Parameters
+
+<ParamField query="limit" type="integer">
+  Number of results to return
+</ParamField>
+
+<ParamField query="offset" type="integer">
+  Pagination offset
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object[]">
+  Returned data.
+
+  <Expandable title="data[]">
+    <ResponseField name="id" type="string">
+      Unique tool ID
+    </ResponseField>
+
+    <ResponseField name="organization_id" type="string">
+      Organization this tool belongs to
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Tool name
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Tool description
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      Tool type (e.g. webhook, function)
+    </ResponseField>
+
+    <ResponseField name="definition" type="object">
+      Tool definition schema
+    </ResponseField>
+
+    <ResponseField name="is_active" type="boolean">
+      Whether the tool is active
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="meta" type="object">
+  Pagination metadata.
+
+  <Expandable title="meta">
+    <ResponseField name="total" type="integer">
+      Total number of records
+    </ResponseField>
+
+    <ResponseField name="limit" type="integer">
+      Page size limit
+    </ResponseField>
+
+    <ResponseField name="offset" type="integer">
+      Pagination offset
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": [
+    {
+      "id": "id_123",
+      "organization_id": "organization_123",
+      "name": "Support Bot",
+      "description": "Example description",
+      "type": "twilio",
+      "definition": {},
+      "is_active": true
+    }
+  ],
+  "meta": {
+    "total": 1,
+    "limit": 20,
+    "offset": 0
+  }
+}
+```
+
+</ResponseExample>

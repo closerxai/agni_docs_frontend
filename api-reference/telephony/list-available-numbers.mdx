@@ -1,0 +1,89 @@
+---
+title: "List Available Numbers"
+openapi: "GET /api/v1/phone-numbers/available-numbers/{iso_country}/"
+description: "List Available Numbers."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Path Parameters
+
+<ParamField path="iso_country" type="string" required>
+  ISO country code (e.g. US, GB)
+</ParamField>
+
+---
+
+### Query Parameters
+
+<ParamField query="page_size" type="integer">
+  Number of results per page
+</ParamField>
+
+<ParamField query="region" type="string">
+  Region filter
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request succeeded.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable status message.
+</ResponseField>
+
+<ResponseField name="data" type="object[]">
+  Returned data.
+
+  <Expandable title="data[]">
+    <ResponseField name="iso_country" type="string">
+      ISO country code
+    </ResponseField>
+
+    <ResponseField name="phone_number" type="string">
+      Phone number in E.164 format
+    </ResponseField>
+
+    <ResponseField name="price" type="integer">
+      Monthly cost of the number
+    </ResponseField>
+
+    <ResponseField name="per_minute_price_outbound" type="integer">
+      Per-minute price for outbound calls
+    </ResponseField>
+
+    <ResponseField name="per_minute_price_inbound" type="integer">
+      Per-minute price for inbound calls
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Request completed successfully",
+  "data": [
+    {
+      "iso_country": "US",
+      "phone_number": "+14155550100",
+      "price": 1,
+      "per_minute_price_outbound": 1,
+      "per_minute_price_inbound": 1
+    }
+  ]
+}
+```
+
+</ResponseExample>

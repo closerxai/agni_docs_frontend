@@ -1,0 +1,23 @@
+---
+title: "GHL OAuth Authorize"
+openapi: "GET /api/v1/ghl/oauth/authorize"
+description: "GHL OAuth Authorize."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+</ParamField>
+
+---
+
+### Query Parameters
+
+<ParamField query="organization_id" type="string" required>
+  Your organization ID
+</ParamField>
+
+---
+
+This endpoint redirects the browser. No JSON response body is returned.
