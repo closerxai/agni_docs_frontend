@@ -25,9 +25,7 @@
           {
             "group": "Welcome to Agni",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "index"
             ]
           }
         ]
@@ -130,12 +128,12 @@
       "anchors": [
         {
           "anchor": "Demo",
-          "href": "https://ravan.ai/demo",
+          "href": "https://agni.ravan.ai",
           "icon": "microphone"
         },
         {
           "anchor": "Website",
-          "href": "https://ravan.ai",
+          "href": "https://app.ravan.ai",
           "icon": "globe"
         }
       ]
@@ -165,9 +163,7 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/ravan_ai",
-      "github": "https://github.com/ravanai",
-      "linkedin": "https://linkedin.com/company/ravanai"
+      "instagram": "https://www.instagram.com/agnibyravan/"
     }
   }
 }
