@@ -1,0 +1,56 @@
+---
+title: "Tools & Functions"
+description: "Equip your AI agents with actionable skills like call transferring and ending conversations."
+---
+
+The **Tools** page (also referred to as the Functions Library) is where you define the specific actions your AI agents can perform during a live call. By attaching functions to an agent, you upgrade them from a conversational bot to a functional assistant capable of executing real-world tasks.
+
+<Frame>
+  <img src="/images/tools-empty-state.png" alt="Agni Functions Library" />
+</Frame>
+
+## Adding a Function
+
+To create a new tool, click the **+ Add Function** button in the top right corner of the Functions Library. Currently, Agni supports two primary telephony functions: **End call** and **Call transfer**.
+
+<Frame>
+  <img src="/images/tools-add-dropdown.png" alt="Add Function Dropdown" />
+</Frame>
+
+### 1. End Call
+
+The **End Call** function allows the AI agent to politely and intentionally hang up the phone when a conversation has naturally concluded or a specific objective has been met.
+
+<Frame>
+  <img src="/images/tools-end-call.png" alt="End Call Configuration" />
+</Frame>
+
+- **Name:** The internal identifier for the function (e.g., end_call).
+- **Description:** A crucial instruction field. Write a clear, natural-language description telling the AI *exactly* when it should trigger this function (e.g., "Call this function only after you have confirmed the user's appointment and said goodbye").
+
+### 2. Call Transfer
+
+The **Call Transfer** function allows the AI to route an active caller to a human agent, a different department, or an external SIP address.
+
+<Frame>
+  <img src="/images/tools-transfer-call.png" alt="Transfer Call Configuration" />
+</Frame>
+
+- **Name:** The identifier for the AI to call (e.g., 	ransfer_call).
+- **On Hold Music:** Toggle this on to play holding music while the transfer connects.
+- **Description:** Tell the AI when to trigger the transfer (e.g., "Trigger this if the user asks to speak to a human representative or manager").
+- **From Section:** Define the originating identity of the transfer. You must provide the **SIP** address and the associated **Phone Number**.
+- **To Section:** Define the **Destination Phone Number** where the call should be routed.
+
+## API Reference
+
+You can completely manage your agent tools and functions programmatically using the Agni REST API.
+
+<CardGroup cols={2}>
+  <Card title="Create Tool" icon="plus" href="/api-reference/tools/create">
+    Define a new tool or function payload via the API.
+  </Card>
+  <Card title="List Tools" icon="list" href="/api-reference/tools/list">
+    Retrieve your entire library of configured functions.
+  </Card>
+</CardGroup>

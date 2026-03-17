@@ -37,7 +37,10 @@
               "guides/calls",
               "guides/appointments",
               "guides/inbound-calls",
-              "guides/agents"
+              "guides/agents",
+              "guides/tools",
+              "guides/phone-numbers",
+              "guides/billing"
             ]
           }
         ]

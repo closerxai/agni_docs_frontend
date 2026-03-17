@@ -1,0 +1,92 @@
+---
+title: "Phone Numbers"
+description: "Provision, manage, and configure the telephony infrastructure for your AI agents."
+---
+
+The **Phone Numbers** page is your control center for telephony. Before you can buy numbers or route inbound and outbound calls, you must configure your underlying telephony provider. Currently, Agni supports Twilio.
+
+<Frame>
+  <img src="/images/telephony-strategy.png" alt="Choose Your Account Strategy" />
+</Frame>
+
+## First-Time Setup: Choose Your Strategy
+
+When you access the Phone Numbers tab for the first time, you must choose how you want to manage your Twilio infrastructure. 
+
+### Path A: Your Own Account (BYOT)
+Choose this option if you already have a Twilio account and want full ownership, compliance control, and direct billing from Twilio.
+
+<Steps>
+  <Step title="Select Your Own Account">
+    Click **Choose this option** under the "Your Own Account" card. 
+  </Step>
+  <Step title="Confirm Selection">
+    A confirmation modal will appear. Click **Continue Setup** to lock in your configuration.
+    <Frame><img src="/images/telephony-byot-confirm.png" alt="Confirm BYOT Selection" /></Frame>
+  </Step>
+  <Step title="Enter Credentials">
+    Provide a **Friendly Name** for your integration, along with your Twilio **Account SID** and **Auth Token**. These can be found in your Twilio console. Click **Connect Account**.
+    <Frame><img src="/images/telephony-byot-credentials.png" alt="Enter Twilio Credentials" /></Frame>
+  </Step>
+</Steps>
+
+### Path B: Managed Account
+Choose this option if you want a zero-configuration experience. Agni will manage the underlying infrastructure, and telephony usage will be deducted from your Agni credit balance.
+
+<Steps>
+  <Step title="Select Managed Account">
+    Click **Choose this option** under the "Managed Account" card.
+  </Step>
+  <Step title="Accept Terms and Conditions">
+    Because Agni handles the billing and compliance for Managed Accounts, you must review and accept the telephony terms, including the strict 28-day renewal policy and no-refund policy.
+    <Frame><img src="/images/telephony-managed-terms.png" alt="Telephony Terms and Conditions" /></Frame>
+  </Step>
+  <Step title="Assign Friendly Name">
+    Give your managed connection a **Friendly Name** to identify it in your workspace, then finalize the setup.
+  </Step>
+</Steps>
+
+<Note>
+  **Important:** The Managed Twilio selection is permanent for your workspace and cannot be changed later without administrative approval.
+</Note>
+
+---
+
+## Managing Phone Numbers
+
+Once your account strategy is configured, you will unlock the main Phone Numbers dashboard.
+
+<Frame>
+  <img src="/images/telephony-dashboard.png" alt="Phone Numbers Dashboard" />
+</Frame>
+
+### Buy a New Number
+Use the left panel to search for and purchase new phone numbers:
+1. Select your desired **Country** from the dropdown.
+2. Use the search bar to filter for specific area codes or patterns.
+3. Review the pricing (Outbound/Inbound per-minute rates and the flat monthly fee).
+4. Select a number and click **Buy Number** to provision it immediately to your workspace.
+
+### Owned Numbers
+The right panel displays your active inventory. Any number listed here is ready to be used in your [Inbound Calls](/guides/inbound-calls) dispatch rules or as a Caller ID for outbound campaigns.
+
+---
+
+## API Reference
+
+Agni's Telephony API allows you to automate number provisioning and management.
+
+<CardGroup cols={2}>
+  <Card title="List Available Numbers" icon="magnifying-glass" href="/api-reference/telephony/list-available-numbers">
+    Search the Twilio inventory for numbers available to purchase.
+  </Card>
+  <Card title="Buy Number" icon="cart-shopping" href="/api-reference/telephony/buy-number">
+    Programmatically purchase a number and add it to your Agni workspace.
+  </Card>
+  <Card title="List Purchased Numbers" icon="list" href="/api-reference/telephony/list-purchased-numbers">
+    Retrieve the active inventory of phone numbers you own.
+  </Card>
+  <Card title="Release Number" icon="trash" href="/api-reference/telephony/release-number">
+    Release a phone number back to the provider.
+  </Card>
+</CardGroup>
