@@ -9,28 +9,44 @@ The **Billing** page is where you manage the financial aspects of your Agni work
   <img src="/images/billing-overview.png" alt="Agni Billing Dashboard" />
 </Frame>
 
-## Available Plans
+---
 
-Agni offers dynamic subscription tiers based on your location. 
-To view the plans available to your workspace, click the **Select region** dropdown in the top right corner of the **Available Plans** section. All subscriptions are processed securely via Stripe Checkout.
+## Subscriptions & Plans
+
+Manage your platform access and view localized pricing tiers.
+
+<CardGroup cols={2}>
+  <Card title="Available Plans" icon="globe">
+    Agni offers dynamic subscription tiers based on your location. Click the **Select region** dropdown to view the plans available to your workspace. All subscriptions are processed securely via Stripe.
+  </Card>
+  <Card title="Subscription Overview" icon="id-card">
+    Displays the status of your currently active tier. Click the **Portal** button to be redirected to your secure Stripe Customer Portal, where you can upgrade, downgrade, cancel, or update your payment methods.
+  </Card>
+</CardGroup>
+
+---
 
 ## Credits & Usage
 
-Because real-time voice AI incurs immediate compute and telephony costs, Agni uses a prepaid credit system for call volume.
+Because real-time voice AI incurs immediate compute and telephony costs, Agni uses a prepaid credit system for call volume. Your agents consume these credits dynamically as they handle live calls.
 
-- **Available Credits:** This displays your organization's current, real-time credit balance. 
-- **Buy Credits:** Click this button to top up your account. Your agents will consume these credits dynamically as they handle live calls. 
+<CardGroup cols={2}>
+  <Card title="Available Credits" icon="coins">
+    Displays your organization's current, real-time credit balance. Keep an eye on this metric to ensure your agents stay online.
+  </Card>
+  <Card title="Buy Credits" icon="cart-plus">
+    Click this button to top up your account. Adding funds takes only a few seconds and applies to your workspace instantly.
+  </Card>
+</CardGroup>
 
 <Note>
   **Important:** If your credit balance reaches zero, your agents will be temporarily paused and active dispatch rules will fail to connect. Ensure you maintain a positive balance to avoid service interruptions.
 </Note>
 
-## Subscription Overview
-
-This section displays the status of your currently active tier. 
-
-To upgrade, downgrade, cancel your plan, or manage your payment methods (e.g., updating an expired credit card), click the **Portal** button. This will redirect you to your secure Stripe Customer Portal where you can safely manage your financial data.
+---
 
 ## Billing History
 
-At the bottom of the page, the **Billing History** table provides a transparent ledger of your past transactions. Once you purchase credits or subscribe to a plan, your official invoices and receipts will automatically populate here so you can easily download them for your accounting records.
+At the bottom of the page, the **Billing History** table provides a transparent ledger of your past transactions. 
+
+Whether you are purchasing prepaid credits or paying for your monthly subscription plan, your official invoices and receipts will automatically populate in this table. You can easily download them at any time for your accounting and tax records.

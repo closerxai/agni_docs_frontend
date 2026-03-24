@@ -17,7 +17,7 @@
       }
     }
   },
-  "navigation": {
+"navigation": {
     "tabs": [
       {
         "tab": "Guides",
@@ -31,16 +31,32 @@
           {
             "group": "Getting Started",
             "pages": [
-              "guides/authentication",
+              "guides/authentication"
+            ]
+          },
+          {
+            "group": "Platform",
+            "pages": [
               "guides/dashboard",
               "guides/analytics",
               "guides/calls",
               "guides/appointments",
-              "guides/inbound-calls",
+              "guides/inbound-calls"
+            ]
+          },
+          {
+            "group": "Management",
+            "pages": [
               "guides/agents",
-              "guides/tools",
+              "guides/tools"
+            ]
+          },
+          {
+            "group": "Operations",
+            "pages": [
               "guides/phone-numbers",
-              "guides/billing"
+              "guides/billing",
+              "guides/settings"
             ]
           }
         ]

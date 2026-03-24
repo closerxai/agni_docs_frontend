@@ -5,13 +5,17 @@ description: "Create, configure, and test real-time voice AI agents."
 
 The **Agents** dashboard is where you design the core intelligence of your voice infrastructure. An Agni agent is more than just a prompt. It is a fully configurable voice persona with customizable speech patterns, tool access, and call handling behavior.
 
-![Agni Agents Dashboard](/images/agents-empty-state.png)
+<Frame>
+  <img src="/images/agents-empty-state.png" alt="Agni Agents Dashboard" />
+</Frame>
 
 ## Creating a New Agent
 
 When you click **+ New Agent**, you are taken to the agent builder interface. This is where you define the agent's behavior, knowledge, and capabilities.
 
-![New Agent Builder Interface](/images/agent-create-overview.png)
+<Frame>
+  <img src="/images/agent-create-overview.png" alt="New Agent Builder Interface" />
+</Frame>
 
 ### Prompt & Dynamic Variables
 
@@ -19,16 +23,22 @@ The main text editor is where you write the **System Prompt**, defining the agen
 
 You can inject **Dynamic Variables** into your prompt using double curly braces (for example, `{{user_name}}` or `{{company}}`). During live calls, you can pass values into these variables via the API to personalize the conversation. When testing your agent in the dashboard, any variables you define will automatically generate an input field in the testing panel so you can simulate dynamic data.
 
+<Note>
+  **Pro Tip:** Use dynamic variables to pass user-specific context like CRM data or recent account activity directly into the agent's working memory at the start of a call.
+</Note>
+
 ### AI Provider Settings
 
 Click the settings icon next to the model name to configure the underlying LLM:
 
 - **Model:** Choose the reasoning engine (e.g., Thunder Emotion Lite) powering the agent.
+- **Voice:** Click the voice selector button on the right side of the agent model field to open the voice picker. You can preview voices and select the one your agent should use.
 - **Temperature:** Adjust the creativity of the responses. Lower values produce strict, predictable outputs; higher values allow for more dynamic conversation.
 - **Structured Output:** Toggle this to force the model to return strict, schema-compliant responses (useful for data extraction).
-- **Voice:** Click the voice selector button on the right side of the agent model field to open the voice picker. You can preview voices and select the one your agent should use.
 
-![AI Provider Settings](/images/agent-provider-settings.png)
+<Frame>
+  <img src="/images/agent-provider-settings.png" alt="AI Provider Settings" />
+</Frame>
 
 ### Welcome Message & Turn-Taking
 
@@ -37,48 +47,48 @@ At the bottom of the prompt editor, configure how the call begins:
 - **Welcome Message:** Define the exact phrase the AI should say when the call connects.
 - **Start Speaker:** Choose whether the **User speaks first** or the **AI starts speaking after silence**.
 
+---
+
 ## Agent Configuration
 
 The right sidebar contains granular controls for your agent's capabilities and telephony behavior.
 
-### Functions
+<AccordionGroup>
+  <Accordion title="Functions" icon="code">
+    Equip your agent with custom tools. This allows the AI to fetch real-time data, trigger webhooks, or interact with external APIs during a conversation.
+  </Accordion>
 
-Equip your agent with custom tools. This allows the AI to fetch real-time data, trigger webhooks, or interact with external APIs during a conversation.
+  <Accordion title="Calendars" icon="calendar">
+    Enable scheduling capabilities. You can link your agent to a specific **Lead Connector (GoHighLevel)** calendar or a **Cal.com** event type, allowing the AI to negotiate times and book appointments automatically.
+    <Frame><img src="/images/agent-calendars.png" alt="Calendar Integrations" /></Frame>
+  </Accordion>
 
-### Calendars
+  <Accordion title="Speech Settings" icon="waveform-lines">
+    Fine-tune the conversational dynamics and audio profile:
+    - **Background Sound:** Add ambient noise (e.g., office hum, static) for realism.
+    - **Responsiveness & Interruption Sensitivity:** Control how quickly the AI replies and how easily the user can interrupt it.
+    - **Enable Backchanneling:** Allow the AI to use filler words (e.g., "Mhm", "Yeah") while listening.
+    - **Enable Speech Normalization:** Convert complex numbers and dates into natural spoken forms.
+    - **Reminder Message Frequency:** Configure how often the AI prompts a silent user.
+    <Frame><img src="/images/agent-speech-settings.png" alt="Speech Settings" /></Frame>
+  </Accordion>
 
-Enable scheduling capabilities. You can link your agent to a specific **Lead Connector (GoHighLevel)** calendar or a **Cal.com** event type, allowing the AI to negotiate times and book appointments automatically.
+  <Accordion title="Call Settings" icon="phone">
+    Configure the telephony rules for this specific agent:
+    - **Voicemail Detection:** Automatically detect and leave a predefined message if a machine answers.
+    - **End call on silence:** Disconnect automatically after a prolonged period of dead air.
+    - **Max duration:** Set a hard limit on call length.
+    - **Post-call data extraction:** Automatically summarize the call and extract key data points.
+    <Frame><img src="/images/agent-call-settings.png" alt="Call Settings" /></Frame>
+  </Accordion>
 
-![Calendar Integrations](/images/agent-calendars.png)
+  <Accordion title="Webhook Settings" icon="webhook">
+    Add webhook URLs to receive automatic event notifications (like transcripts, summaries, and extraction data) the moment a call concludes.
+    <Frame><img src="/images/agent-webhook-settings.png" alt="Webhook Settings" /></Frame>
+  </Accordion>
+</AccordionGroup>
 
-### Speech Settings
-
-Fine-tune the conversational dynamics and audio profile:
-
-- **Background Sound:** Add ambient noise (e.g., office hum, static) for realism.
-- **Responsiveness & Interruption Sensitivity:** Control how quickly the AI replies and how easily the user can interrupt it.
-- **Enable Backchanneling:** Allow the AI to use filler words (e.g., "Mhm", "Yeah") while listening.
-- **Enable Speech Normalization:** Convert complex numbers and dates into natural spoken forms.
-- **Reminder Message Frequency:** Configure how often the AI prompts a silent user.
-
-![Speech Settings](/images/agent-speech-settings.png)
-
-### Call Settings
-
-Configure the telephony rules for this specific agent:
-
-- **Voicemail Detection:** Automatically detect and leave a predefined message if a machine answers.
-- **End call on silence:** Disconnect automatically after a prolonged period of dead air.
-- **Max duration:** Set a hard limit on call length.
-- **Post-call data extraction:** Automatically summarize the call and extract key data points.
-
-![Call Settings](/images/agent-call-settings.png)
-
-### Webhook Settings
-
-Add webhook URLs to receive automatic event notifications (like transcripts, summaries, and extraction data) the moment a call concludes.
-
-![Webhook Settings](/images/agent-webhook-settings.png)
+---
 
 ## Testing Your Agent
 
@@ -92,7 +102,9 @@ Test the agent directly through your browser's microphone and speakers.
 - Inject custom **Metadata (JSON)** to simulate data passing.
 - Click **Start Web Call** to connect.
 
-![Test Web Call Interface](/images/agent-test-web.png)
+<Frame>
+  <img src="/images/agent-test-web.png" alt="Test Web Call Interface" />
+</Frame>
 
 ### Phone Call
 
@@ -102,11 +114,21 @@ Test how the agent sounds over an actual cellular or VoIP network.
 - **To Number:** Enter your personal cell phone number.
 - Click **Start Phone Call** to initiate an outbound call to your device.
 
-![Test Phone Call Interface](/images/agent-test-phone.png)
+<Frame>
+  <img src="/images/agent-test-phone.png" alt="Test Phone Call Interface" />
+</Frame>
+
+---
 
 ## API Reference
 
 Once your agent is configured and tested, you can deploy it programmatically.
 
-- [Create Agent API](/api-reference/agents/create): Create new agents programmatically via the REST API.
-- [Manage Agents](/api-reference/agents/update): Update prompts, settings, and functions for existing agents.
+<CardGroup cols={2}>
+  <Card title="Create Agent API" icon="plus" href="/api-reference/agents/create">
+    Create new agents programmatically via the REST API.
+  </Card>
+  <Card title="Manage Agents" icon="gear" href="/api-reference/agents/update">
+    Update prompts, settings, and functions for existing agents.
+  </Card>
+</CardGroup>

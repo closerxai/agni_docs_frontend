@@ -236,7 +236,7 @@
       {
         "lang": "curl",
         "label": "cURL",
-        "source": "curl -X POST \"https://api.ravan.ai/api/v1/create/telephony\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"type\": \"twilio\",\n      \"owner_type\": \"organization\",\n      \"friendly_name\": \"My Twilio Account\",\n      \"client_id\": \"ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\",\n      \"client_secret\": \"your_auth_token_here\"\n    }'"
+        "source": "curl -X POST \"https://api.ravan.ai/api/v1/phone-numbers/create/telephony\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"type\": \"twilio\",\n      \"owner_type\": \"organization\",\n      \"friendly_name\": \"My Twilio Account\",\n      \"client_id\": \"ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\",\n      \"client_secret\": \"your_auth_token_here\"\n    }'"
       }
     ],
     "responseExamples": {
@@ -374,7 +374,7 @@
       {
         "lang": "curl",
         "label": "cURL",
-        "source": "curl -X GET \"https://api.ravan.ai/api/v1/twilio-owned-numbers\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
+        "source": "curl -X GET \"https://api.ravan.ai/api/v1/phone-numbers/twilio-owned-numbers\" \\\n    -H \"Authorization: Bearer <token>\" \\\n    -H \"Content-Type: application/json\""
       }
     ],
     "responseExamples": {

@@ -584,7 +584,7 @@
         }
       }
     },
-    "/api/v1/create/telephony/": {
+    "/api/v1/phone-numbers/create/telephony/": {
       "post": {
         "tags": ["PhoneService"],
         "summary": "Create Telephony Type",
@@ -609,7 +609,7 @@
         }
       }
     },
-    "/api/v1/twilio-owned-numbers/": {
+    "/api/v1/phone-numbers/twilio-owned-numbers/": {
       "get": {
         "tags": ["PhoneService"],
         "summary": "List Twilio Owned Numbers",

@@ -3,57 +3,114 @@ title: "Dashboard Overview"
 description: "Navigate your Agni workspace and monitor real-time platform metrics."
 ---
 
-Once you log in, you are greeted by the Agni Dashboard. This is your central command center for monitoring agent performance, tracking usage, and managing your voice AI infrastructure.
+Once you log in, you are greeted by the Agni Dashboard. This is your central command center for monitoring agent performance, tracking usage, visualizing live traffic, and navigating your voice AI infrastructure.
 
 <Frame>
   <img src="/images/dashboard-overview.png" alt="Agni Dashboard Overview" />
 </Frame>
 
-## Key Metrics & KPIs
+---
 
-At the top of your dashboard, you can quickly assess the health and performance of your voice agents in real time:
+## At-a-Glance Metrics
 
-- **Total Minutes:** The aggregate number of minutes consumed by all your agents.
-- **Active Agents:** The total number of agents currently deployed and active.
-- **Live Calls:** The number of concurrent calls happening right now.
-- **Cost:** Your total accrued usage cost (based on the flat $0.07/min rate).
-- **Success Rate & Conversion:** Goal completion metrics for your active campaigns.
-
-## Quick Actions
-
-The **Quick Actions** panel provides one-click access to the most common workflows:
+At the top of your dashboard, below your personalized monthly summary, you can quickly assess the high-level health and performance of your voice agents in real time. 
 
 <CardGroup cols={3}>
-  <Card title="Create Agent" icon="robot" href="/api-reference/agents/create">
-    Build and configure a new voice AI assistant.
+  <Card title="Total Minutes" icon="clock">
+    The aggregate number of minutes consumed by all your agents.
   </Card>
-  <Card title="Start Campaign" icon="bolt">
-    Launch a new outbound calling campaign.
+  <Card title="Active Agents" icon="users-robot">
+    The total number of agents currently deployed and active.
   </Card>
-  <Card title="Add Number" icon="phone" href="/api-reference/telephony/buy-number">
-    Provision or import a new phone number.
+  <Card title="Live Calls" icon="phone-volume">
+    The number of concurrent calls happening right now (marked with a LIVE indicator).
+  </Card>
+  <Card title="Cost" icon="money-bill-wave">
+    Your total accrued usage cost, calculated at the flat $0.07/min rate.
+  </Card>
+  <Card title="Success Rate" icon="bullseye">
+    The overall percentage of calls that reached a successful objective.
+  </Card>
+  <Card title="Conversion" icon="chart-line-up">
+    Your overall conversion rate for targeted outcomes.
   </Card>
 </CardGroup>
 
-## Navigation Menu
+---
 
-The left sidebar is divided into three core sections to help you navigate your workspace:
+## Live Visualizations & Analytics
 
-### Platform
-- **Dashboard:** Your high-level overview and metrics.
-- **Analytics:** Deep dive into usage, latency, and call outcomes.
-- **Calls:** Review call logs, transcripts, and recordings.
-- **Appointments:** Manage calendar events synced via Cal.com or GoHighLevel.
-- **Inbound Calls:** Configure routing for incoming traffic.
+The center of the dashboard provides a suite of interactive widgets to help you monitor system load and campaign outcomes dynamically.
 
-### Management
-- **Agents:** Create, update, and deploy your AI agents.
-- **Tools:** Build custom functions and webhooks for your agents to execute during calls.
+<CardGroup cols={2}>
+  <Card title="Global Reach" icon="globe">
+    A live 3D visualization showing exactly where in the world your active calls are currently taking place.
+  </Card>
+  <Card title="Usage Trends" icon="chart-line">
+    Track your minute consumption and total call volume over a rolling 30-day period. Toggle between **Day**, **Week**, or **Month** views.
+  </Card>
+  <Card title="Call Outcomes" icon="chart-pie">
+    A trailing 14-day breakdown plotting your **Successful** versus **Failed** calls to help you easily spot routing or prompt issues.
+  </Card>
+  <Card title="Today's Activity" icon="chart-area">
+    An hourly breakdown comparing your **Inbound** versus **Outbound** traffic for the current day.
+  </Card>
+  <Card title="Active Agents" icon="robot">
+    A quick view of which agents are currently handling live calls, with a shortcut to immediately create a new agent.
+  </Card>
+  <Card title="Top Regions" icon="map-location-dot">
+    A demographic breakdown counting the total number of calls per Country and Region.
+  </Card>
+</CardGroup>
 
-### Operations
-- **Phone Numbers:** Buy, import, and release phone numbers.
-- **Billing:** Manage your subscription and view invoices.
+---
 
-## Recent Activity & Usage Trends
+## Quick Actions
 
-The dashboard also provides a **Usage Trends** chart to visualize minute consumption over the week, month, or year. Below that, the **Recent Activity** log tracks organizational events (such as logins, account registrations, and agent updates) for security and auditing purposes.
+Located at the bottom of the dashboard, the **Quick Actions** panel provides one-click access to your most common operational workflows:
+
+<CardGroup cols={4}>
+  <Card title="Create Agent" icon="robot" href="/api-reference/agents/create">
+    Build a new AI assistant.
+  </Card>
+  <Card title="New Campaign" icon="bolt">
+    Launch outbound calls.
+  </Card>
+  <Card title="Add Contact" icon="user-plus">
+    Import or create users.
+  </Card>
+  <Card title="Add Number" icon="phone" href="/api-reference/telephony/buy-number">
+    Provision a number.
+  </Card>
+</CardGroup>
+
+---
+
+## Workspace Navigation
+
+The left sidebar is your primary map for navigating your Agni workspace. It is divided into three core sections:
+
+<AccordionGroup>
+  <Accordion title="Platform" icon="layer-group">
+    Your daily operational views and data tracking.
+    - **Dashboard:** Your high-level overview and metrics.
+    - **Analytics:** Deep dive into usage, latency, and call outcomes.
+    - **Calls:** Review call logs, transcripts, and recordings.
+    - **Appointments:** Manage calendar events synced via Cal.com or GoHighLevel.
+    - **Inbound Calls:** Configure routing for incoming traffic.
+  </Accordion>
+
+  <Accordion title="Management" icon="sliders">
+    The core configuration of your voice AI brains.
+    - **Campaigns:** Manage and monitor active outbound campaigns.
+    - **Agents:** Create, update, and deploy your AI agents.
+    - **Tools:** Build custom functions and webhooks.
+    - **Contacts:** Manage your CRM and address book.
+  </Accordion>
+
+  <Accordion title="Operations" icon="briefcase">
+    The backend infrastructure of your workspace.
+    - **Phone Numbers:** Buy, import, and release phone numbers.
+    - **Billing:** Manage your subscription and view invoices.
+  </Accordion>
+</AccordionGroup>

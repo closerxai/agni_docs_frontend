@@ -9,37 +9,71 @@ The **Analytics** page provides a deep dive into the operational health and effe
   <img src="/images/analytics-overview.png" alt="Agni Analytics Dashboard" />
 </Frame>
 
+---
+
 ## Performance KPIs
 
-At the top of the Analytics page, four high-level metrics give you an immediate snapshot of your platform's performance based on your selected date range:
+At the top of the Analytics dashboard, six high-level metrics give you an immediate snapshot of your platform's performance based on your selected date range:
 
-<CardGroup cols={2}>
+<CardGroup cols={3}>
   <Card title="Total Calls" icon="phone">
-    The absolute volume of inbound and outbound calls processed by your infrastructure.
+    The absolute volume of inbound and outbound calls processed.
   </Card>
-  <Card title="Avg. Duration" icon="clock">
-    The average length of your real-time conversations.
+  <Card title="Total Minutes" icon="stopwatch">
+    The aggregate number of voice minutes consumed.
   </Card>
   <Card title="Success Rate" icon="bullseye">
-    The percentage of calls where the agent successfully completed its configured objective (e.g., booking an appointment or resolving a query).
+    The percentage of calls where the agent successfully completed its objective.
   </Card>
-  <Card title="Active Agents" icon="users">
-    The number of unique AI agents that fielded calls during the selected period.
+  <Card title="Avg Duration" icon="clock">
+    The average length of your real-time conversations.
+  </Card>
+  <Card title="Active Agents" icon="users-robot">
+    The number of unique AI agents that fielded calls during the period.
+  </Card>
+  <Card title="Sentiment" icon="face-smile">
+    The overall average sentiment (positive/neutral/negative) of your callers.
   </Card>
 </CardGroup>
 
-## Visualization & Trends
+---
 
-Agni provides four interactive charts to help you visualize data trends and optimize your agents:
+## Visualizations & Trends
 
-* **Usage Trend:** Tracks total voice minutes consumed over weekly or monthly intervals. Because Agni operates on a flat $0.07/min pricing model, this chart directly correlates to your platform spend.
-* **Call Volume:** Visualizes the frequency of calls over your chosen time period, helping you identify peak traffic hours and concurrency demands.
-* **Outcomes:** A comparative breakdown of successful versus failed calls, allowing you to quickly spot routing issues or prompt inefficiencies.
-* **Agent Performance:** Compares success rates across different agent deployments. Use this to A/B test system prompts, voices, or tool configurations.
+Agni provides a powerful suite of interactive charts to help you visualize data trends and optimize your agents' performance.
+
+<CardGroup cols={2}>
+  <Card title="Usage Trend" icon="chart-line">
+    Tracks calls and minutes over time. Because Agni operates on a usage-based pricing model, this chart directly correlates to your platform spend and growth.
+  </Card>
+  <Card title="Call Outcomes" icon="chart-pie">
+    A comparative breakdown plotting **Successful** versus **Failed** calls, allowing you to quickly spot routing issues or prompt inefficiencies over time.
+  </Card>
+  <Card title="Sentiment Analysis" icon="face-meh">
+    An AI-powered breakdown of caller sentiment based on conversational analytics. *(Note: This feature is rolling out soon).*
+  </Card>
+  <Card title="Agent Performance" icon="ranking-star">
+    Compares success rates across different agent deployments. Use this to A/B test system prompts, voices, or tool configurations.
+  </Card>
+  <Card title="Call Duration" icon="wave-square">
+    Plots your average call duration in seconds over time, helping you measure agent efficiency and conversation length.
+  </Card>
+  <Card title="Peak Hours" icon="chart-area">
+    Visualizes call volume by the hour of the day, split between **Business hours** and **Off hours** to help you understand concurrency demands.
+  </Card>
+</CardGroup>
+
+---
 
 ## Filtering and Exporting Data
 
-In the top right corner of the dashboard, you can control the scope of your analytics:
+In the top right corner of the dashboard, you can control the scope of your analytics to generate custom reports:
 
-1. **Date Range Picker:** Filter your data by predefined ranges (e.g., *Last 30 days*, *Last 7 days*) or select a custom timeframe.
-2. **Export:** Click the **Export** button to download your current analytics view as a CSV file for ingestion into your CRM, billing software, or internal reporting tools.
+<Steps>
+  <Step title="Filter by Date" icon="calendar-days">
+    Use the quick-select pills (**7 Days**, **30 Days**, **90 Days**) or the date picker to instantly recalculate your dashboard metrics for a specific timeframe.
+  </Step>
+  <Step title="Export to CSV" icon="download">
+    Click the **Export** button to download your current analytics view. You can easily ingest this data into your CRM, billing software, or internal reporting tools.
+  </Step>
+</Steps>

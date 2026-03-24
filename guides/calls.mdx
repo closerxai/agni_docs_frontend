@@ -9,6 +9,8 @@ The **Call Sessions** page serves as your centralized ledger for all voice inter
   <img src="/images/call-sessions-overview.png" alt="Agni Call Sessions Page" />
 </Frame>
 
+---
+
 ## Session Metrics
 
 At the top of the dashboard, a quick-glance summary provides the real-time status of your call volume:
@@ -28,13 +30,25 @@ At the top of the dashboard, a quick-glance summary provides the real-time statu
   </Card>
 </CardGroup>
 
+---
+
 ## Call Channels
 
 Agni consolidates traffic from multiple channels into a single view. You can filter the main table using the quick tabs above the list:
 
-- **Web:** Calls initiated directly through your embedded Agni web widget.
-- **Inbound:** Phone calls received by your provisioned Telephony numbers.
-- **Outbound:** Phone calls initiated by your agents (e.g., via campaigns or API triggers).
+<CardGroup cols={3}>
+  <Card title="Web" icon="globe">
+    Calls initiated directly through your embedded Agni web widget.
+  </Card>
+  <Card title="Inbound" icon="arrow-down-to-line">
+    Phone calls received by your provisioned Telephony numbers.
+  </Card>
+  <Card title="Outbound" icon="arrow-up-from-line">
+    Phone calls initiated by your agents (e.g., via campaigns or API triggers).
+  </Card>
+</CardGroup>
+
+---
 
 ## Call Data & Insights
 
@@ -48,10 +62,20 @@ For every session, the table captures granular data to help you evaluate agent p
 - **Agent:** The specific AI agent that handled the interaction.
 - **Time:** The timestamp of when the call was initiated.
 
+---
+
 ## Search, Filter, and Export
 
 To manage large volumes of call data, utilize the toolbar located above the table:
 
-1. **Search:** Look up specific calls by phone number, agent name, or session ID.
-2. **Date Range & Filters:** Narrow down your view by selecting specific timeframes (e.g., *Today*, *Last 7 days*) or applying advanced filters to isolate calls by status or sentiment.
-3. **Export:** Click the **Export** button in the top right to download your filtered call logs as a CSV for external analysis or CRM integration.
+<Steps>
+  <Step title="Search" icon="magnifying-glass">
+    Look up specific calls by phone number, agent name, or session ID.
+  </Step>
+  <Step title="Date Range & Filters" icon="filter">
+    Narrow down your view by selecting specific timeframes (e.g., *Today*, *Last 7 days*) or applying advanced filters to isolate calls by status or sentiment.
+  </Step>
+  <Step title="Export" icon="download">
+    Click the **Export** button in the top right to download your filtered call logs as a CSV for external analysis or CRM integration.
+  </Step>
+</Steps>

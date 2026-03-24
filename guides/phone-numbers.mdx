@@ -3,52 +3,60 @@ title: "Phone Numbers"
 description: "Provision, manage, and configure the telephony infrastructure for your AI agents."
 ---
 
-The **Phone Numbers** page is your control center for telephony. Before you can buy numbers or route inbound and outbound calls, you must configure your underlying telephony provider. Currently, Agni supports Twilio.
+The **Phone Numbers** page is your control center for telephony. Before you can buy numbers or route inbound and outbound calls, you must configure your underlying telephony provider. 
+
+Currently, Agni natively supports **Twilio**. You will see an option for **Custom Provider** in the left menu, but please note this feature is currently in active development and will be available soon.
 
 <Frame>
   <img src="/images/telephony-strategy.png" alt="Choose Your Account Strategy" />
 </Frame>
 
+---
+
 ## First-Time Setup: Choose Your Strategy
 
-When you access the Phone Numbers tab for the first time, you must choose how you want to manage your Twilio infrastructure. 
+When you access the Phone Numbers tab for the first time and select **Twilio**, you must choose how you want to manage your telephony infrastructure. 
 
 ### Path A: Your Own Account (BYOT)
 Choose this option if you already have a Twilio account and want full ownership, compliance control, and direct billing from Twilio.
 
 <Steps>
-  <Step title="Select Your Own Account">
+  <Step title="Select Your Own Account" icon="user-gear">
     Click **Choose this option** under the "Your Own Account" card. 
   </Step>
-  <Step title="Confirm Selection">
-    A confirmation modal will appear. Click **Continue Setup** to lock in your configuration.
+  <Step title="Confirm Selection" icon="check-double">
+    A **"Perfect Choice!"** confirmation modal will appear. Click **Continue Setup** to lock in your configuration.
     <Frame><img src="/images/telephony-byot-confirm.png" alt="Confirm BYOT Selection" /></Frame>
   </Step>
-  <Step title="Enter Credentials">
+  <Step title="Enter Credentials" icon="key">
     Provide a **Friendly Name** for your integration, along with your Twilio **Account SID** and **Auth Token**. These can be found in your Twilio console. Click **Connect Account**.
     <Frame><img src="/images/telephony-byot-credentials.png" alt="Enter Twilio Credentials" /></Frame>
   </Step>
 </Steps>
 
 ### Path B: Managed Account
-Choose this option if you want a zero-configuration experience. Agni will manage the underlying infrastructure, and telephony usage will be deducted from your Agni credit balance.
+Choose this option if you want a zero-configuration experience. Agni will manage the underlying infrastructure, and telephony usage will be deducted directly from your Agni credit balance.
 
 <Steps>
-  <Step title="Select Managed Account">
+  <Step title="Select Managed Account" icon="server">
     Click **Choose this option** under the "Managed Account" card.
   </Step>
-  <Step title="Accept Terms and Conditions">
-    Because Agni handles the billing and compliance for Managed Accounts, you must review and accept the telephony terms, including the strict 28-day renewal policy and no-refund policy.
+  <Step title="Accept Terms and Conditions" icon="file-signature">
+    Because Agni handles the billing and compliance for Managed Accounts, you must review and accept the strict telephony terms.
+    
+    <Accordion icon="scale-balanced" title="View Terms & Conditions Summary">
+      - **Service Selection:** The Managed Twilio selection is permanent and cannot be changed without administrative approval.
+      - **Credit-Based Subscription:** Services operate on prepaid credits. Unused credits expire at the end of each billing cycle.
+      - **Phone Number Renewal:** Phone numbers must be renewed every 28 days. Failure to renew within the 48-hour window will result in permanent number release.
+      - **Strict No Refund Policy:** All purchases are final. No refunds are issued for unused credits, missed renewals, service interruptions, or account termination.
+    </Accordion>
+
     <Frame><img src="/images/telephony-managed-terms.png" alt="Telephony Terms and Conditions" /></Frame>
   </Step>
-  <Step title="Assign Friendly Name">
-    Give your managed connection a **Friendly Name** to identify it in your workspace, then finalize the setup.
+  <Step title="Assign Friendly Name" icon="tag">
+    Give your managed connection a **Friendly Name** to identify it in your workspace, then click **Connect Account** to finalize the setup.
   </Step>
 </Steps>
-
-<Note>
-  **Important:** The Managed Twilio selection is permanent for your workspace and cannot be changed later without administrative approval.
-</Note>
 
 ---
 
@@ -61,20 +69,31 @@ Once your account strategy is configured, you will unlock the main Phone Numbers
 </Frame>
 
 ### Buy a New Number
-Use the left panel to search for and purchase new phone numbers:
-1. Select your desired **Country** from the dropdown.
-2. Use the search bar to filter for specific area codes or patterns.
-3. Review the pricing (Outbound/Inbound per-minute rates and the flat monthly fee).
-4. Select a number and click **Buy Number** to provision it immediately to your workspace.
+Use the left panel to search for and purchase new phone numbers directly into your workspace:
+
+<Steps>
+  <Step title="Select Country" icon="globe">
+    Select your desired **Country** from the dropdown menu to load available inventory.
+  </Step>
+  <Step title="Search & Filter" icon="magnifying-glass">
+    Use the search bar to filter for specific area codes, prefixes, or vanity patterns.
+  </Step>
+  <Step title="Review Pricing" icon="money-bill">
+    Review the costs associated with the number (Outbound/Inbound per-minute rates and the flat monthly renewal fee).
+  </Step>
+  <Step title="Purchase" icon="cart-shopping">
+    Select a number and click **Buy Number** to provision it immediately to your workspace.
+  </Step>
+</Steps>
 
 ### Owned Numbers
-The right panel displays your active inventory. Any number listed here is ready to be used in your [Inbound Calls](/guides/inbound-calls) dispatch rules or as a Caller ID for outbound campaigns.
+The right panel displays your active inventory. Any number listed here is immediately ready to be used in your [Inbound Calls](/guides/inbound-calls) dispatch rules or as a Caller ID for outbound campaigns.
 
 ---
 
 ## API Reference
 
-Agni's Telephony API allows you to automate number provisioning and management.
+Agni's Telephony API allows you to automate number provisioning and management directly from your backend.
 
 <CardGroup cols={2}>
   <Card title="List Available Numbers" icon="magnifying-glass" href="/api-reference/telephony/list-available-numbers">
@@ -87,6 +106,6 @@ Agni's Telephony API allows you to automate number provisioning and management.
     Retrieve the active inventory of phone numbers you own.
   </Card>
   <Card title="Release Number" icon="trash" href="/api-reference/telephony/release-number">
-    Release a phone number back to the provider.
+    Release a phone number back to the provider to stop monthly billing.
   </Card>
 </CardGroup>

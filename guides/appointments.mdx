@@ -23,20 +23,38 @@ Agni natively supports two major scheduling platforms. You can toggle between th
 </CardGroup>
 
 <Note>
-  **Connection Required:** If you see a "Failed to load appointments" error, you must first authenticate and connect your GHL or Cal.com account in your workspace settings.
+  **Connection Required:** If you see a "Failed to load appointments" error, you must first authenticate and connect your GHL or Cal.com account in your [Workspace Settings](/guides/settings).
 </Note>
+
+---
 
 ## Calendar Controls
 
 To help you manage high volumes of automated bookings, the dashboard provides several organizational tools:
 
-### Views & Navigation
-- **View Toggles:** Switch between **Month**, **Week**, and **Day** views to adjust the density of your calendar timeline.
-- **Refresh:** Click the **Refresh** button in the top right to manually pull the latest webhook data from your scheduling providers.
+<CardGroup cols={3}>
+  <Card title="Views & Navigation" icon="calendar-days">
+    Switch between **Month**, **Week**, and **Day** views to adjust timeline density. Click **Refresh** to manually pull the latest webhook data.
+  </Card>
+  <Card title="Search & Filter" icon="filter-list">
+    Instantly find bookings using the **Attendee Search** bar, or quickly isolate cancelled meetings to review associated call logs.
+  </Card>
+  <Card title="Manual Actions" icon="calendar-plus">
+    While agents handle automation, you can click **+ New Appointment** to manually reserve a slot directly from the Agni dashboard.
+  </Card>
+</CardGroup>
 
-### Search & Filtering
-- **Attendee Search:** Use the search bar in the left sidebar to instantly find bookings by the caller's name.
-- **Status Filters:** Quickly isolate cancelled or rescheduled meetings to review the associated call logs and understand why the user changed their mind.
+---
 
-### Manual Actions
-While agents handle the automation, you can still manually intervene. Click **+ New Appointment** in the top right corner to manually reserve a slot on the connected calendar directly from the Agni dashboard.
+## API Reference
+
+Manage your calendar integrations and appointments programmatically via the Agni REST API.
+
+<CardGroup cols={2}>
+  <Card title="GHL Integration API" icon="robot" href="/api-reference/ghl/list-appointments">
+    List appointments, lookup calendars, and manage GoHighLevel OAuth.
+  </Card>
+  <Card title="Cal.com Integration API" icon="calendar" href="/api-reference/calcom/list-appointments">
+    List Cal.com appointments, lookup event types, and manage connections.
+  </Card>
+</CardGroup>
