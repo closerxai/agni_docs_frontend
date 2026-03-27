@@ -5,11 +5,35 @@
 
 // Suppress Mintlify errors
 window.addEventListener("unhandledrejection", function (e) {
-  if (e.reason && e.reason.message && /Connection closed|WebSocket/i.test(e.reason.message)) e.preventDefault();
+  if (e.reason && e.reason.message && /Connection closed|WebSocket|socket\.io|transport/i.test(e.reason.message)) e.preventDefault();
 });
 window.addEventListener("error", function (e) {
-  if (e.message && /Connection closed|WebSocket/i.test(e.message)) e.preventDefault();
+  if (e.message && /Connection closed|WebSocket|socket\.io|transport/i.test(e.message)) e.preventDefault();
 });
+
+// Block socket.io requests entirely by intercepting fetch/XHR
+(function () {
+  var origFetch = window.fetch;
+  window.fetch = function (url) {
+    if (typeof url === "string" && url.indexOf("socket.io") !== -1) {
+      return Promise.reject(new Error("blocked"));
+    }
+    return origFetch.apply(this, arguments);
+  };
+  var origOpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function (method, url) {
+    if (typeof url === "string" && url.indexOf("socket.io") !== -1) {
+      this._blocked = true;
+      return;
+    }
+    return origOpen.apply(this, arguments);
+  };
+  var origSend = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.send = function () {
+    if (this._blocked) return;
+    return origSend.apply(this, arguments);
+  };
+})();
 
 // Block Mintlify Ctrl+K
 document.addEventListener("keydown", function (e) {
