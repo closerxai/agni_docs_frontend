@@ -1,0 +1,55 @@
+# Agni by Ravan.ai - Documentation for LLMs
+
+> Agni is the world's most natural voice AI platform. Real emotion. Real turn-taking. Real conversation.
+
+## About
+- Product: Agni Voice AI Platform
+- Company: Ravan.ai
+- Website: https://ravan.ai
+- API Base URL: https://api.ravan.ai
+- Documentation: https://agni-docs-frontend.vercel.app
+
+## What Agni Does
+Agni provides real-time voice AI agents that can handle phone calls with human-like emotion, turn-taking, and conversation flow. Used by 2,000+ businesses for customer support, appointment booking, outbound sales, lead qualification, and after-hours answering.
+
+## Key Features
+- Sub-300ms latency voice conversations
+- Model-agnostic runtime (routes across LLM providers)
+- 50+ language support
+- Telephony integration (Twilio, SIP)
+- Calendar integrations (GoHighLevel, Cal.com)
+- Custom tools and function calling
+- Post-call analysis and sentiment tracking
+- RAG Knowledge Base for agent context
+- Webhook notifications
+- $0.07/minute flat pricing
+
+## API Authentication
+All API requests require an X-Api-Key header. Keys are managed at https://app.ravan.ai under Settings > API Keys.
+
+## Documentation Structure
+- /guides/authentication - Account setup and API key generation
+- /guides/agents - Creating and configuring voice AI agents
+- /guides/tools - Adding functions (end call, call transfer)
+- /guides/calls - Call session monitoring and transcripts
+- /guides/appointments - Calendar booking integration
+- /guides/dashboard - Workspace metrics and analytics
+- /guides/analytics - Performance KPIs and reporting
+- /guides/inbound-calls - Inbound call routing and dispatch
+- /guides/phone-numbers - Telephony setup (BYOT or managed)
+- /guides/billing - Pricing, credits, and cost optimization
+- /guides/settings - Organization, security, and integrations
+- /api-reference/introduction - REST API overview
+- /api-reference/agents/* - Agent CRUD endpoints
+- /api-reference/tools/* - Tool CRUD endpoints
+- /api-reference/contacts/* - Contact management endpoints
+- /api-reference/telephony/* - Phone number management
+- /api-reference/rag/* - Knowledge base endpoints
+- /api-reference/webhooks/* - Webhook configuration
+- /api-reference/calcom/* - Cal.com integration
+- /api-reference/ghl/* - GoHighLevel integration
+- /api-reference/health/* - Health check endpoints
+
+## Contact
+- Support: support@ravan.ai
+- Demo: https://agni.ravan.ai

@@ -1,0 +1,144 @@
+# Agni by Ravan.ai - Full Documentation for LLMs
+
+> Agni is the world's most natural voice AI platform by Ravan.ai. Real emotion. Real turn-taking. Real conversation. Not a chatbot. Not a script. Just talk.
+
+## Platform Overview
+
+Agni provides enterprise-grade real-time voice AI agents. Key capabilities:
+
+### Voice AI Engine
+- Sub-300ms end-to-end latency for human-speed conversations
+- Real emotion and natural turn-taking (not clip stitching)
+- Model-agnostic runtime that dynamically routes across providers
+- 50+ language support with native fluency
+- Configurable voice profiles, temperature, and speaking style
+- Background ambient sounds (office, cafe)
+- Voicemail detection and automated messages
+
+### Telephony
+- Twilio integration for phone numbers
+- Two strategies: BYOT (Bring Your Own Twilio) or Managed
+- Inbound call routing with dispatch rules
+- Outbound calling capabilities
+- SIP address support for call transfers
+- Phone number pricing: ~$1.15/month, inbound ~$0.0085/min, outbound ~$0.0945/min
+
+### Agent Configuration
+- System prompt with dynamic variables ({{variable_name}})
+- LLM model selection (gpt-4o, gpt-4o-mini, etc.)
+- Voice profile selection
+- Temperature control (0.0 - 1.0)
+- Welcome message and turn-taking config
+- Reminder triggers for silence detection
+- Max call duration limits
+- Post-call analysis with custom prompts
+- Structured output extraction
+
+### Integrations
+- GoHighLevel (GHL): Calendar, appointments, OAuth
+- Cal.com: Event types, appointment booking, OAuth
+- Webhooks: After-call events, status updates
+- RAG Knowledge Base: Document upload, query, discovery
+
+### API
+- REST API at https://api.ravan.ai
+- Authentication: X-Api-Key header
+- Response envelope: { success, message, data, meta }
+- Pagination: limit & offset parameters
+- Error codes: 200, 400, 401, 404, 422, 500
+
+### API Endpoints
+
+#### Agents
+- POST /api/v1/agents/ - Create agent
+- GET /api/v1/agents/{id} - Get agent
+- GET /api/v1/agents/ - List agents
+- PUT /api/v1/agents/{id} - Update agent
+- PATCH /api/v1/agents/{id}/status - Update status
+- DELETE /api/v1/agents/{id} - Delete agent
+
+#### Tools
+- POST /api/v1/tools/ - Create tool
+- GET /api/v1/tools/{id} - Get tool
+- GET /api/v1/tools/ - List tools
+- PUT /api/v1/tools/{id} - Update tool
+- DELETE /api/v1/tools/{id} - Delete tool
+
+#### Contacts
+- POST /api/v1/contacts/ - Create contact
+- GET /api/v1/contacts/{id} - Get contact
+- GET /api/v1/contacts/ - List contacts
+- PUT /api/v1/contacts/{id} - Update contact
+- DELETE /api/v1/contacts/{id} - Delete contact
+- POST /api/v1/contacts/bulk-delete - Bulk delete
+- GET /api/v1/contacts/{id}/detail - Get detail
+- GET /api/v1/contacts/{id}/calls - Get calls
+- GET /api/v1/contacts/{id}/call-stats - Get call stats
+- GET /api/v1/contacts/{id}/activities - Get activities
+- GET /api/v1/contacts/{id}/campaigns - Get campaigns
+- POST /api/v1/contacts/{id}/notes - Create note
+- GET /api/v1/contacts/{id}/notes - List notes
+
+#### Telephony
+- GET /api/v1/telephony/available-numbers - List available
+- POST /api/v1/telephony/buy-number - Buy number
+- POST /api/v1/telephony/release-number - Release number
+- GET /api/v1/telephony/purchased-numbers - List purchased
+- POST /api/v1/telephony/import-number - Import number
+- GET /api/v1/telephony/twilio-numbers - List Twilio numbers
+
+#### RAG Knowledge Base
+- POST /api/v1/rag/documents - Upsert document
+- GET /api/v1/rag/documents/{id} - Get document
+- GET /api/v1/rag/documents - List documents
+- GET /api/v1/rag/knowledgebases - List knowledge bases
+- POST /api/v1/rag/query - Query knowledge base
+- POST /api/v1/rag/discover - Discover content
+- POST /api/v1/rag/refresh - Refresh index
+- POST /api/v1/rag/exclusions - Manage exclusions
+- GET /api/v1/rag/exclusions - List exclusions
+
+#### Widget Settings
+- POST /api/v1/widget-settings/ - Create
+- GET /api/v1/widget-settings/{id} - Get
+- GET /api/v1/widget-settings/ - List
+- PUT /api/v1/widget-settings/{id} - Update
+- DELETE /api/v1/widget-settings/{id} - Delete
+
+#### Cal.com Integration
+- POST /api/v1/calcom/connect - Connect
+- POST /api/v1/calcom/disconnect - Disconnect
+- GET /api/v1/calcom/status - Check status
+- GET /api/v1/calcom/event-types - List event types
+- GET /api/v1/calcom/event-types/lookup - Lookup event type
+- GET /api/v1/calcom/appointments - List appointments
+- GET /api/v1/calcom/appointments/{id} - Get appointment
+
+#### GHL Integration
+- GET /api/v1/ghl/appointments - List appointments
+- GET /api/v1/ghl/appointments/{id} - Get appointment
+- GET /api/v1/ghl/oauth/authorize - OAuth authorize
+- GET /api/v1/ghl/oauth/callback - OAuth callback
+- GET /api/v1/ghl/setup-status - Setup status
+- GET /api/v1/ghl/calendars - List calendars
+- GET /api/v1/ghl/agent-by-calendar - Get agent by calendar
+- POST /api/v1/ghl/disconnect - Disconnect
+
+#### Health
+- GET /api/v1/health - Health check
+- GET /api/v1/health/ready - Readiness check
+
+### Pricing
+- Voice AI: $0.07 per minute (flat rate, no tiering)
+- Phone numbers: ~$1.15/month per number
+- Inbound calls: ~$0.0085/min
+- Outbound calls: ~$0.0945/min
+- Prepaid credit system
+- No platform tax or hidden fees
+
+### Contact
+- Support: support@ravan.ai
+- Website: https://ravan.ai
+- App: https://app.ravan.ai
+- Demo: https://agni.ravan.ai
+- Instagram: https://www.instagram.com/agnibyravan/
