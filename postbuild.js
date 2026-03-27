@@ -56,7 +56,7 @@ var htmlFiles = findHtmlFiles(OUT_DIR);
 console.log("  Processing " + htmlFiles.length + " HTML files...");
 
 var cssTag = '<link rel="stylesheet" href="/agni-overrides.css"><link href="/_pagefind/pagefind-ui.css" rel="stylesheet">';
-var jsTag = '<script src="/_pagefind/pagefind-ui.js" defer><\/script><script src="/agni-overrides.js" defer><\/script>';
+var jsTag = '<script src="/_pagefind/pagefind-ui.js"><\/script><script src="/agni-overrides.js" defer><\/script>';
 
 htmlFiles.forEach(function (filePath) {
   var html = fs.readFileSync(filePath, "utf8");

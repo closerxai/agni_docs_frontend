@@ -148,22 +148,39 @@ document.addEventListener("keydown", function (e) {
 
     // ===== Pagefind =====
     var pfInit = false;
+    var pfRetries = 0;
     function initPagefind() {
       if (pfInit) return;
       if (typeof window.PagefindUI === "undefined") {
-        console.log("[Agni] Pagefind not loaded yet");
+        pfRetries++;
+        if (pfRetries < 20) {
+          console.log("[Agni] Pagefind not loaded yet, retry " + pfRetries);
+          setTimeout(initPagefind, 300);
+        } else {
+          console.error("[Agni] Pagefind failed to load after retries");
+          pfContainer.innerHTML = '<div style="padding:24px;text-align:center;color:rgba(0,0,0,0.4);">Search is loading... Please try again.</div>';
+        }
         return;
       }
       pfInit = true;
-      new window.PagefindUI({
-        element: "#agni-search-container",
-        showSubResults: true,
-        showImages: false,
-        placeholder: "Search Agni documentation...",
-        autofocus: true,
-        resetStyles: false
-      });
+      try {
+        new window.PagefindUI({
+          element: "#agni-search-container",
+          showSubResults: true,
+          showImages: false,
+          placeholder: "Search Agni documentation...",
+          autofocus: true,
+          resetStyles: false
+        });
+        console.log("[Agni] Pagefind initialized");
+      } catch (err) {
+        console.error("[Agni] Pagefind init error:", err);
+        pfContainer.innerHTML = '<div style="padding:24px;text-align:center;color:rgba(0,0,0,0.4);">Search failed to initialize. Please refresh.</div>';
+      }
     }
+
+    // Start loading Pagefind immediately (don't wait for user to open)
+    initPagefind();
 
     // ===== Open/Close =====
     function openSearch(tab) {
