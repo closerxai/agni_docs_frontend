@@ -4,6 +4,10 @@
   "installCommand": "npm install",
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    { "source": "/_mintlify/api/:path*", "destination": "/api/mintlify-mock" },
+    { "source": "/_mintlify/:path*", "destination": "/api/mintlify-mock" }
+  ],
   "functions": {
     "api/ai-search.js": {
       "memory": 256,
