@@ -1,13 +1,13 @@
 ---
 title: "Lookup Cal.com Event Type"
 openapi: "GET /api/v1/calcom/event-types/lookup/{platform_id}"
-description: "Lookup Cal.com Event Type."
+description: "Look up a specific Cal.com event type by its platform ID or URL slug."
 ---
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
@@ -15,72 +15,71 @@ description: "Lookup Cal.com Event Type."
 ### Path Parameters
 
 <ParamField path="platform_id" type="string" required>
-  Event type ID or slug
+  Cal.com event type ID or slug (e.g. `evt_123456` or `intro-call`).
 </ParamField>
 
 ---
 
 ### Response
 
-<ResponseField name="success" type="boolean">
-  Whether the request succeeded.
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Human-readable status message.
-</ResponseField>
-
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
 <ResponseField name="data" type="object">
-  data field.
+  The event type details.
 
   <Expandable title="data">
-    <ResponseField name="id" type="string">
-      id field.
-    </ResponseField>
-  
-    <ResponseField name="slug" type="string">
-      slug field.
-    </ResponseField>
-  
-    <ResponseField name="title" type="string">
-      title field.
-    </ResponseField>
-  
-    <ResponseField name="description" type="string">
-      description field.
-    </ResponseField>
-  
-    <ResponseField name="duration_minutes" type="integer">
-      duration_minutes field.
-    </ResponseField>
-  
-    <ResponseField name="price" type="number">
-      price field.
-    </ResponseField>
-  
-    <ResponseField name="currency" type="string">
-      currency field.
-    </ResponseField>
-  
-    <ResponseField name="is_active" type="boolean">
-      is_active field.
-    </ResponseField>
+    <ResponseField name="id" type="string">Cal.com event type ID.</ResponseField>
+    <ResponseField name="slug" type="string">URL slug for the event type.</ResponseField>
+    <ResponseField name="title" type="string">Display title.</ResponseField>
+    <ResponseField name="description" type="string">Event type description.</ResponseField>
+    <ResponseField name="duration_minutes" type="integer">Default duration in minutes.</ResponseField>
+    <ResponseField name="price" type="number">Event price (0 if free).</ResponseField>
+    <ResponseField name="currency" type="string">Currency code.</ResponseField>
+    <ResponseField name="is_active" type="boolean">Whether the event type is active.</ResponseField>
   </Expandable>
 </ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl "https://api.ravan.ai/api/v1/calcom/event-types/lookup/intro-call" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.ravan.ai/api/v1/calcom/event-types/lookup/intro-call",
+    headers={"X-Api-Key": "YOUR_API_KEY"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.ravan.ai/api/v1/calcom/event-types/lookup/intro-call",
+  { headers: { "X-Api-Key": "YOUR_API_KEY" } }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "Event type fetched successfully",
   "data": {
-    "id": "id_123",
+    "id": "evt_123456",
     "slug": "intro-call",
-    "title": "example",
-    "description": "example",
-    "duration_minutes": 1,
-    "price": 99.5,
+    "title": "Introductory Call",
+    "description": "A 30-minute introductory call to discuss your needs",
+    "duration_minutes": 30,
+    "price": 0,
     "currency": "USD",
     "is_active": true
   }

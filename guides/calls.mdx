@@ -1,6 +1,6 @@
 ---
 title: "Call Sessions"
-description: "Monitor, filter, and review every conversation handled by your Agni agents."
+description: "Monitor, filter, and review every conversation handled by your Agni agents -- including transcripts, recordings, summaries, and sentiment analysis."
 ---
 
 The **Call Sessions** page serves as your centralized ledger for all voice interactions across your organization. Whether you are running high-volume outbound campaigns, fielding inbound customer support calls, or testing your web widget, every session is logged here in real time.
@@ -17,16 +17,16 @@ At the top of the dashboard, a quick-glance summary provides the real-time statu
 
 <CardGroup cols={4}>
   <Card title="Total Calls" icon="phone">
-    The cumulative number of all call sessions.
+    The cumulative number of all call sessions across all channels and agents.
   </Card>
   <Card title="Completed" icon="check">
-    Calls that successfully reached their natural conclusion.
+    Calls that successfully reached their natural conclusion (agent or caller hung up normally).
   </Card>
   <Card title="Failed" icon="xmark">
-    Calls that dropped, failed to connect, or encountered an error.
+    Calls that dropped, failed to connect, hit a timeout, or encountered a system error.
   </Card>
   <Card title="In Progress" icon="spinner">
-    Live calls currently being handled by your agents.
+    Live calls currently being handled by your agents right now.
   </Card>
 </CardGroup>
 
@@ -38,13 +38,13 @@ Agni consolidates traffic from multiple channels into a single view. You can fil
 
 <CardGroup cols={3}>
   <Card title="Web" icon="globe">
-    Calls initiated directly through your embedded Agni web widget.
+    Calls initiated through your embedded Agni web widget on your website.
   </Card>
   <Card title="Inbound" icon="arrow-down-to-line">
-    Phone calls received by your provisioned Telephony numbers.
+    Phone calls received by your provisioned phone numbers via PSTN or SIP.
   </Card>
   <Card title="Outbound" icon="arrow-up-from-line">
-    Phone calls initiated by your agents (e.g., via campaigns or API triggers).
+    Phone calls initiated by your agents via campaigns, API triggers, or test calls.
   </Card>
 </CardGroup>
 
@@ -54,13 +54,42 @@ Agni consolidates traffic from multiple channels into a single view. You can fil
 
 For every session, the table captures granular data to help you evaluate agent performance and customer sentiment:
 
-- **Caller:** The phone number or web session ID of the user.
-- **Status:** The current state of the call (e.g., Completed, Failed, In Progress).
-- **Channel:** The origin of the call (Web, PSTN, SIP).
-- **Duration:** The total length of the conversation.
-- **Sentiment:** An AI-generated assessment of the caller's mood (e.g., Positive, Neutral, Negative) determined by post-call analysis.
-- **Agent:** The specific AI agent that handled the interaction.
-- **Time:** The timestamp of when the call was initiated.
+| Column | Description |
+|---|---|
+| **Caller** | The phone number or web session ID of the user. |
+| **Status** | Current state -- `Completed`, `Failed`, or `In Progress`. |
+| **Channel** | Origin of the call -- `Web`, `PSTN`, or `SIP`. |
+| **Duration** | Total length of the conversation. |
+| **Sentiment** | AI-generated assessment of the caller's mood -- `Positive`, `Neutral`, or `Negative`. |
+| **Agent** | The specific AI agent that handled the interaction. |
+| **Time** | Timestamp when the call was initiated. |
+
+---
+
+## Call Detail View
+
+Click on any row to open the full call detail view. This gives you a deep dive into everything that happened during the conversation:
+
+<AccordionGroup>
+  <Accordion title="Full Transcript" icon="closed-captioning">
+    A timestamped, speaker-labeled transcript of the entire conversation. Each turn is marked as either **Agent** or **Caller** so you can follow the dialogue flow. Use this to audit agent behavior, verify compliance, or debug prompt issues.
+  </Accordion>
+  <Accordion title="Call Recording" icon="circle-play">
+    Listen to the full audio recording of the call. Playback controls let you skip ahead, rewind, and adjust speed. Recordings are available for phone calls (web calls may vary based on browser permissions).
+  </Accordion>
+  <Accordion title="AI Summary" icon="file-lines">
+    If post-call analysis is enabled on the agent, you'll see an AI-generated summary of the conversation -- key topics discussed, action items, and outcomes. This is powered by the `analysis_summary_prompt` configured on the agent.
+  </Accordion>
+  <Accordion title="Extracted Data" icon="database">
+    If structured data extraction is enabled, the AI automatically pulls out key fields (e.g., customer name, email, appointment time, issue category) and displays them in a structured format. This data is also sent to any configured webhooks.
+  </Accordion>
+  <Accordion title="Sentiment Score" icon="face-smile">
+    An AI-assessed sentiment rating based on the caller's tone, word choice, and conversational dynamics throughout the call.
+  </Accordion>
+  <Accordion title="Call Metadata" icon="circle-info">
+    Technical details including call duration, latency metrics, the agent and model used, caller's phone number, channel type, and timestamps.
+  </Accordion>
+</AccordionGroup>
 
 ---
 
@@ -70,12 +99,16 @@ To manage large volumes of call data, utilize the toolbar located above the tabl
 
 <Steps>
   <Step title="Search" icon="magnifying-glass">
-    Look up specific calls by phone number, agent name, or session ID.
+    Look up specific calls by phone number, agent name, or session ID. The search works across all columns.
   </Step>
   <Step title="Date Range & Filters" icon="filter">
-    Narrow down your view by selecting specific timeframes (e.g., *Today*, *Last 7 days*) or applying advanced filters to isolate calls by status or sentiment.
+    Narrow down your view by selecting specific timeframes (e.g., *Today*, *Last 7 days*, *Last 30 days*) or applying advanced filters to isolate calls by status, channel, agent, or sentiment.
   </Step>
-  <Step title="Export" icon="download">
-    Click the **Export** button in the top right to download your filtered call logs as a CSV for external analysis or CRM integration.
+  <Step title="Export to CSV" icon="download">
+    Click the **Export** button in the top right to download your filtered call logs as a CSV file. Use this for external analysis, CRM imports, compliance audits, or reporting.
   </Step>
 </Steps>
+
+<Note>
+  **Pro Tip:** Export filtered data regularly and pipe it into your CRM or analytics platform. Combine call outcomes with pipeline data to measure the actual revenue impact of your voice agents.
+</Note>

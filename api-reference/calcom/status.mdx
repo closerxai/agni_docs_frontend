@@ -1,65 +1,90 @@
 ---
 title: "Cal.com Connection Status"
 openapi: "GET /api/v1/calcom/status"
-description: "Cal.com Connection Status."
+description: "Check whether Cal.com is connected to your organization and whether the OAuth tokens are still valid."
 ---
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
 
 ### Response
 
-<ResponseField name="success" type="boolean">
-  Whether the request succeeded.
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Human-readable status message.
-</ResponseField>
-
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
 <ResponseField name="data" type="object">
-  data field.
+  Connection status details.
 
   <Expandable title="data">
-    <ResponseField name="connected" type="boolean">
-      connected field.
-    </ResponseField>
-  
-    <ResponseField name="status" type="string">
-      One of: active, not_connected
-    </ResponseField>
-  
-    <ResponseField name="token_expires" type="string">
-      Token expiry timestamp (when connected)
-    </ResponseField>
-  
-    <ResponseField name="error" type="string">
-      error field.
-    </ResponseField>
-  
-    <ResponseField name="message" type="string">
-      Returned when not connected
-    </ResponseField>
+    <ResponseField name="connected" type="boolean">Whether Cal.com is currently connected.</ResponseField>
+    <ResponseField name="status" type="string">Connection status — `"active"` when connected, `"not_connected"` otherwise.</ResponseField>
+    <ResponseField name="accounts" type="object[]">Array of connected Cal.com accounts (empty when not connected).</ResponseField>
+    <ResponseField name="token_expires" type="string">OAuth token expiry timestamp in ISO 8601 (only when connected).</ResponseField>
+    <ResponseField name="error" type="string">Error description if the connection has issues.</ResponseField>
+    <ResponseField name="message" type="string">Additional context message (e.g. `"Cal.com is not connected"`).</ResponseField>
   </Expandable>
 </ResponseField>
 
+<RequestExample>
+
+```bash cURL
+curl https://api.ravan.ai/api/v1/calcom/status \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.ravan.ai/api/v1/calcom/status",
+    headers={"X-Api-Key": "YOUR_API_KEY"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.ravan.ai/api/v1/calcom/status",
+  { headers: { "X-Api-Key": "YOUR_API_KEY" } }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
+
 <ResponseExample>
 
-```json 200
+```json 200 (connected)
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "Connection status retrieved",
   "data": {
     "connected": true,
     "status": "active",
-    "token_expires": "2026-03-14T12:00:00Z",
-    "error": "database connection failed",
-    "message": "Request completed successfully"
+    "accounts": [{"id": "acc_123", "email": "user@example.com"}],
+    "token_expires": "2026-04-20T12:00:00Z"
+  }
+}
+```
+
+</ResponseExample>
+
+<ResponseExample>
+
+```json 200 (not connected)
+{
+  "success": true,
+  "message": "Connection status retrieved",
+  "data": {
+    "accounts": [],
+    "connected": false,
+    "message": "Cal.com is not connected",
+    "status": "not_connected"
   }
 }
 ```

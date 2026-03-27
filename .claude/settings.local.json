@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://api.ravan.ai/health)",
+      "Bash(curl -s https://api.ravan.ai/health)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://api.ravan.ai/ready)",
+      "Bash(curl -s https://api.ravan.ai/ready)",
+      "Bash(API_KEY=\"ak_768d1b01cb926526386222dfa98210ddac86a73d85efa99a0f2c9b12c9f89626\")",
+      "Bash(curl -s -w \"\\\\nHTTP_STATUS:%{http_code}\" -H \"x-api-key: $API_KEY\" https://api.ravan.ai/api/v1/agents/)",
+      "Bash(curl -s -w \"\\\\nHTTP_STATUS:%{http_code}\" -H \"x-api-key: $API_KEY\" https://api.ravan.ai/api/v1/tools/)",
+      "Bash(curl -s -w \"\\\\nHTTP_STATUS:%{http_code}\" -H \"x-api-key: $API_KEY\" https://api.ravan.ai/api/v1/widget-settings/)",
+      "Bash(curl -s -w \"\\\\nHTTP_STATUS:%{http_code}\" -H \"x-api-key: $API_KEY\" https://api.ravan.ai/api/v1/phone-numbers/list)",
+      "Bash(curl -s -w \"\\\\nHTTP_STATUS:%{http_code}\" -H \"x-api-key: $API_KEY\" https://api.ravan.ai/api/v1/agents/test-id/)",
+      "Bash(curl -s -w \"\\\\nHTTP_STATUS:%{http_code}\" -H \"x-api-key: $API_KEY\" https://api.ravan.ai/api/v1/tools/test-id/)",
+      "Bash(curl -s -w \"\\\\nHTTP_STATUS:%{http_code}\" -H \"x-api-key: $API_KEY\" https://api.ravan.ai/api/v1/widget-settings/test-id/)",
+      "Bash(curl -s -w \"\\\\nHTTP_STATUS:%{http_code}\" -H \"x-api-key: $API_KEY\" \"https://api.ravan.ai/api/v1/phone-numbers/available-numbers/US/?page_size=3\")",
+      "Bash(curl -s -w \"\\\\nHTTP_STATUS:%{http_code}\" -H \"x-api-key: $API_KEY\" https://api.ravan.ai/api/v1/phone-numbers/twilio-owned-numbers/)",
+      "Bash(AGENT_ID=\"019d1fdb-98e9-7c87-86c7-321e2fa98733\")",
+      "Bash(TOOL_ID=\"019d1fdb-3977-7bd5-ab27-8d3b37ddf4fc\")",
+      "Bash(WIDGET_ID=\"019d1fdb-6701-762d-97bd-93fc72606d7c\")",
+      "Bash(__NEW_LINE_152aa4b9324f1fd9__ echo:*)",
+      "Bash(curl -s -w \"\\\\nHTTP_STATUS:%{http_code}\" -X DELETE -H \"x-api-key: $API_KEY\" https://api.ravan.ai/api/v1/agents/$AGENT_ID/)"
+    ]
+  }
+}

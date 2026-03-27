@@ -1,19 +1,106 @@
 ---
-title: "API overview"
-description: "Authentication and endpoint groups for Agni APIs."
+title: "API Reference"
+description: "Complete reference for the Agni REST API — manage voice AI agents, tools, phone numbers, widgets, and scheduling integrations."
 ---
+
+## Base URL
+
+All API requests are made to:
+
+```
+https://api.ravan.ai
+```
 
 ## Authentication
 
-Use bearer auth for all endpoints.
+Authenticate every request by passing your API key in the `X-Api-Key` header.
 
-- Header: `Authorization: Bearer YOUR_API_KEY`
-- Base URL: `https://api.ravan.ai`
+<Note>
+  Get your API key from the [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
+</Note>
 
-## Sections
+```bash
+curl https://api.ravan.ai/api/v1/agents/ \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
 
-- Agent API
-- Agent Tool API
-- Widget Settings API
-- Phone Number & Telephony API
+## Request Format
 
+- All request bodies must be JSON with `Content-Type: application/json`.
+- IDs are UUID v7 strings (e.g. `019d1fdb-3977-7bd5-ab27-8d3b37ddf4fc`).
+- Phone numbers must use E.164 format (e.g. `+14155550100`).
+- Timestamps are returned in ISO 8601 UTC (e.g. `2026-03-20T14:00:00Z`).
+
+## Response Format
+
+Every endpoint returns a consistent JSON envelope:
+
+```json
+{
+  "success": true,
+  "message": "Human-readable status message",
+  "data": { }
+}
+```
+
+List endpoints also include a `meta` object for pagination:
+
+```json
+{
+  "success": true,
+  "message": "Agents fetched successfully",
+  "data": [],
+  "meta": {
+    "total": 42,
+    "limit": 20,
+    "offset": 0
+  }
+}
+```
+
+## Error Handling
+
+Failed requests return `"success": false` with an error structure:
+
+```json
+{
+  "success": false,
+  "message": "Descriptive error message",
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Detailed explanation",
+    "details": {}
+  }
+}
+```
+
+| HTTP Status | Meaning |
+|---|---|
+| `200` | Success |
+| `400` | Bad request — invalid parameters or missing required fields |
+| `401` | Unauthorized — missing or invalid API key |
+| `404` | Resource not found |
+| `422` | Unprocessable entity — validation failed (e.g. slot unavailable) |
+| `500` | Internal server error |
+
+## Pagination
+
+List endpoints support `limit` and `offset` query parameters:
+
+| Parameter | Type | Description |
+|---|---|---|
+| `limit` | integer | Number of records to return per page |
+| `offset` | integer | Number of records to skip |
+
+## API Sections
+
+| Section | Description |
+|---|---|
+| [Agent API](/api-reference/agents/list) | Create, read, update, and delete voice AI agents |
+| [Agent Tool API](/api-reference/tools/list) | Manage custom tools (functions, webhooks) available to agents |
+| [Widget Settings API](/api-reference/widget-settings/list) | Configure embeddable chat widget appearance and behavior |
+| [Phone Number & Telephony API](/api-reference/telephony/list-available-numbers) | Browse, buy, import, and release phone numbers |
+| [Appointment API](/api-reference/appointments/manage-ghl) | Book, reschedule, cancel, and check appointment availability |
+| [GHL Integration API](/api-reference/ghl/setup-status) | Connect and manage GoHighLevel calendar integration |
+| [Cal.com Integration API](/api-reference/calcom/status) | Connect and manage Cal.com scheduling integration |
+| [Health API](/api-reference/health/health) | Service health and readiness checks |

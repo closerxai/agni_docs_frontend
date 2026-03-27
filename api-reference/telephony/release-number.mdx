@@ -1,13 +1,17 @@
 ---
 title: "Release Phone Number"
 openapi: "DELETE /api/v1/phone-numbers/{phone_number}/release/"
-description: "Release Phone Number."
+description: "Release a purchased phone number back to the pool. The number will no longer be available for your agents and billing will stop."
 ---
+
+<Warning>
+  This action cannot be undone. Once released, the phone number becomes available to other customers and you may not be able to reclaim it.
+</Warning>
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
@@ -15,49 +19,66 @@ description: "Release Phone Number."
 ### Path Parameters
 
 <ParamField path="phone_number" type="string" required>
-  The phone number to release (E.164 format, e.g. +12025551234)
+  The phone number to release in E.164 format (e.g. `+13612738809`).
 </ParamField>
 
 ---
 
 ### Response
 
-<ResponseField name="success" type="boolean">
-  Whether the request succeeded.
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Human-readable status message.
-</ResponseField>
-
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
 <ResponseField name="data" type="object">
-  Returned data.
+  Release confirmation.
 
   <Expandable title="data">
-    <ResponseField name="phone_number" type="string">
-      The released phone number
-    </ResponseField>
-
-    <ResponseField name="status" type="string">
-      Release status
-    </ResponseField>
-
-    <ResponseField name="released_at" type="string">
-      Timestamp of release
-    </ResponseField>
+    <ResponseField name="phone_number" type="string">The released phone number.</ResponseField>
+    <ResponseField name="status" type="string">Number status after release (e.g. `released`).</ResponseField>
+    <ResponseField name="released_at" type="string">ISO 8601 timestamp of release.</ResponseField>
   </Expandable>
 </ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X DELETE "https://api.ravan.ai/api/v1/phone-numbers/+13612738809/release/" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+response = requests.delete(
+    "https://api.ravan.ai/api/v1/phone-numbers/+13612738809/release/",
+    headers={"X-Api-Key": "YOUR_API_KEY"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.ravan.ai/api/v1/phone-numbers/+13612738809/release/",
+  {
+    method: "DELETE",
+    headers: { "X-Api-Key": "YOUR_API_KEY" }
+  }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "Phone number released successfully",
   "data": {
-    "phone_number": "+14155550100",
-    "status": "active",
-    "released_at": "example"
+    "phone_number": "+13612738809",
+    "status": "released",
+    "released_at": "2026-03-20T16:00:00Z"
   }
 }
 ```

@@ -1,13 +1,13 @@
 ---
 title: "List Available Numbers"
 openapi: "GET /api/v1/phone-numbers/available-numbers/{iso_country}/"
-description: "List Available Numbers."
+description: "Browse available phone numbers for purchase in a specific country. Returns numbers with pricing details for both inbound and outbound calls."
 ---
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
@@ -15,7 +15,7 @@ description: "List Available Numbers."
 ### Path Parameters
 
 <ParamField path="iso_country" type="string" required>
-  ISO country code (e.g. US, GB)
+  Two-letter ISO 3166-1 alpha-2 country code (e.g. `US`, `GB`, `IN`, `DE`).
 </ParamField>
 
 ---
@@ -23,66 +23,105 @@ description: "List Available Numbers."
 ### Query Parameters
 
 <ParamField query="page_size" type="integer">
-  Number of results per page
+  Number of available numbers to return. Useful for limiting results when browsing.
 </ParamField>
 
 <ParamField query="region" type="string">
-  Region filter
+  Filter by region or state within the country (e.g. `CA` for California, `TX` for Texas).
 </ParamField>
 
 ---
 
 ### Response
 
-<ResponseField name="success" type="boolean">
-  Whether the request succeeded.
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Human-readable status message.
-</ResponseField>
-
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
 <ResponseField name="data" type="object[]">
-  Returned data.
+  Array of available phone numbers.
 
   <Expandable title="data[]">
-    <ResponseField name="iso_country" type="string">
-      ISO country code
-    </ResponseField>
-
-    <ResponseField name="phone_number" type="string">
-      Phone number in E.164 format
-    </ResponseField>
-
-    <ResponseField name="price" type="integer">
-      Monthly cost of the number
-    </ResponseField>
-
-    <ResponseField name="per_minute_price_outbound" type="integer">
-      Per-minute price for outbound calls
-    </ResponseField>
-
-    <ResponseField name="per_minute_price_inbound" type="integer">
-      Per-minute price for inbound calls
-    </ResponseField>
+    <ResponseField name="isoCountry" type="string">ISO country code of the phone number.</ResponseField>
+    <ResponseField name="phoneNumber" type="string">Phone number in E.164 format (e.g. `+13612738809`).</ResponseField>
+    <ResponseField name="price" type="number">Monthly cost of the phone number in USD.</ResponseField>
+    <ResponseField name="perMinutePriceOutbound" type="number">Per-minute cost for outbound calls in USD.</ResponseField>
+    <ResponseField name="perMinutePriceInbound" type="number">Per-minute cost for inbound calls in USD.</ResponseField>
+    <ResponseField name="telephonyType" type="string">Telephony provider type (empty string if using default provider).</ResponseField>
   </Expandable>
 </ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl "https://api.ravan.ai/api/v1/phone-numbers/available-numbers/US/?page_size=3" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.ravan.ai/api/v1/phone-numbers/available-numbers/US/",
+    headers={"X-Api-Key": "YOUR_API_KEY"},
+    params={"page_size": 3}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.ravan.ai/api/v1/phone-numbers/available-numbers/US/?page_size=3",
+  { headers: { "X-Api-Key": "YOUR_API_KEY" } }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "Available numbers fetched successfully",
   "data": [
     {
-      "iso_country": "US",
-      "phone_number": "+14155550100",
-      "price": 1,
-      "per_minute_price_outbound": 1,
-      "per_minute_price_inbound": 1
+      "isoCountry": "US",
+      "phoneNumber": "+13612738809",
+      "price": 1.15,
+      "perMinutePriceOutbound": 0.0945,
+      "perMinutePriceInbound": 0.0085,
+      "telephonyType": ""
+    },
+    {
+      "isoCountry": "US",
+      "phoneNumber": "+13613211404",
+      "price": 1.15,
+      "perMinutePriceOutbound": 0.0945,
+      "perMinutePriceInbound": 0.0085,
+      "telephonyType": ""
+    },
+    {
+      "isoCountry": "US",
+      "phoneNumber": "+13614189049",
+      "price": 1.15,
+      "perMinutePriceOutbound": 0.0945,
+      "perMinutePriceInbound": 0.0085,
+      "telephonyType": ""
     }
   ]
+}
+```
+
+</ResponseExample>
+
+<ResponseExample>
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
 }
 ```
 

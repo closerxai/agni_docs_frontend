@@ -1,81 +1,133 @@
 ---
 title: "Buy Phone Number"
 openapi: "POST /api/v1/phone-numbers/buy/"
-description: "Buy Phone Number."
+description: "Purchase a phone number from the available numbers list. The number will be provisioned and ready for use with your agents."
 ---
+
+<Warning>
+  This endpoint charges your account. Make sure you have retrieved the number from the [available numbers list](/api-reference/telephony/list-available-numbers) first and confirmed the pricing.
+</Warning>
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
 
 ### Body
 
-<ParamField body="phone_number" type="string">
-  Phone number to purchase (E.164 format)
+<ParamField body="phone_number" type="string" required>
+  Phone number to purchase in E.164 format (e.g. `+13612738809`). Must be an available number from the list endpoint.
 </ParamField>
 
-<ParamField body="price" type="number">
-  Purchase price
+<ParamField body="price" type="number" required>
+  Monthly price as returned by the available numbers endpoint.
 </ParamField>
 
-<ParamField body="per_minute_price_inbound" type="integer">
-  Per-minute inbound call price
+<ParamField body="per_minute_price_inbound" type="number">
+  Per-minute inbound call price as returned by the available numbers endpoint.
 </ParamField>
 
-<ParamField body="per_minute_price_outbound" type="integer">
-  Per-minute outbound call price
+<ParamField body="per_minute_price_outbound" type="number">
+  Per-minute outbound call price as returned by the available numbers endpoint.
 </ParamField>
 
 ---
 
 ### Response
 
-<ResponseField name="success" type="boolean">
-  Whether the request succeeded.
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Human-readable status message.
-</ResponseField>
-
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
 <ResponseField name="data" type="object">
-  Returned data.
+  Purchase confirmation.
 
   <Expandable title="data">
-    <ResponseField name="phone_number" type="string">
-      The purchased phone number
-    </ResponseField>
-
-    <ResponseField name="price" type="number">
-      Price paid
-    </ResponseField>
-
-    <ResponseField name="status" type="string">
-      Purchase status
-    </ResponseField>
-
-    <ResponseField name="purchased_at" type="string">
-      Timestamp of purchase
-    </ResponseField>
+    <ResponseField name="phone_number" type="string">The purchased phone number in E.164 format.</ResponseField>
+    <ResponseField name="price" type="number">Monthly price paid.</ResponseField>
+    <ResponseField name="status" type="string">Number status after purchase (e.g. `active`).</ResponseField>
+    <ResponseField name="purchased_at" type="string">ISO 8601 timestamp of purchase.</ResponseField>
   </Expandable>
 </ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/phone-numbers/buy/ \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone_number": "+13612738809",
+    "price": 1.15,
+    "per_minute_price_inbound": 0.0085,
+    "per_minute_price_outbound": 0.0945
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.ravan.ai/api/v1/phone-numbers/buy/",
+    headers={
+        "X-Api-Key": "YOUR_API_KEY",
+        "Content-Type": "application/json"
+    },
+    json={
+        "phone_number": "+13612738809",
+        "price": 1.15,
+        "per_minute_price_inbound": 0.0085,
+        "per_minute_price_outbound": 0.0945
+    }
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/phone-numbers/buy/", {
+  method: "POST",
+  headers: {
+    "X-Api-Key": "YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    phone_number: "+13612738809",
+    price: 1.15,
+    per_minute_price_inbound: 0.0085,
+    per_minute_price_outbound: 0.0945
+  })
+});
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "Phone number purchased successfully",
   "data": {
-    "phone_number": "+14155550100",
-    "price": 1.99,
+    "phone_number": "+13612738809",
+    "price": 1.15,
     "status": "active",
-    "purchased_at": "2026-03-14T12:00:00Z"
+    "purchased_at": "2026-03-20T14:30:00Z"
   }
+}
+```
+
+</ResponseExample>
+
+<ResponseExample>
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
 }
 ```
 

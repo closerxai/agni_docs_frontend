@@ -1,9 +1,9 @@
 ---
 title: "Platform Analytics"
-description: "Gain comprehensive insights into your voice AI performance, call outcomes, and agent metrics."
+description: "Monitor call volume, track success rates, analyze sentiment, and measure agent performance across your entire voice infrastructure."
 ---
 
-The **Analytics** page provides a deep dive into the operational health and effectiveness of your voice infrastructure. It allows you to monitor volume, track success rates, and export data for external reporting.
+The **Analytics** page provides a deep dive into the operational health and effectiveness of your voice infrastructure. It allows you to monitor volume, track success rates, identify trends, and export data for external reporting.
 
 <Frame>
   <img src="/images/analytics-overview.png" alt="Agni Analytics Dashboard" />
@@ -17,22 +17,22 @@ At the top of the Analytics dashboard, six high-level metrics give you an immedi
 
 <CardGroup cols={3}>
   <Card title="Total Calls" icon="phone">
-    The absolute volume of inbound and outbound calls processed.
+    The absolute volume of inbound and outbound calls processed. Use this to gauge overall platform utilization.
   </Card>
   <Card title="Total Minutes" icon="stopwatch">
-    The aggregate number of voice minutes consumed.
+    The aggregate number of voice minutes consumed. At $0.07/min, multiply this by 0.07 to get your cost.
   </Card>
   <Card title="Success Rate" icon="bullseye">
-    The percentage of calls where the agent successfully completed its objective.
+    The percentage of calls where the agent successfully completed its objective. Low success rates may indicate prompt issues or tool misconfiguration.
   </Card>
   <Card title="Avg Duration" icon="clock">
-    The average length of your real-time conversations.
+    The average length of your conversations. Shorter isn't always better -- the right duration depends on your use case.
   </Card>
   <Card title="Active Agents" icon="users-robot">
-    The number of unique AI agents that fielded calls during the period.
+    The number of unique AI agents that fielded calls during the selected period.
   </Card>
   <Card title="Sentiment" icon="face-smile">
-    The overall average sentiment (positive/neutral/negative) of your callers.
+    The overall average sentiment (positive/neutral/negative) of your callers, determined by AI post-call analysis.
   </Card>
 </CardGroup>
 
@@ -44,36 +44,59 @@ Agni provides a powerful suite of interactive charts to help you visualize data 
 
 <CardGroup cols={2}>
   <Card title="Usage Trend" icon="chart-line">
-    Tracks calls and minutes over time. Because Agni operates on a usage-based pricing model, this chart directly correlates to your platform spend and growth.
+    Tracks calls and minutes over time. Because Agni operates on a usage-based pricing model, this chart directly correlates to your platform spend. Look for unexpected spikes or drops.
   </Card>
   <Card title="Call Outcomes" icon="chart-pie">
-    A comparative breakdown plotting **Successful** versus **Failed** calls, allowing you to quickly spot routing issues or prompt inefficiencies over time.
+    A comparative breakdown plotting **Successful** versus **Failed** calls. A rising failure rate often signals routing issues, prompt problems, or integration errors.
   </Card>
   <Card title="Sentiment Analysis" icon="face-meh">
-    An AI-powered breakdown of caller sentiment based on conversational analytics. *(Note: This feature is rolling out soon).*
+    An AI-powered breakdown of caller sentiment based on conversational analytics. Use this to measure customer satisfaction without post-call surveys.
   </Card>
   <Card title="Agent Performance" icon="ranking-star">
-    Compares success rates across different agent deployments. Use this to A/B test system prompts, voices, or tool configurations.
+    Compares success rates across different agent deployments. Use this to A/B test system prompts, voices, or tool configurations and find your best-performing setup.
   </Card>
   <Card title="Call Duration" icon="wave-square">
-    Plots your average call duration in seconds over time, helping you measure agent efficiency and conversation length.
+    Plots your average call duration over time. Sudden increases may indicate agents getting stuck in loops; sudden drops may mean agents are ending calls prematurely.
   </Card>
   <Card title="Peak Hours" icon="chart-area">
-    Visualizes call volume by the hour of the day, split between **Business hours** and **Off hours** to help you understand concurrency demands.
+    Visualizes call volume by hour of the day, split between **Business hours** and **Off hours**. Use this to plan concurrency needs and staffing.
   </Card>
 </CardGroup>
 
 ---
 
+## What to Look For
+
+<AccordionGroup>
+  <Accordion title="Success rate dropping" icon="arrow-trend-down">
+    Check your agent's system prompt and tools first. A common cause is tool descriptions that are too vague, causing the AI to trigger actions at the wrong time. Review recent call transcripts in the [Call Sessions](/guides/calls) page.
+  </Accordion>
+  <Accordion title="Average duration increasing" icon="clock">
+    This could mean agents are struggling to reach their objective and conversations are dragging. Or it could mean your agents are handling more complex queries -- context matters. Check the call transcripts to understand.
+  </Accordion>
+  <Accordion title="Negative sentiment trending up" icon="face-frown">
+    Review the [Call Sessions](/guides/calls) detail view for recent calls with negative sentiment. Common causes: agent interrupting the caller too aggressively, incorrect information, or failure to resolve the issue.
+  </Accordion>
+  <Accordion title="Unexpected cost spikes" icon="money-bill-trend-up">
+    Check the Usage Trend chart for volume anomalies. If calls increased but were unintended, review your dispatch rules and campaign settings. Also check for long-running calls that hit the max duration limit.
+  </Accordion>
+</AccordionGroup>
+
+---
+
 ## Filtering and Exporting Data
 
-In the top right corner of the dashboard, you can control the scope of your analytics to generate custom reports:
+In the top right corner of the dashboard, you can control the scope of your analytics:
 
 <Steps>
   <Step title="Filter by Date" icon="calendar-days">
-    Use the quick-select pills (**7 Days**, **30 Days**, **90 Days**) or the date picker to instantly recalculate your dashboard metrics for a specific timeframe.
+    Use the quick-select pills (**7 Days**, **30 Days**, **90 Days**) or the date picker to recalculate your dashboard metrics for a specific timeframe.
   </Step>
   <Step title="Export to CSV" icon="download">
-    Click the **Export** button to download your current analytics view. You can easily ingest this data into your CRM, billing software, or internal reporting tools.
+    Click the **Export** button to download your current analytics view as a CSV file. Ingest this data into your CRM, billing software, or business intelligence tools for deeper analysis.
   </Step>
 </Steps>
+
+<Note>
+  **Tip:** Set a weekly cadence to export and review your analytics. Tracking trends over time is more valuable than looking at any single day's numbers.
+</Note>

@@ -1,13 +1,17 @@
 ---
 title: "Deactivate Widget Settings"
 openapi: "DELETE /api/v1/widget-settings/{id}/"
-description: "Deactivate Widget Settings."
+description: "Deactivate a widget configuration. The widget will stop appearing on your website, and any agents linked to it will no longer be accessible through the widget."
 ---
+
+<Warning>
+  This deactivates the widget settings. Agents associated with this widget will no longer be reachable via the web widget. Use [Update Widget Settings](/api-reference/widget-settings/update) if you only want to change individual fields.
+</Warning>
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
@@ -15,27 +19,67 @@ description: "Deactivate Widget Settings."
 ### Path Parameters
 
 <ParamField path="id" type="string" required>
-  Widget Settings ID
+  The unique UUID of the widget settings to deactivate.
 </ParamField>
 
 ---
 
 ### Response
 
-<ResponseField name="success" type="boolean">
-  Whether the request succeeded.
-</ResponseField>
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
 
-<ResponseField name="message" type="string">
-  Human-readable status message.
-</ResponseField>
+<RequestExample>
+
+```bash cURL
+curl -X DELETE https://api.ravan.ai/api/v1/widget-settings/019d1fdb-6701-762d-97bd-93fc72606d7c/ \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+widget_id = "019d1fdb-6701-762d-97bd-93fc72606d7c"
+response = requests.delete(
+    f"https://api.ravan.ai/api/v1/widget-settings/{widget_id}/",
+    headers={"X-Api-Key": "YOUR_API_KEY"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const widgetId = "019d1fdb-6701-762d-97bd-93fc72606d7c";
+const response = await fetch(
+  `https://api.ravan.ai/api/v1/widget-settings/${widgetId}/`,
+  {
+    method: "DELETE",
+    headers: { "X-Api-Key": "YOUR_API_KEY" }
+  }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully"
+  "message": "Widget settings deactivated successfully"
+}
+```
+
+</ResponseExample>
+
+<ResponseExample>
+
+```json 400
+{
+  "code": 3,
+  "message": "invalid uuid \"not-a-uuid\": invalid UUID length: 10",
+  "details": []
 }
 ```
 

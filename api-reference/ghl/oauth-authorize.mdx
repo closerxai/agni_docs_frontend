@@ -1,13 +1,17 @@
 ---
 title: "GHL OAuth Authorize"
 openapi: "GET /api/v1/ghl/oauth/authorize"
-description: "GHL OAuth Authorize."
+description: "Initiate the GoHighLevel OAuth authorization flow. This endpoint redirects the browser to GHL's consent page — it does not return a JSON response."
 ---
+
+<Note>
+  This is a browser redirect endpoint. Open this URL in a browser to start the GHL OAuth flow. It does not return a JSON response.
+</Note>
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
@@ -15,9 +19,19 @@ description: "GHL OAuth Authorize."
 ### Query Parameters
 
 <ParamField query="organization_id" type="string" required>
-  Your organization ID
+  Your organization ID. The GHL connection will be linked to this organization.
 </ParamField>
 
 ---
 
-This endpoint redirects the browser. No JSON response body is returned.
+This endpoint redirects the browser to GoHighLevel's OAuth consent page. After the user authorizes access, GHL redirects back to the [OAuth Callback](/api-reference/ghl/oauth-callback) endpoint to complete the connection.
+
+<RequestExample>
+
+```bash cURL
+# Open in browser — this is a redirect, not a JSON API call
+curl -v "https://api.ravan.ai/api/v1/ghl/oauth/authorize?organization_id=1268c1f0-19f3-47db-aefb-c16a7c3ace6e" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+</RequestExample>

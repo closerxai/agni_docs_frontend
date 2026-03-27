@@ -1,6 +1,6 @@
 ---
 title: "Inbound Calls"
-description: "Manage inbound call routing and dispatch rules for your AI agents."
+description: "Connect phone numbers to AI agents with dispatch rules so your agents automatically answer incoming calls."
 ---
 
 The **Inbound Calls** page is where you connect the phone numbers you own to the AI agents you have built. By creating **Dispatch Rules**, you dictate exactly which agent answers the phone when a customer dials a specific number.
@@ -8,6 +8,20 @@ The **Inbound Calls** page is where you connect the phone numbers you own to the
 <Frame>
   <img src="/images/inbound-calls-overview.png" alt="Agni Inbound Calls Dashboard" />
 </Frame>
+
+---
+
+## How Inbound Routing Works
+
+When someone calls one of your Agni phone numbers, the platform checks your dispatch rules to determine which agent should answer. The connection happens in under 300ms -- the caller hears the agent's welcome message almost instantly.
+
+```
+Caller dials your number
+  -> Agni looks up dispatch rule for that number
+  -> Routes to the assigned AI agent
+  -> Agent picks up and speaks the welcome message
+  -> Conversation begins
+```
 
 ---
 
@@ -20,7 +34,7 @@ Setting up a new dispatch rule takes only a few clicks. Once configured, inbound
     Click the **Select an agent** dropdown to choose the specific AI assistant you want to handle the incoming calls. This list populates from the agents you have created in your workspace.
   </Step>
   <Step title="Route From Number" icon="phone">
-    Click the **Select a phone number** dropdown to choose the inbound line. This list includes any numbers you have purchased or imported via the Agni Telephony service.
+    Click the **Select a phone number** dropdown to choose the inbound line. This list includes any numbers you have purchased or imported via the [Phone Numbers](/guides/phone-numbers) page.
   </Step>
   <Step title="Create Dispatch Rule" icon="bolt">
     Click the **+ Create Dispatch Rule** button to activate the route. Your agent is now live and will answer any calls made to that number instantly.
@@ -28,16 +42,52 @@ Setting up a new dispatch rule takes only a few clicks. Once configured, inbound
 </Steps>
 
 <Note>
-  **1-to-1 Mapping:** Currently, each phone number can only be routed to a single agent at a time to prevent routing conflicts. If you need to change the agent handling a number, you must delete the existing dispatch rule first.
+  **1-to-1 Mapping:** Each phone number can only be routed to a single agent at a time. If you need to change the agent handling a number, delete the existing dispatch rule first, then create a new one.
 </Note>
 
 ---
 
 ## Active Dispatch Rules
 
-Once created, your routes will appear in the **Active Dispatch Rules** section. 
+Once created, your routes will appear in the **Active Dispatch Rules** section. This list provides a clear overview of all your live connections:
 
-This list provides a clear overview of all your live connections. If you manage a large fleet of numbers for different campaigns or clients, use the **Search numbers...** bar on the right side to quickly locate and manage specific routing configurations.
+- **Phone Number** -- The inbound number being routed.
+- **Agent** -- The AI agent assigned to answer calls.
+- **Status** -- Whether the route is active and working.
+- **Actions** -- Delete the rule to disconnect the routing.
+
+If you manage a large fleet of numbers for different campaigns or clients, use the **Search numbers...** bar to quickly locate specific routing configurations.
+
+---
+
+## Common Patterns
+
+<AccordionGroup>
+  <Accordion title="One agent, one number" icon="phone">
+    The simplest setup. Buy a number, assign it to an agent, and you're live. Ideal for a single product line or department.
+  </Accordion>
+  <Accordion title="Multiple numbers, different agents" icon="phone-volume">
+    Buy separate numbers for sales, support, and billing. Create a dispatch rule for each, routing to specialized agents with different prompts and tools.
+  </Accordion>
+  <Accordion title="Campaign-specific numbers" icon="bullhorn">
+    Use unique phone numbers for different marketing campaigns or ad channels. Route each to the same agent but use dynamic variables to track which campaign the caller came from.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Prerequisites
+
+Before creating dispatch rules, make sure you have:
+
+<CardGroup cols={2}>
+  <Card title="At least one agent" icon="robot" href="/guides/agents">
+    Create and test an agent before routing live calls to it.
+  </Card>
+  <Card title="At least one phone number" icon="phone" href="/guides/phone-numbers">
+    Purchase or import a phone number to use as the inbound line.
+  </Card>
+</CardGroup>
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: "Tools & Functions"
-description: "Equip your AI agents with actionable skills like call transferring and ending conversations."
+description: "Equip your AI agents with real-world capabilities -- end calls, transfer to humans, trigger webhooks, and call external APIs during live conversations."
 ---
 
 The **Tools** page (also referred to as the Functions Library) is where you define the specific actions your AI agents can perform during a live call. By attaching functions to an agent, you upgrade them from a conversational bot to a functional assistant capable of executing real-world tasks.
@@ -11,9 +11,23 @@ The **Tools** page (also referred to as the Functions Library) is where you defi
 
 ---
 
+## How Tools Work
+
+When a tool is attached to an agent, its **name** and **description** are injected into the LLM's context window. During a conversation, the AI decides when to invoke a tool based on the description you provide. This means:
+
+- The **description** is the single most important field -- it tells the AI *when* and *why* to trigger the tool.
+- The **name** should be a clear, lowercase identifier (e.g., `end_call`, `transfer_to_support`).
+- Tools execute instantly during the call -- the caller doesn't notice any delay.
+
+<Note>
+  **Key insight:** Think of the tool description as a prompt. The more specific and contextual your instructions, the more accurately the AI will know when to fire the tool.
+</Note>
+
+---
+
 ## Adding a Function
 
-To create a new tool, click the **+ Add Function** button in the top right corner of the Functions Library. Currently, Agni supports two primary telephony functions: **End call** and **Call transfer**.
+To create a new tool, click the **+ Add Function** button in the top right corner of the Functions Library. Agni supports the following built-in function types:
 
 <Frame>
   <img src="/images/tools-add-dropdown.png" alt="Add Function Dropdown" />
@@ -29,11 +43,24 @@ The **End Call** function allows the AI agent to politely and intentionally hang
 
 **Configuration Fields:**
 - **Name:** The internal identifier for the function (e.g., `end_call`).
-- **Description:** A crucial instruction field. Write a clear, natural-language description telling the AI *exactly* when it should trigger this function (e.g., *"Call this function only after you have confirmed the user's appointment and said goodbye"*).
+- **Description:** A natural-language instruction telling the AI *exactly* when it should trigger this function.
 
-<Note>
-  **Prompting Tip:** The text you write in the **Description** field is passed directly to the LLM's context window. The clearer and more specific your instructions, the more accurately the AI will know when to trigger the tool.
-</Note>
+**Example descriptions that work well:**
+
+```
+"End the call after you have confirmed the user's appointment time,
+repeated it back, and said goodbye. Do not end the call if the user
+has any remaining questions."
+```
+
+```
+"Hang up if the caller is abusive, uses profanity more than twice,
+or explicitly asks to end the conversation."
+```
+
+<Warning>
+  Avoid vague descriptions like "End the call when done." The AI needs specific, context-rich triggers to act reliably.
+</Warning>
 
 ---
 
@@ -46,23 +73,56 @@ The **Call Transfer** function allows the AI to route an active caller to a huma
 </Frame>
 
 **Configuration Fields:**
-- **Name:** The identifier for the AI to call (e.g., `transfer_call`).
+- **Name:** The identifier for the AI to call (e.g., `transfer_to_support`).
 - **On Hold Music:** Toggle this on to play holding music while the transfer connects.
-- **Description:** Tell the AI when to trigger the transfer (e.g., *"Trigger this if the user asks to speak to a human representative or manager"*).
+- **Description:** Tell the AI when to trigger the transfer.
 - **From Section:** Define the originating identity of the transfer. You must provide the **SIP** address and the associated **Phone Number**.
 - **To Section:** Define the **Destination Phone Number** where the call should be routed.
 
+**Example description:**
+
+```
+"Transfer the call to a human agent if the user explicitly asks to
+speak to a person, a manager, or says they want a real human. Also
+transfer if the conversation loops more than 3 times on the same issue."
+```
+
 ---
 
-## API Reference
+## Best Practices
 
-You can completely manage your agent tools and functions programmatically using the Agni REST API.
+<AccordionGroup>
+  <Accordion title="Write descriptions like you're training a new employee" icon="lightbulb">
+    Don't assume the AI knows your business logic. Spell out the exact conditions, in plain English, for when each tool should fire. Include edge cases.
+  </Accordion>
+  <Accordion title="Test every tool in the web call simulator" icon="flask">
+    Before going live, use the [agent testing interface](/guides/agents#testing-your-agent) to verify your tools fire at the right moments. Try to trick the AI into firing them at the wrong time.
+  </Accordion>
+  <Accordion title="Keep tool names short and descriptive" icon="tag">
+    Use `end_call`, `transfer_to_billing`, `check_order_status` -- not `tool1` or `myFunction`. The name is part of the LLM's context.
+  </Accordion>
+  <Accordion title="One tool per action" icon="bullseye">
+    Don't try to overload a single tool with multiple behaviors. Create separate tools for separate actions -- it gives the AI clearer decision boundaries.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Managing Tools via API
+
+You can create, update, and delete tools programmatically using the Agni REST API. This is useful for automating tool deployment across multiple agents.
 
 <CardGroup cols={2}>
   <Card title="Create Tool" icon="plus" href="/api-reference/tools/create">
-    Define a new tool or function payload via the API.
+    Define a new tool with a JSON Schema definition via the API.
   </Card>
   <Card title="List Tools" icon="list" href="/api-reference/tools/list">
     Retrieve your entire library of configured functions.
+  </Card>
+  <Card title="Update Tool" icon="pen" href="/api-reference/tools/update">
+    Modify a tool's name, description, or definition.
+  </Card>
+  <Card title="Delete Tool" icon="trash" href="/api-reference/tools/delete">
+    Remove a tool from your library.
   </Card>
 </CardGroup>

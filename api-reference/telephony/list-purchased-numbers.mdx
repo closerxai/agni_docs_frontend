@@ -1,132 +1,103 @@
 ---
 title: "List Purchased Numbers"
 openapi: "GET /api/v1/phone-numbers/list"
-description: "List Purchased Numbers."
+description: "Retrieve all phone numbers currently owned by your organization, with details about pricing, status, and associated telephony configuration."
 ---
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
 
 ### Query Parameters
 
-<ParamField query="region" type="string">
-  Region filter
-</ParamField>
-
-<ParamField query="iso_country" type="string">
-  ISO country code filter
-</ParamField>
-
-<ParamField query="is_active" type="boolean">
-  Filter by active status
-</ParamField>
+<ParamField query="region" type="string">Filter by region or state.</ParamField>
+<ParamField query="iso_country" type="string">Filter by ISO country code (e.g. `US`, `GB`).</ParamField>
+<ParamField query="is_active" type="boolean">Filter by active status — `true` for active numbers, `false` for inactive.</ParamField>
 
 ---
 
 ### Response
 
-<ResponseField name="success" type="boolean">
-  Whether the request succeeded.
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Human-readable status message.
-</ResponseField>
-
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
 <ResponseField name="data" type="object[]">
-  Returned data.
+  Array of purchased phone number records.
 
   <Expandable title="data[]">
-    <ResponseField name="id" type="string">
-      Record ID
-    </ResponseField>
-
-    <ResponseField name="telephony_id" type="string">
-      Associated telephony ID
-    </ResponseField>
-
-    <ResponseField name="subscription_id" type="string">
-      Associated subscription ID
-    </ResponseField>
-
-    <ResponseField name="inbound_trunk_id" type="string">
-      Inbound SIP trunk ID
-    </ResponseField>
-
-    <ResponseField name="outbound_trunk_id" type="string">
-      Outbound SIP trunk ID
-    </ResponseField>
-
-    <ResponseField name="number" type="string">
-      Phone number in E.164 format
-    </ResponseField>
-
-    <ResponseField name="friendly_name" type="string">
-      Human-readable label
-    </ResponseField>
-
-    <ResponseField name="per_minute_price_inbound" type="integer">
-      Per-minute inbound price
-    </ResponseField>
-
-    <ResponseField name="per_minute_price_outbound" type="integer">
-      Per-minute outbound price
-    </ResponseField>
-
-    <ResponseField name="price" type="integer">
-      Monthly price
-    </ResponseField>
-
-    <ResponseField name="region" type="string">
-      Region
-    </ResponseField>
-
-    <ResponseField name="iso_country" type="string">
-      ISO country code
-    </ResponseField>
-
-    <ResponseField name="is_active" type="boolean">
-      Whether the number is active
-    </ResponseField>
-
-    <ResponseField name="created_at" type="string">
-      Creation timestamp
-    </ResponseField>
-
-    <ResponseField name="updated_at" type="string">
-      Last update timestamp
-    </ResponseField>
+    <ResponseField name="id" type="string">Unique record ID (UUID).</ResponseField>
+    <ResponseField name="telephony_id" type="string">Associated telephony provider configuration ID.</ResponseField>
+    <ResponseField name="subscription_id" type="string">Billing subscription ID for this number.</ResponseField>
+    <ResponseField name="inbound_trunk_id" type="string">Inbound SIP trunk ID for receiving calls.</ResponseField>
+    <ResponseField name="outbound_trunk_id" type="string">Outbound SIP trunk ID for making calls.</ResponseField>
+    <ResponseField name="number" type="string">Phone number in E.164 format.</ResponseField>
+    <ResponseField name="friendly_name" type="string">Human-readable label for the number.</ResponseField>
+    <ResponseField name="per_minute_price_inbound" type="number">Per-minute cost for receiving calls (USD).</ResponseField>
+    <ResponseField name="per_minute_price_outbound" type="number">Per-minute cost for making calls (USD).</ResponseField>
+    <ResponseField name="price" type="number">Monthly cost of the number (USD).</ResponseField>
+    <ResponseField name="region" type="string">Geographic region of the number.</ResponseField>
+    <ResponseField name="iso_country" type="string">ISO country code.</ResponseField>
+    <ResponseField name="is_active" type="boolean">Whether the number is currently active.</ResponseField>
+    <ResponseField name="created_at" type="string">ISO 8601 timestamp when the number was purchased.</ResponseField>
+    <ResponseField name="updated_at" type="string">ISO 8601 timestamp of last update.</ResponseField>
   </Expandable>
 </ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl "https://api.ravan.ai/api/v1/phone-numbers/list?is_active=true" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.ravan.ai/api/v1/phone-numbers/list",
+    headers={"X-Api-Key": "YOUR_API_KEY"},
+    params={"is_active": True}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.ravan.ai/api/v1/phone-numbers/list?is_active=true",
+  { headers: { "X-Api-Key": "YOUR_API_KEY" } }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "Phone numbers fetched successfully",
   "data": [
     {
-      "id": "id_123",
-      "telephony_id": "telephony_123",
-      "subscription_id": "subscription_123",
-      "inbound_trunk_id": "inbound_trunk_123",
-      "outbound_trunk_id": "outbound_trunk_123",
-      "number": "+14155550100",
-      "friendly_name": "Support Bot",
-      "per_minute_price_inbound": 1,
-      "per_minute_price_outbound": 1,
-      "price": 1,
-      "region": "example",
+      "id": "019d2a1b-4c5e-7f8a-9b0c-1d2e3f4a5b6c",
+      "telephony_id": "019d2a1b-5d6f-7a8b-9c0d-2e3f4a5b6c7d",
+      "subscription_id": "sub_1234567890",
+      "inbound_trunk_id": "trk_inb_abc123",
+      "outbound_trunk_id": "trk_out_def456",
+      "number": "+13612738809",
+      "friendly_name": "Sales Line",
+      "per_minute_price_inbound": 0.0085,
+      "per_minute_price_outbound": 0.0945,
+      "price": 1.15,
+      "region": "TX",
       "iso_country": "US",
       "is_active": true,
-      "created_at": "2026-03-14T12:00:00Z",
-      "updated_at": "2026-03-14T12:00:00Z"
+      "created_at": "2026-03-15T09:00:00Z",
+      "updated_at": "2026-03-15T09:00:00Z"
     }
   ]
 }

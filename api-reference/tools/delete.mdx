@@ -1,13 +1,17 @@
 ---
 title: "Delete Agent Tool"
 openapi: "DELETE /api/v1/tools/{id}/"
-description: "Delete Agent Tool."
+description: "Permanently delete an agent tool. Any agents using this tool will no longer be able to invoke it."
 ---
+
+<Warning>
+  This action is irreversible. The tool will be permanently removed. Any agents that reference this tool will lose access to it.
+</Warning>
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
@@ -15,7 +19,7 @@ description: "Delete Agent Tool."
 ### Path Parameters
 
 <ParamField path="id" type="string" required>
-  Tool ID
+  The unique UUID of the tool to delete.
 </ParamField>
 
 ---
@@ -30,12 +34,57 @@ description: "Delete Agent Tool."
   Human-readable status message.
 </ResponseField>
 
+<RequestExample>
+
+```bash cURL
+curl -X DELETE https://api.ravan.ai/api/v1/tools/019d1fdb-3977-7bd5-ab27-8d3b37ddf4fc/ \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+tool_id = "019d1fdb-3977-7bd5-ab27-8d3b37ddf4fc"
+response = requests.delete(
+    f"https://api.ravan.ai/api/v1/tools/{tool_id}/",
+    headers={"X-Api-Key": "YOUR_API_KEY"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const toolId = "019d1fdb-3977-7bd5-ab27-8d3b37ddf4fc";
+const response = await fetch(
+  `https://api.ravan.ai/api/v1/tools/${toolId}/`,
+  {
+    method: "DELETE",
+    headers: { "X-Api-Key": "YOUR_API_KEY" }
+  }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
+
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully"
+  "message": "Tool deleted successfully"
+}
+```
+
+</ResponseExample>
+
+<ResponseExample>
+
+```json 400
+{
+  "code": 3,
+  "message": "invalid uuid \"not-a-uuid\": invalid UUID length: 10",
+  "details": []
 }
 ```
 

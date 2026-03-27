@@ -1,33 +1,50 @@
 ---
 title: "Create Agent Tool"
 openapi: "POST /api/v1/tools/"
-description: "Create Agent Tool."
+description: "Create a new custom tool (function or webhook) that agents can invoke during calls to perform actions like looking up data, booking appointments, or triggering external workflows."
 ---
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
 
 ### Body
 
-<ParamField body="name" type="string">
-  Tool name
+<ParamField body="name" type="string" required>
+  Tool name. Must be a valid function name — use lowercase letters, numbers, and underscores only (e.g. `check_order_status`). No spaces allowed.
 </ParamField>
 
-<ParamField body="description" type="string">
-  Tool description
+<ParamField body="description" type="string" required>
+  Human-readable description of what the tool does. The LLM uses this to decide when to call the tool, so be specific (e.g. "Look up the shipping status of a customer order by order ID").
 </ParamField>
 
-<ParamField body="type" type="string">
-  Tool type (e.g. webhook, function)
+<ParamField body="type" type="string" required>
+  Tool type. Supported values: `function`, `webhook`.
 </ParamField>
 
-<ParamField body="definition" type="object">
-  Tool definition schema
+<ParamField body="definition" type="object" required>
+  Tool definition following the OpenAI function calling schema. Must include `name`, `description`, and `parameters` (JSON Schema format).
+
+  ```json Example
+  {
+    "name": "check_order_status",
+    "description": "Look up the current status of a customer order",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "The unique order identifier"
+        }
+      },
+      "required": ["order_id"]
+    }
+  }
+  ```
 </ParamField>
 
 ---
@@ -43,54 +60,151 @@ description: "Create Agent Tool."
 </ResponseField>
 
 <ResponseField name="data" type="object">
-  Returned data.
+  The newly created tool object.
 
   <Expandable title="data">
-    <ResponseField name="id" type="string">
-      Unique tool ID
-    </ResponseField>
-
-    <ResponseField name="organization_id" type="string">
-      Organization this tool belongs to
-    </ResponseField>
-
-    <ResponseField name="name" type="string">
-      Tool name
-    </ResponseField>
-
-    <ResponseField name="description" type="string">
-      Tool description
-    </ResponseField>
-
-    <ResponseField name="type" type="string">
-      Tool type (e.g. webhook, function)
-    </ResponseField>
-
-    <ResponseField name="definition" type="object">
-      Tool definition schema
-    </ResponseField>
-
-    <ResponseField name="is_active" type="boolean">
-      Whether the tool is active
-    </ResponseField>
+    <ResponseField name="id" type="string">Unique tool ID (UUID) assigned by the server.</ResponseField>
+    <ResponseField name="organization_id" type="string">Organization ID.</ResponseField>
+    <ResponseField name="name" type="string">Tool name.</ResponseField>
+    <ResponseField name="description" type="string">Tool description.</ResponseField>
+    <ResponseField name="type" type="string">Tool type.</ResponseField>
+    <ResponseField name="definition" type="object">Tool definition schema.</ResponseField>
+    <ResponseField name="is_active" type="boolean">Whether the tool is active (defaults to `false` on creation).</ResponseField>
   </Expandable>
 </ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/tools/ \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "check_order_status",
+    "description": "Look up the current status of a customer order by order ID",
+    "type": "function",
+    "definition": {
+      "name": "check_order_status",
+      "description": "Look up the current status of a customer order",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "description": "The unique order identifier"
+          }
+        },
+        "required": ["order_id"]
+      }
+    }
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.ravan.ai/api/v1/tools/",
+    headers={
+        "X-Api-Key": "YOUR_API_KEY",
+        "Content-Type": "application/json"
+    },
+    json={
+        "name": "check_order_status",
+        "description": "Look up the current status of a customer order by order ID",
+        "type": "function",
+        "definition": {
+            "name": "check_order_status",
+            "description": "Look up the current status of a customer order",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "order_id": {
+                        "type": "string",
+                        "description": "The unique order identifier"
+                    }
+                },
+                "required": ["order_id"]
+            }
+        }
+    }
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/tools/", {
+  method: "POST",
+  headers: {
+    "X-Api-Key": "YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    name: "check_order_status",
+    description: "Look up the current status of a customer order by order ID",
+    type: "function",
+    definition: {
+      name: "check_order_status",
+      description: "Look up the current status of a customer order",
+      parameters: {
+        type: "object",
+        properties: {
+          order_id: {
+            type: "string",
+            description: "The unique order identifier"
+          }
+        },
+        required: ["order_id"]
+      }
+    }
+  })
+});
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "Tool created successfully",
   "data": {
-    "id": "id_123",
-    "organization_id": "organization_123",
-    "name": "Support Bot",
-    "description": "Example description",
-    "type": "twilio",
-    "definition": {},
-    "is_active": true
+    "id": "019d1fdb-3977-7bd5-ab27-8d3b37ddf4fc",
+    "organizationId": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+    "name": "check_order_status",
+    "description": "Look up the current status of a customer order by order ID",
+    "type": "function",
+    "definition": {
+      "name": "check_order_status",
+      "description": "Look up the current status of a customer order",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "description": "The unique order identifier"
+          }
+        },
+        "required": ["order_id"]
+      }
+    },
+    "isActive": false
   }
+}
+```
+
+</ResponseExample>
+
+<ResponseExample>
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
 }
 ```
 
