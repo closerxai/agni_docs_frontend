@@ -1,0 +1,126 @@
+---
+title: "Update Contact"
+openapi: "PATCH /api/v1/contacts/{id}"
+description: "Update one or more fields of an existing contact. Only include fields you want to change."
+---
+
+<Note>This is a partial update (PATCH). Only include the fields you want to modify.</Note>
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Path Parameters
+<ParamField path="id" type="string" required>UUID of the contact to update.</ParamField>
+
+### Body
+<ParamField body="first_name" type="string">Updated first name.</ParamField>
+<ParamField body="last_name" type="string">Updated last name.</ParamField>
+<ParamField body="email" type="string">Updated email.</ParamField>
+<ParamField body="phone" type="string">Updated phone (E.164).</ParamField>
+<ParamField body="company" type="string">Updated company.</ParamField>
+<ParamField body="metadata" type="object">Updated metadata.</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object">The updated contact record.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X PATCH https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b \
+  -H "X-Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" \
+  -d '{"company": "Acme Corp Inc."}'
+```
+
+```python Python
+import requests
+response = requests.patch("https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b",
+    headers={"X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json"}, json={"company": "Acme Corp Inc."})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b", {
+  method: "PATCH", headers: { "X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json" },
+  body: JSON.stringify({ company: "Acme Corp Inc." })
+});
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true, "message": "Contact updated successfully",
+  "data": { "id": "019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b", "first_name": "John", "last_name": "Smith", "email": "john@example.com", "phone": "+14155550100", "company": "Acme Corp Inc.", "updated_at": "2026-03-20T16:00:00Z" }
+}
+```
+
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
+}
+```
+
+</ResponseExample>

@@ -1,0 +1,118 @@
+---
+title: "List Documents"
+openapi: "GET /api/v1/rag/documents"
+description: "List all documents in a specific knowledge base."
+---
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Query Parameters
+<ParamField query="org_id" type="string" required>UUID of your organization.</ParamField>
+<ParamField query="kb_id" type="string" required>Knowledge base identifier.</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object[]">Array of document records.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl "https://api.ravan.ai/api/v1/rag/documents?org_id=1268c1f0-19f3-47db-aefb-c16a7c3ace6e&kb_id=product_docs" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+response = requests.get("https://api.ravan.ai/api/v1/rag/documents",
+    headers={"X-Api-Key": "YOUR_API_KEY"},
+    params={"org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e", "kb_id": "product_docs"})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/rag/documents?org_id=1268c1f0-19f3-47db-aefb-c16a7c3ace6e&kb_id=product_docs",
+  { headers: { "X-Api-Key": "YOUR_API_KEY" } });
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Documents retrieved successfully",
+  "data": [
+    { "doc_id": "pricing_page", "kb_id": "product_docs", "status": "indexed", "metadata": {"category": "pricing"}, "created_at": "2026-03-20T10:30:00Z" }
+  ]
+}
+```
+
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
+}
+```
+
+</ResponseExample>

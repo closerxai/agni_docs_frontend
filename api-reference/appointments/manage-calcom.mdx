@@ -39,6 +39,10 @@ description: "Book, reschedule, cancel, or check availability for appointments t
   Customer's phone number in E.164 format. Required for `book` if `email` is not provided.
 </ParamField>
 
+<ParamField body="timezone" type="string">
+  Customer's IANA timezone (e.g. `America/New_York`, `Europe/London`). Used to display and confirm appointment times in the customer's local time.
+</ParamField>
+
 <ParamField body="appointment_datetime" type="string">
   Desired appointment date and time in ISO 8601 format (e.g. `2026-03-25T14:00:00Z`). Required for `book` and `reschedule`.
 </ParamField>
@@ -160,9 +164,8 @@ console.log(data);
 }
 ```
 
-</ResponseExample>
 
-<ResponseExample>
+
 
 ```json 422
 {
@@ -184,6 +187,34 @@ console.log(data);
         }
       ]
     }
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
   }
 }
 ```

@@ -85,4 +85,68 @@ console.log(data);
 }
 ```
 
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
+}
+```
+
 </ResponseExample>

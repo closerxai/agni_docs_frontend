@@ -1,0 +1,114 @@
+---
+title: "Get Contact Campaigns"
+openapi: "GET /api/v1/contacts/{id}/campaigns"
+description: "List all campaigns a contact is associated with, including their status in each."
+---
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Path Parameters
+<ParamField path="id" type="string" required>UUID of the contact.</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object[]">Array of campaign associations.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b/campaigns \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+response = requests.get("https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b/campaigns", headers={"X-Api-Key": "YOUR_API_KEY"})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b/campaigns", { headers: { "X-Api-Key": "YOUR_API_KEY" } });
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true, "message": "Campaigns fetched successfully",
+  "data": [
+    { "campaign_id": "019d4a3b-6c7d-8e9f-0a1b-2c3d4e5f6a7b", "name": "Summer Outreach", "status": "completed", "last_attempt_at": "2026-03-15T14:00:00Z" },
+    { "campaign_id": "019d4a3b-7d8e-9f0a-1b2c-3d4e5f6a7b8c", "name": "Q1 Follow-up", "status": "in_progress", "last_attempt_at": "2026-03-22T10:30:00Z" }
+  ]
+}
+```
+
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
+}
+```
+
+</ResponseExample>

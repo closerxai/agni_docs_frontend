@@ -1,17 +1,29 @@
 ---
 title: "Disconnect Cal.com"
 openapi: "POST /api/v1/calcom/disconnect"
-description: "Disconnect the Cal.com integration from your organization. This revokes OAuth tokens and removes the scheduling connection."
+description: "Disconnect a specific Cal.com provider connection from your organization. This revokes the stored API key and removes the scheduling link."
 ---
 
 <Warning>
-  This will disconnect Cal.com from your organization. You will need to re-authorize via OAuth to reconnect.
+  This will disconnect the specified Cal.com connection. Agents using this connection will no longer be able to book appointments through Cal.com.
 </Warning>
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
   Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
+</ParamField>
+
+---
+
+### Body
+
+<ParamField body="org_id" type="string" required>
+  UUID of your organization.
+</ParamField>
+
+<ParamField body="provider_id" type="string" required>
+  UUID of the Cal.com provider connection to disconnect. Retrieve this from the [Connect](/api-reference/calcom/connect) response or [Status](/api-reference/calcom/status) endpoint.
 </ParamField>
 
 ---
@@ -26,7 +38,12 @@ description: "Disconnect the Cal.com integration from your organization. This re
 
 ```bash cURL
 curl -X POST https://api.ravan.ai/api/v1/calcom/disconnect \
-  -H "X-Api-Key: YOUR_API_KEY"
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+    "provider_id": "019d4a3b-6c7d-8e9f-0a1b-2c3d4e5f6a7b"
+  }'
 ```
 
 ```python Python
@@ -34,19 +51,24 @@ import requests
 
 response = requests.post(
     "https://api.ravan.ai/api/v1/calcom/disconnect",
-    headers={"X-Api-Key": "YOUR_API_KEY"}
+    headers={"X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json"},
+    json={
+        "org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+        "provider_id": "019d4a3b-6c7d-8e9f-0a1b-2c3d4e5f6a7b"
+    }
 )
 print(response.json())
 ```
 
 ```javascript JavaScript
-const response = await fetch(
-  "https://api.ravan.ai/api/v1/calcom/disconnect",
-  {
-    method: "POST",
-    headers: { "X-Api-Key": "YOUR_API_KEY" }
-  }
-);
+const response = await fetch("https://api.ravan.ai/api/v1/calcom/disconnect", {
+  method: "POST",
+  headers: { "X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json" },
+  body: JSON.stringify({
+    org_id: "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+    provider_id: "019d4a3b-6c7d-8e9f-0a1b-2c3d4e5f6a7b"
+  })
+});
 const data = await response.json();
 console.log(data);
 ```
@@ -60,6 +82,70 @@ console.log(data);
   "success": true,
   "message": "Cal.com disconnected successfully",
   "data": {}
+}
+```
+
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
 }
 ```
 

@@ -1,13 +1,21 @@
 ---
 title: "Cal.com Connection Status"
 openapi: "GET /api/v1/calcom/status"
-description: "Check whether Cal.com is connected to your organization and whether the OAuth tokens are still valid."
+description: "Check whether Cal.com is connected to your organization and whether the API key is still valid."
 ---
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
   Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
+</ParamField>
+
+---
+
+### Query Parameters
+
+<ParamField query="org_id" type="string" required>
+  UUID of your organization.
 </ParamField>
 
 ---
@@ -72,9 +80,8 @@ console.log(data);
 }
 ```
 
-</ResponseExample>
 
-<ResponseExample>
+
 
 ```json 200 (not connected)
 {
@@ -85,6 +92,70 @@ console.log(data);
     "connected": false,
     "message": "Cal.com is not connected",
     "status": "not_connected"
+  }
+}
+```
+
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
   }
 }
 ```

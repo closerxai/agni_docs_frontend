@@ -17,7 +17,7 @@
       }
     }
   },
-"navigation": {
+  "navigation": {
     "tabs": [
       {
         "tab": "Guides",
@@ -109,8 +109,25 @@
               "api-reference/telephony/release-number",
               "api-reference/telephony/list-purchased-numbers",
               "api-reference/telephony/import-number",
-              "api-reference/telephony/create-telephony",
               "api-reference/telephony/list-twilio-numbers"
+            ]
+          },
+          {
+            "group": "Contact API",
+            "pages": [
+              "api-reference/contacts/create",
+              "api-reference/contacts/get",
+              "api-reference/contacts/list",
+              "api-reference/contacts/update",
+              "api-reference/contacts/delete",
+              "api-reference/contacts/bulk-delete",
+              "api-reference/contacts/get-detail",
+              "api-reference/contacts/get-calls",
+              "api-reference/contacts/get-call-stats",
+              "api-reference/contacts/get-activities",
+              "api-reference/contacts/get-campaigns",
+              "api-reference/contacts/create-note",
+              "api-reference/contacts/list-notes"
             ]
           },
           {
@@ -136,13 +153,33 @@
           {
             "group": "Cal.com Integration API",
             "pages": [
-              "api-reference/calcom/oauth-connect",
-              "api-reference/calcom/oauth-callback",
+              "api-reference/calcom/connect",
+              "api-reference/calcom/disconnect",
               "api-reference/calcom/status",
               "api-reference/calcom/list-event-types",
               "api-reference/calcom/lookup-event-type",
               "api-reference/calcom/list-appointments",
-              "api-reference/calcom/disconnect"
+              "api-reference/calcom/get-appointment"
+            ]
+          },
+          {
+            "group": "RAG Knowledge Base API",
+            "pages": [
+              "api-reference/rag/upsert-document",
+              "api-reference/rag/get-document",
+              "api-reference/rag/list-documents",
+              "api-reference/rag/list-knowledgebases",
+              "api-reference/rag/query",
+              "api-reference/rag/discover",
+              "api-reference/rag/refresh",
+              "api-reference/rag/manage-exclusions",
+              "api-reference/rag/list-exclusions"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "api-reference/webhooks/after-call"
             ]
           },
           {

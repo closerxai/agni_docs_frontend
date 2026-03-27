@@ -1,0 +1,161 @@
+---
+title: "Connect Cal.com"
+openapi: "POST /api/v1/calcom/connect"
+description: "Connect your Cal.com account to Agni using an API key. This enables your AI agents to manage appointments through Cal.com calendars."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
+</ParamField>
+
+---
+
+### Body
+
+<ParamField body="org_id" type="string" required>
+  UUID of your organization.
+</ParamField>
+
+<ParamField body="api_key" type="string" required>
+  Your Cal.com API key (e.g. `cal_live_...`). Generate this from your Cal.com dashboard under **Settings → Developer → API Keys**.
+</ParamField>
+
+<ParamField body="account_name" type="string">
+  A friendly name for this Cal.com connection (e.g. `"Main Calendar"`).
+</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object">Connection details including the provider ID.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/calcom/connect \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+    "api_key": "cal_live_your_api_key_here",
+    "account_name": "Main Calendar"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.ravan.ai/api/v1/calcom/connect",
+    headers={"X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json"},
+    json={
+        "org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+        "api_key": "cal_live_your_api_key_here",
+        "account_name": "Main Calendar"
+    }
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/calcom/connect", {
+  method: "POST",
+  headers: { "X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json" },
+  body: JSON.stringify({
+    org_id: "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+    api_key: "cal_live_your_api_key_here",
+    account_name: "Main Calendar"
+  })
+});
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Cal.com connected successfully",
+  "data": {
+    "provider_id": "019d4a3b-6c7d-8e9f-0a1b-2c3d4e5f6a7b",
+    "org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+    "account_name": "Main Calendar",
+    "status": "active",
+    "connected_at": "2026-03-20T14:30:00Z"
+  }
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
+}
+```
+
+</ResponseExample>

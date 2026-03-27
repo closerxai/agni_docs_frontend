@@ -1,0 +1,126 @@
+---
+title: "Query Knowledge Base"
+openapi: "POST /api/v1/rag/query"
+description: "Run a semantic search query against a knowledge base to retrieve the most relevant document chunks."
+---
+
+<Note>This endpoint is used internally by agents during calls. You can also call it directly to test retrieval quality.</Note>
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Body
+<ParamField body="org_id" type="string" required>UUID of your organization.</ParamField>
+<ParamField body="kb_id" type="string" required>Knowledge base to search.</ParamField>
+<ParamField body="query" type="string" required>Natural language question or search query.</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object">Query results with relevant document chunks and similarity scores.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/rag/query \
+  -H "X-Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" \
+  -d '{"org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e", "kb_id": "product_docs", "query": "What is the pricing per minute?"}'
+```
+
+```python Python
+import requests
+response = requests.post("https://api.ravan.ai/api/v1/rag/query",
+    headers={"X-Api-Key": "YOUR_API_KEY"},
+    json={"org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e", "kb_id": "product_docs", "query": "What is the pricing per minute?"})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/rag/query", {
+  method: "POST", headers: { "X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json" },
+  body: JSON.stringify({ org_id: "1268c1f0-19f3-47db-aefb-c16a7c3ace6e", kb_id: "product_docs", query: "What is the pricing per minute?" })
+});
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Query completed successfully",
+  "data": {
+    "results": [
+      { "doc_id": "pricing_page", "chunk": "Our pricing starts at $0.07 per minute for all voice AI calls. No hidden fees.", "score": 0.94, "metadata": {"category": "pricing"} }
+    ]
+  }
+}
+```
+
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
+}
+```
+
+</ResponseExample>

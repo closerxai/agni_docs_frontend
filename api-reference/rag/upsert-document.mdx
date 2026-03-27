@@ -1,0 +1,162 @@
+---
+title: "Upsert Document"
+openapi: "POST /api/v1/rag/document"
+description: "Add or update a document in a knowledge base. Supports raw text, single URL crawling, and batch URL crawling with configurable depth."
+---
+
+### Authorizations
+
+<ParamField header="X-Api-Key" type="string" required>
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
+</ParamField>
+
+---
+
+### Body
+
+<ParamField body="org_id" type="string" required>UUID of your organization.</ParamField>
+<ParamField body="kb_id" type="string" required>Knowledge base identifier (e.g. `"product_docs"`, `"help_center"`).</ParamField>
+<ParamField body="doc_id" type="string" required>Unique document identifier. If a document with this ID exists, it will be updated.</ParamField>
+<ParamField body="text" type="string">Raw text content to ingest. Omit if using `url` or `urls`.</ParamField>
+<ParamField body="url" type="string">Single URL to crawl and ingest.</ParamField>
+<ParamField body="urls" type="string[]">Array of URLs for batch crawling.</ParamField>
+<ParamField body="max_pages" type="integer">Maximum pages to crawl. Default: `500`.</ParamField>
+<ParamField body="max_depth" type="integer">Maximum link depth to follow. Default: `5`.</ParamField>
+<ParamField body="metadata" type="object">Optional key-value metadata (e.g. `{"category": "pricing"}`).</ParamField>
+
+---
+
+### Response
+
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object">The upserted document record.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/rag/document \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+    "kb_id": "product_docs",
+    "doc_id": "pricing_page",
+    "text": "Our pricing starts at $0.07 per minute for all voice AI calls.",
+    "metadata": {"category": "pricing"}
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.ravan.ai/api/v1/rag/document",
+    headers={"X-Api-Key": "YOUR_API_KEY"},
+    json={
+        "org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+        "kb_id": "product_docs",
+        "doc_id": "pricing_page",
+        "text": "Our pricing starts at $0.07 per minute.",
+        "metadata": {"category": "pricing"}
+    }
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/rag/document", {
+  method: "POST",
+  headers: { "X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json" },
+  body: JSON.stringify({
+    org_id: "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+    kb_id: "product_docs", doc_id: "pricing_page",
+    text: "Our pricing starts at $0.07 per minute.",
+    metadata: { category: "pricing" }
+  })
+});
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Document upserted successfully",
+  "data": {
+    "org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+    "kb_id": "product_docs",
+    "doc_id": "pricing_page",
+    "status": "indexed"
+  }
+}
+```
+
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
+}
+```
+
+</ResponseExample>

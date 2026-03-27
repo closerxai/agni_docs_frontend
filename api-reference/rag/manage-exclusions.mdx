@@ -1,0 +1,116 @@
+---
+title: "Manage Exclusions"
+openapi: "POST /api/v1/rag/exclusions"
+description: "Add or remove URL exclusions from a knowledge base. Excluded URLs will be skipped during crawling and indexing."
+---
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Body
+<ParamField body="org_id" type="string" required>UUID of your organization.</ParamField>
+<ParamField body="kb_id" type="string" required>Knowledge base identifier.</ParamField>
+<ParamField body="action" type="string" required>Action to perform. Values: `add`, `remove`.</ParamField>
+<ParamField body="urls" type="string[]" required>Array of URLs to add to or remove from the exclusion list.</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/rag/exclusions \
+  -H "X-Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" \
+  -d '{"org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e", "kb_id": "help_center", "action": "add", "urls": ["https://docs.example.com/internal"]}'
+```
+
+```python Python
+import requests
+response = requests.post("https://api.ravan.ai/api/v1/rag/exclusions",
+    headers={"X-Api-Key": "YOUR_API_KEY"},
+    json={"org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e", "kb_id": "help_center", "action": "add", "urls": ["https://docs.example.com/internal"]})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/rag/exclusions", {
+  method: "POST", headers: { "X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json" },
+  body: JSON.stringify({ org_id: "1268c1f0-19f3-47db-aefb-c16a7c3ace6e", kb_id: "help_center", action: "add", urls: ["https://docs.example.com/internal"] })
+});
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{ "success": true, "message": "Exclusions updated successfully" }
+```
+
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
+}
+```
+
+</ResponseExample>

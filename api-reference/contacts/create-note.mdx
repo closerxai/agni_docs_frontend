@@ -1,0 +1,120 @@
+---
+title: "Create Contact Note"
+openapi: "POST /api/v1/contacts/{id}/notes"
+description: "Add a note to a contact's profile. Notes appear in the contact's activity timeline."
+---
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Path Parameters
+<ParamField path="id" type="string" required>UUID of the contact.</ParamField>
+
+### Body
+<ParamField body="content" type="string" required>The note text to add.</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object">The created note record.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b/notes \
+  -H "X-Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" \
+  -d '{"content": "Interested in enterprise plan. Follow up after demo."}'
+```
+
+```python Python
+import requests
+response = requests.post("https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b/notes",
+    headers={"X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json"},
+    json={"content": "Interested in enterprise plan. Follow up after demo."})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b/notes", {
+  method: "POST", headers: { "X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json" },
+  body: JSON.stringify({ content: "Interested in enterprise plan. Follow up after demo." })
+});
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true, "message": "Note created successfully",
+  "data": { "id": "019d5a4b-7c8d-9e0f-1a2b-3c4d5e6f7a8b", "contact_id": "019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b", "content": "Interested in enterprise plan. Follow up after demo.", "created_at": "2026-03-22T11:00:00Z" }
+}
+```
+
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
+}
+```
+
+</ResponseExample>

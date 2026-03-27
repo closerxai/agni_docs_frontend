@@ -47,14 +47,41 @@ console.log(response.status, data);
 }
 ```
 
-</ResponseExample>
 
-<ResponseExample>
+
 
 ```json 503
 {
   "status": "unready",
   "error": "database connection failed"
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
 }
 ```
 

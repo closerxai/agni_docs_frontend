@@ -1,0 +1,128 @@
+---
+title: "Discover URLs"
+openapi: "POST /api/v1/rag/discover"
+description: "Crawl a website and discover all available URLs before ingesting them. Use this to preview what pages will be indexed."
+---
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Body
+<ParamField body="url" type="string" required>Root URL to start crawling from.</ParamField>
+<ParamField body="max_depth" type="integer">Maximum link depth to follow. Default: `5`.</ParamField>
+<ParamField body="limit" type="integer">Maximum number of URLs to return. Default: `100`.</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object">Discovered URLs and total count.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/rag/discover \
+  -H "X-Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" \
+  -d '{"url": "https://docs.example.com", "max_depth": 3, "limit": 50}'
+```
+
+```python Python
+import requests
+response = requests.post("https://api.ravan.ai/api/v1/rag/discover",
+    headers={"X-Api-Key": "YOUR_API_KEY"},
+    json={"url": "https://docs.example.com", "max_depth": 3, "limit": 50})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/rag/discover", {
+  method: "POST", headers: { "X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json" },
+  body: JSON.stringify({ url: "https://docs.example.com", max_depth: 3, limit: 50 })
+});
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Discovery completed",
+  "data": {
+    "urls": [
+      "https://docs.example.com/",
+      "https://docs.example.com/getting-started",
+      "https://docs.example.com/api-reference",
+      "https://docs.example.com/pricing"
+    ],
+    "total": 4
+  }
+}
+```
+
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
+}
+```
+
+</ResponseExample>

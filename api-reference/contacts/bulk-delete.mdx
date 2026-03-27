@@ -1,0 +1,116 @@
+---
+title: "Bulk Delete Contacts"
+openapi: "POST /api/v1/contacts/bulk-delete"
+description: "Delete multiple contacts at once by providing an array of contact IDs."
+---
+
+<Warning>This action is irreversible. All specified contacts will be permanently removed.</Warning>
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Body
+<ParamField body="ids" type="string[]" required>Array of contact UUIDs to delete.</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object">Deletion result with count.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/contacts/bulk-delete \
+  -H "X-Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" \
+  -d '{"ids": ["019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b", "019d3a2b-6d7e-8f9a-0b1c-2d3e4f5a6b7c"]}'
+```
+
+```python Python
+import requests
+response = requests.post("https://api.ravan.ai/api/v1/contacts/bulk-delete",
+    headers={"X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json"},
+    json={"ids": ["019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b", "019d3a2b-6d7e-8f9a-0b1c-2d3e4f5a6b7c"]})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/contacts/bulk-delete", {
+  method: "POST", headers: { "X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json" },
+  body: JSON.stringify({ ids: ["019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b", "019d3a2b-6d7e-8f9a-0b1c-2d3e4f5a6b7c"] })
+});
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{ "success": true, "message": "Contacts deleted successfully", "data": { "deleted_count": 2 } }
+```
+
+
+
+
+```json 400
+{
+  "code": 3,
+  "message": "Invalid request parameters",
+  "details": []
+}
+```
+
+
+
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+
+
+
+```json 403
+{
+  "success": false,
+  "message": "You do not have permission to perform this action",
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Insufficient permissions for this resource"
+  }
+}
+```
+
+
+
+
+```json 500
+{
+  "success": false,
+  "message": "Something went wrong on our end",
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred. Please try again later."
+  }
+}
+```
+
+
+
+
+```json 502
+{
+  "success": false,
+  "message": "Service temporarily unavailable",
+  "error": {
+    "code": "BAD_GATEWAY",
+    "message": "Unable to reach upstream service. Please try again."
+  }
+}
+```
+
+</ResponseExample>

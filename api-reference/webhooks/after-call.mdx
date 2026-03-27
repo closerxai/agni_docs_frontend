@@ -1,0 +1,173 @@
+---
+title: "After-Call Webhook"
+description: "Receive detailed call data automatically when a call ends — including transcripts, recordings, sentiment analysis, and post-call extraction."
+---
+
+When a call session ends, Agni dispatches a `call.completed` webhook event to any URLs configured in your agent's [Webhook Settings](/guides/agents). This delivers the full call record including transcripts, AI analysis, and metadata.
+
+<Note>
+  Configure webhook URLs in the agent builder's **Webhook Settings** panel, or via the [Agent API](/api-reference/agents/create) `webhook_urls` field.
+</Note>
+
+---
+
+## Event Details
+
+| Field | Value |
+|---|---|
+| **Event name** | `call.completed` |
+| **Method** | `POST` |
+| **Content-Type** | `application/json` |
+| **Trigger** | Automatically dispatched when a call session ends |
+
+---
+
+## Payload Structure
+
+<ResponseField name="event" type="string">
+  Event type identifier. Always `"call.completed"` for this webhook.
+</ResponseField>
+
+<ResponseField name="org_id" type="string">
+  UUID of the organization that owns this call.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Full call session data.
+
+  <Expandable title="data">
+    <ResponseField name="campaign_id" type="string">Campaign ID if the call was part of an outbound campaign. `null` for inbound/web calls.</ResponseField>
+    <ResponseField name="contact_id" type="string">Contact ID if the caller is a known contact in your CRM.</ResponseField>
+    <ResponseField name="phone" type="string">Phone number of the external party in E.164 format.</ResponseField>
+    <ResponseField name="status" type="string">Call outcome status. Values: `completed`, `failed`, `no_answer`, `busy`, `voicemail`.</ResponseField>
+    <ResponseField name="duration_sec" type="integer">Total call duration in seconds.</ResponseField>
+    <ResponseField name="call_session_id" type="string">Unique session ID for this call.</ResponseField>
+    <ResponseField name="attempt" type="integer">Attempt number (for campaign retries). `1` for first attempt.</ResponseField>
+    <ResponseField name="summary" type="string">AI-generated summary of the conversation. Powered by the agent's `analysis_summary_prompt`.</ResponseField>
+    <ResponseField name="recording_url" type="string">URL to the full call recording audio file (MP3).</ResponseField>
+    <ResponseField name="caller_number" type="string">The phone number that initiated the call (your agent's number for outbound, caller's number for inbound).</ResponseField>
+    <ResponseField name="callee_number" type="string">The phone number that received the call.</ResponseField>
+    <ResponseField name="caller_name" type="string">Name of the caller (if known from contacts).</ResponseField>
+    <ResponseField name="caller_email" type="string">Email of the caller (if known from contacts).</ResponseField>
+    <ResponseField name="agent_name" type="string">Name of the AI agent that handled the call.</ResponseField>
+    <ResponseField name="channel" type="string">Call channel. Values: `voice`, `web`, `sip`.</ResponseField>
+    <ResponseField name="disconnect_reason" type="string">Why the call ended. Values: `customer_hangup`, `agent_hangup`, `error`.</ResponseField>
+    <ResponseField name="cost_total" type="number">Total cost of the call in USD.</ResponseField>
+    <ResponseField name="call_latency_ms" type="integer">Average response latency in milliseconds.</ResponseField>
+    <ResponseField name="started_at" type="string">ISO 8601 timestamp when the call started.</ResponseField>
+    <ResponseField name="ended_at" type="string">ISO 8601 timestamp when the call ended.</ResponseField>
+    <ResponseField name="created_at" type="string">ISO 8601 timestamp when the session record was created.</ResponseField>
+
+    <ResponseField name="post_call_analysis" type="object">
+      AI-generated analysis of the call.
+
+      <Expandable title="post_call_analysis">
+        <ResponseField name="sentiment" type="string">Caller sentiment. Values: `positive`, `neutral`, `negative`.</ResponseField>
+        <ResponseField name="disposition" type="string">Call outcome classification (e.g. `meeting_booked`, `not_interested`, `callback_requested`).</ResponseField>
+        <ResponseField name="goals_met" type="boolean">Whether the agent achieved its defined objective.</ResponseField>
+        <ResponseField name="next_steps" type="string">AI-suggested next action (e.g. "Send follow-up details via email").</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="transcripts" type="object[]">
+      Full conversation transcript, ordered chronologically.
+
+      <Expandable title="transcripts[]">
+        <ResponseField name="id" type="string">Unique transcript entry ID.</ResponseField>
+        <ResponseField name="timestamp_ms" type="integer">Milliseconds from the start of the call when this message was spoken.</ResponseField>
+        <ResponseField name="role" type="string">Speaker role. Values: `agent`, `user`.</ResponseField>
+        <ResponseField name="message" type="object">
+          Message content.
+
+          <Expandable title="message">
+            <ResponseField name="content" type="string">The spoken text.</ResponseField>
+            <ResponseField name="format" type="string">Content format. Typically `"text"`.</ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="created_at" type="string">ISO 8601 timestamp.</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+---
+
+## Example Payload
+
+```json
+{
+  "event": "call.completed",
+  "org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+  "data": {
+    "campaign_id": "019d2a1b-4c5e-7f8a-9b0c-1d2e3f4a5b6c",
+    "contact_id": "019d2a1b-5d6f-7a8b-9c0d-2e3f4a5b6c7d",
+    "phone": "+14155550100",
+    "status": "completed",
+    "duration_sec": 125,
+    "call_session_id": "019d2b3c-8e9f-7a0b-1c2d-4e5f6a7b8c9d",
+    "attempt": 1,
+    "summary": "Customer called about their order #4521. Agent confirmed the order shipped yesterday and provided the tracking number. Customer was satisfied.",
+    "recording_url": "https://storage.agniai.com/rec/019d2b3c-8e9f.mp3",
+    "caller_number": "+18881234567",
+    "callee_number": "+14155550100",
+    "caller_name": "John Doe",
+    "caller_email": "john@example.com",
+    "agent_name": "Support Agent",
+    "channel": "voice",
+    "disconnect_reason": "customer_hangup",
+    "cost_total": 0.42,
+    "call_latency_ms": 150,
+    "started_at": "2026-03-24T18:30:00Z",
+    "ended_at": "2026-03-24T18:32:05Z",
+    "created_at": "2026-03-24T18:30:00Z",
+    "post_call_analysis": {
+      "sentiment": "positive",
+      "disposition": "issue_resolved",
+      "goals_met": true,
+      "next_steps": "No follow-up needed. Customer issue fully resolved."
+    },
+    "transcripts": [
+      {
+        "id": "t-001",
+        "timestamp_ms": 0,
+        "role": "agent",
+        "message": { "content": "Hello! Thanks for calling Acme Support. How can I help you today?", "format": "text" },
+        "created_at": "2026-03-24T18:30:00Z"
+      },
+      {
+        "id": "t-002",
+        "timestamp_ms": 3200,
+        "role": "user",
+        "message": { "content": "Hi, I wanted to check on my order number 4521.", "format": "text" },
+        "created_at": "2026-03-24T18:30:03Z"
+      },
+      {
+        "id": "t-003",
+        "timestamp_ms": 5800,
+        "role": "agent",
+        "message": { "content": "Of course! Let me look that up for you. Order 4521 shipped yesterday and the tracking number is TRK-98765. It should arrive by Friday.", "format": "text" },
+        "created_at": "2026-03-24T18:30:05Z"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Handling Webhooks
+
+<AccordionGroup>
+  <Accordion title="Respond with 200" icon="check">
+    Your endpoint must return a `200` HTTP status code to acknowledge receipt. If Agni doesn't receive a 200, it will retry the webhook.
+  </Accordion>
+  <Accordion title="Verify the org_id" icon="shield">
+    Always check that the `org_id` in the payload matches your organization to prevent processing webhooks from other sources.
+  </Accordion>
+  <Accordion title="Process asynchronously" icon="clock">
+    Return 200 immediately and process the data in a background job. Don't make the webhook wait for your database writes or API calls.
+  </Accordion>
+  <Accordion title="Store the call_session_id" icon="database">
+    Use `call_session_id` as a unique key to deduplicate webhook deliveries in case of retries.
+  </Accordion>
+</AccordionGroup>
