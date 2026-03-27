@@ -25,7 +25,8 @@
           {
             "group": "Welcome to Agni",
             "pages": [
-              "index"
+              "index",
+              "guides/trust-center"
             ]
           },
           {

@@ -1,0 +1,233 @@
+---
+title: "Trust Center"
+description: "Agni is built on enterprise-grade security. SOC 2 Type II certified, GDPR ready, HIPAA compliant, and hosted on AWS infrastructure."
+---
+
+# Trust Center
+
+At Agni, security isn't an afterthought — it's the foundation. We've built our voice AI platform from the ground up with enterprise-grade security, privacy, and compliance controls so you can deploy with confidence.
+
+<CardGroup cols={3}>
+  <Card title="SOC 2 Type II" icon="shield-check">
+    Independently audited controls for security, availability, and confidentiality.
+  </Card>
+  <Card title="GDPR Ready" icon="flag">
+    Full compliance with EU data protection regulations.
+  </Card>
+  <Card title="HIPAA Compliant" icon="heart-pulse">
+    Safeguards for protected health information (PHI).
+  </Card>
+</CardGroup>
+
+---
+
+## Compliance & Certifications
+
+### SOC 2 Type II
+
+Agni has completed a SOC 2 Type II audit conducted by an independent third-party auditor. This certification validates that our systems and processes meet rigorous standards across all five Trust Service Criteria:
+
+<AccordionGroup>
+  <Accordion icon="lock" title="Security">
+    Systems are protected against unauthorized access through multi-layered security controls including encryption at rest and in transit, network segmentation, intrusion detection, and role-based access control.
+  </Accordion>
+  <Accordion icon="circle-check" title="Availability">
+    Infrastructure is designed for high availability with redundant systems, automated failover, real-time monitoring, and defined SLAs. Our platform maintains 99.9%+ uptime.
+  </Accordion>
+  <Accordion icon="file-lock" title="Confidentiality">
+    Sensitive data is classified, encrypted, and access-restricted. We enforce strict data handling policies and conduct regular access reviews.
+  </Accordion>
+  <Accordion icon="database" title="Processing Integrity">
+    System processing is complete, valid, accurate, and timely. We maintain audit trails for all data operations and API transactions.
+  </Accordion>
+  <Accordion icon="user-shield" title="Privacy">
+    Personal data is collected, used, retained, and disclosed in conformity with our privacy commitments and applicable regulations.
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+  To request a copy of our latest SOC 2 Type II report, please contact [support@ravan.ai](mailto:support@ravan.ai).
+</Note>
+
+---
+
+### GDPR Compliance
+
+Agni is fully aligned with the **General Data Protection Regulation (GDPR)** for organizations operating in or serving users in the European Union.
+
+<CardGroup cols={2}>
+  <Card title="Data Processing Agreement" icon="file-signature">
+    We provide a DPA that details our role as a data processor, lawful basis for processing, data retention policies, and sub-processor disclosures.
+  </Card>
+  <Card title="Data Subject Rights" icon="user-check">
+    We support all GDPR data subject rights including access, rectification, erasure, portability, and the right to restrict processing.
+  </Card>
+  <Card title="Data Residency" icon="globe">
+    Data is processed and stored in AWS regions within the EU or US based on your configuration. You choose where your data lives.
+  </Card>
+  <Card title="Breach Notification" icon="bell">
+    In the event of a data breach, we notify affected customers within 72 hours as required by GDPR, with full incident details and remediation steps.
+  </Card>
+</CardGroup>
+
+---
+
+### HIPAA Compliance
+
+For healthcare organizations and businesses handling Protected Health Information (PHI), Agni provides the safeguards required under the **Health Insurance Portability and Accountability Act (HIPAA)**.
+
+- **Business Associate Agreement (BAA)** — We execute BAAs with all customers who require HIPAA compliance
+- **PHI Encryption** — All protected health information is encrypted at rest (AES-256) and in transit (TLS 1.2+)
+- **Access Controls** — Role-based access with audit logging for all PHI access events
+- **Minimum Necessary Standard** — Our systems are designed to access only the minimum data required for processing
+- **Audit Trail** — Complete audit logs of all data access, modifications, and API calls involving PHI
+
+<Warning>
+  HIPAA compliance features are available on enterprise plans. Contact [support@ravan.ai](mailto:support@ravan.ai) to enable HIPAA-compliant configurations for your organization.
+</Warning>
+
+---
+
+## Infrastructure Security
+
+### Hosted on AWS
+
+Agni runs entirely on **Amazon Web Services (AWS)**, leveraging world-class infrastructure with built-in security controls.
+
+<CardGroup cols={2}>
+  <Card title="AWS Regions" icon="server">
+    Deployed across multiple AWS regions (US and EU) with automatic failover and geo-redundancy.
+  </Card>
+  <Card title="Network Security" icon="network-wired">
+    VPC isolation, private subnets, security groups, and AWS WAF protect all network traffic.
+  </Card>
+  <Card title="Compute Security" icon="microchip">
+    Hardened container images, automated patching, and immutable infrastructure deployments.
+  </Card>
+  <Card title="Monitoring" icon="chart-line">
+    24/7 monitoring with AWS CloudWatch, GuardDuty threat detection, and automated incident response.
+  </Card>
+</CardGroup>
+
+### Encryption
+
+| Layer | Standard | Details |
+|-------|----------|---------|
+| **Data at rest** | AES-256 | All databases, file storage, and backups encrypted with AWS KMS managed keys |
+| **Data in transit** | TLS 1.2+ | All API calls, WebSocket connections, and voice streams encrypted end-to-end |
+| **Voice data** | AES-256 | Call recordings and transcripts encrypted with per-customer keys |
+| **API keys** | SHA-256 | Hashed and salted — we never store API keys in plain text |
+
+### Network Architecture
+
+- **DDoS Protection** — AWS Shield Standard on all endpoints, Shield Advanced available
+- **Web Application Firewall** — AWS WAF with custom rules blocking injection, XSS, and bot attacks
+- **Private Networking** — All internal services communicate over private VPC links, never over the public internet
+- **Rate Limiting** — API rate limiting at the edge to prevent abuse and ensure fair usage
+
+---
+
+## Data Privacy & Handling
+
+### Data Retention
+
+| Data Type | Retention | Notes |
+|-----------|-----------|-------|
+| **Call recordings** | 90 days default | Configurable per organization. Can be set to 0 (no recording) |
+| **Call transcripts** | 90 days default | Configurable. Supports automatic deletion policies |
+| **Analytics data** | 12 months | Aggregated metrics retained for reporting |
+| **API logs** | 30 days | Request/response logs for debugging and audit |
+| **Account data** | Until deletion | Retained while account is active. Deleted within 30 days of account closure |
+
+### Data Deletion
+
+- **Self-service** — Delete call recordings, transcripts, and contacts via the dashboard or API
+- **Account deletion** — Full data purge within 30 days of account closure
+- **Right to erasure** — GDPR Article 17 requests processed within 72 hours
+- **Automated cleanup** — Expired data is automatically purged per your retention settings
+
+### Sub-Processors
+
+We use a limited number of trusted sub-processors, each bound by strict data processing agreements:
+
+| Provider | Purpose | Location |
+|----------|---------|----------|
+| **Amazon Web Services (AWS)** | Cloud infrastructure, compute, storage | US / EU |
+| **Twilio** | Telephony, phone numbers, SMS | US |
+| **OpenAI** | LLM processing (configurable) | US |
+| **Stripe** | Billing and payment processing | US |
+
+<Note>
+  We maintain a current list of sub-processors. Customers are notified of any sub-processor changes with 30 days advance notice.
+</Note>
+
+---
+
+## Application Security
+
+### Secure Development
+
+- **Secure SDLC** — Security is integrated into every phase of development: design review, code review, static analysis, and penetration testing
+- **Dependency Scanning** — Automated scanning of all dependencies for known vulnerabilities (CVEs)
+- **Code Review** — All code changes require peer review before merge
+- **CI/CD Security** — Build pipelines include security checks, linting, and automated tests
+
+### Authentication & Access Control
+
+- **API Key Authentication** — Unique per-organization API keys with SHA-256 hashing
+- **Role-Based Access Control (RBAC)** — Granular permissions for team members (Owner, Admin, Member)
+- **Two-Factor Authentication (2FA)** — Available for all user accounts
+- **Session Management** — Configurable session timeouts and active session monitoring
+- **SSO** — Google OAuth supported, with SAML/OIDC available on enterprise plans
+
+### Vulnerability Management
+
+- **Penetration Testing** — Annual third-party penetration tests with remediation tracking
+- **Bug Bounty** — Responsible disclosure program for security researchers
+- **Incident Response** — Documented incident response plan with defined escalation procedures
+- **Patching** — Critical vulnerabilities patched within 24 hours; high-severity within 7 days
+
+---
+
+## Responsible AI
+
+### Voice AI Ethics
+
+Agni is committed to the responsible development and deployment of voice AI technology:
+
+- **Transparency** — All AI-powered calls clearly identify themselves as AI agents when required by law
+- **Consent** — Call recording and monitoring comply with local consent laws (one-party and two-party)
+- **Bias Mitigation** — Regular audits of AI model outputs for fairness across demographics
+- **Human Oversight** — Call transfer to human agents is always available as a fallback
+- **Data Minimization** — We collect only the data necessary to provide the service
+
+---
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Can I get a copy of the SOC 2 Type II report?">
+    Yes. Contact [support@ravan.ai](mailto:support@ravan.ai) with your organization details, and we'll share the latest report under NDA.
+  </Accordion>
+  <Accordion title="Do you sign BAAs for HIPAA compliance?">
+    Yes. We execute Business Associate Agreements for healthcare customers on enterprise plans. Reach out to [support@ravan.ai](mailto:support@ravan.ai) to get started.
+  </Accordion>
+  <Accordion title="Where is my data stored?">
+    All data is stored on AWS infrastructure. By default, data is stored in US regions. EU data residency is available upon request.
+  </Accordion>
+  <Accordion title="How do I delete my data?">
+    You can delete call recordings, transcripts, and contacts from the dashboard or via the API. For full account deletion, contact support and all data will be purged within 30 days.
+  </Accordion>
+  <Accordion title="Do you share data with third parties?">
+    We never sell customer data. Data is shared only with sub-processors listed above, strictly for providing the service. All sub-processors are bound by DPAs.
+  </Accordion>
+  <Accordion title="What happens during a security incident?">
+    Our incident response team is available 24/7. Affected customers are notified within 72 hours with full incident details, impact assessment, and remediation steps.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+<Card title="Questions about security?" icon="envelope">
+  Reach out to our security team at [support@ravan.ai](mailto:support@ravan.ai). We're happy to discuss your compliance requirements, share audit reports, or schedule a security review.
+</Card>
