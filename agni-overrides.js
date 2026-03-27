@@ -1,28 +1,127 @@
 /*
- * Agni Docs - Runtime overrides
- * Search (Pagefind) + AI Assistant (Claude) + Mintlify rebrand
+ * Agni Docs - v3 Runtime Overrides
+ * Search (Pagefind) + AI Assistant (Claude) + Rebrand
  */
 
-// Suppress Mintlify connection errors
+// Suppress Mintlify errors
 window.addEventListener("unhandledrejection", function (e) {
-  if (e.reason && typeof e.reason === "object" && e.reason.message &&
-      (e.reason.message.includes("Connection closed") || e.reason.message.includes("WebSocket"))) {
-    e.preventDefault();
-  }
+  if (e.reason && e.reason.message && /Connection closed|WebSocket/i.test(e.reason.message)) e.preventDefault();
 });
 window.addEventListener("error", function (e) {
-  if (e.message && (e.message.includes("Connection closed") || e.message.includes("WebSocket"))) {
-    e.preventDefault();
-  }
+  if (e.message && /Connection closed|WebSocket/i.test(e.message)) e.preventDefault();
 });
 
-// Block Mintlify's Ctrl+K handler BEFORE it registers
+// Block Mintlify Ctrl+K
 document.addEventListener("keydown", function (e) {
-  if ((e.ctrlKey || e.metaKey) && e.key === "k") {
-    e.stopImmediatePropagation();
-  }
-}, true); // capture phase runs first
+  if ((e.ctrlKey || e.metaKey) && e.key === "k") e.stopImmediatePropagation();
+}, true);
 
+// ==================== MARKDOWN PARSER ====================
+function renderMarkdown(src) {
+  if (!src) return "";
+  var lines = src.split("\n");
+  var html = [];
+  var inCode = false;
+  var inList = false;
+  var listType = "";
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+
+    // Code block toggle
+    if (line.match(/^```/)) {
+      if (inCode) {
+        html.push("</code></pre>");
+        inCode = false;
+      } else {
+        if (inList) { html.push(listType === "ul" ? "</ul>" : "</ol>"); inList = false; }
+        var lang = line.replace(/^```/, "").trim();
+        html.push('<pre><code class="lang-' + (lang || "text") + '">');
+        inCode = true;
+      }
+      continue;
+    }
+    if (inCode) {
+      html.push(escHtml(line) + "\n");
+      continue;
+    }
+
+    // Close list if line is not a list item
+    var isUl = /^[\-\*]\s+/.test(line);
+    var isOl = /^\d+\.\s+/.test(line);
+    if (inList && !isUl && !isOl && line.trim() !== "") {
+      html.push(listType === "ul" ? "</ul>" : "</ol>");
+      inList = false;
+    }
+
+    // Empty line
+    if (line.trim() === "") {
+      if (inList) { /* skip blank lines in lists */ }
+      else { html.push(""); }
+      continue;
+    }
+
+    // Headings
+    if (line.match(/^### /)) { html.push("<h3>" + inlineMd(line.slice(4)) + "</h3>"); continue; }
+    if (line.match(/^## /))  { html.push("<h2>" + inlineMd(line.slice(3)) + "</h2>"); continue; }
+    if (line.match(/^# /))   { html.push("<h1>" + inlineMd(line.slice(2)) + "</h1>"); continue; }
+
+    // Horizontal rule
+    if (line.match(/^---+$/)) { html.push("<hr>"); continue; }
+
+    // Blockquote
+    if (line.match(/^>\s?/)) { html.push("<blockquote>" + inlineMd(line.replace(/^>\s?/, "")) + "</blockquote>"); continue; }
+
+    // Unordered list
+    if (isUl) {
+      if (!inList || listType !== "ul") {
+        if (inList) html.push(listType === "ul" ? "</ul>" : "</ol>");
+        html.push("<ul>");
+        inList = true; listType = "ul";
+      }
+      html.push("<li>" + inlineMd(line.replace(/^[\-\*]\s+/, "")) + "</li>");
+      continue;
+    }
+
+    // Ordered list
+    if (isOl) {
+      if (!inList || listType !== "ol") {
+        if (inList) html.push(listType === "ul" ? "</ul>" : "</ol>");
+        html.push("<ol>");
+        inList = true; listType = "ol";
+      }
+      html.push("<li>" + inlineMd(line.replace(/^\d+\.\s+/, "")) + "</li>");
+      continue;
+    }
+
+    // Paragraph
+    html.push("<p>" + inlineMd(line) + "</p>");
+  }
+
+  if (inCode) html.push("</code></pre>");
+  if (inList) html.push(listType === "ul" ? "</ul>" : "</ol>");
+
+  return html.join("\n");
+}
+
+function escHtml(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function inlineMd(s) {
+  s = escHtml(s);
+  // Bold
+  s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  // Italic
+  s = s.replace(/\*(.+?)\*/g, "<em>$1</em>");
+  // Inline code
+  s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+  // Links
+  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  return s;
+}
+
+// ==================== MAIN INIT ====================
 (function () {
   "use strict";
 
@@ -31,11 +130,11 @@ document.addEventListener("keydown", function (e) {
     "What API authentication is needed?",
     "How does call transfer work?",
     "What are the pricing details?",
-    "How to set up Cal.com integration?"
+    "How to set up appointments?"
   ];
 
   function init() {
-    // Build the modal HTML
+    // ===== BUILD DOM =====
     var ov = document.createElement("div");
     ov.id = "agni-search-overlay";
 
@@ -44,51 +143,47 @@ document.addEventListener("keydown", function (e) {
 
     // Tabs
     var tabsDiv = document.createElement("div");
-    tabsDiv.className = "agni-search-tabs";
-
+    tabsDiv.className = "agni-tabs";
     var searchTab = document.createElement("button");
-    searchTab.className = "agni-search-tab active";
-    searchTab.setAttribute("data-tab", "search");
+    searchTab.className = "agni-tab active";
     searchTab.textContent = "Search";
-
     var aiTab = document.createElement("button");
-    aiTab.className = "agni-search-tab";
-    aiTab.setAttribute("data-tab", "ai");
+    aiTab.className = "agni-tab";
     aiTab.textContent = "Ask AI";
-
     tabsDiv.appendChild(searchTab);
     tabsDiv.appendChild(aiTab);
 
-    // Pagefind panel
-    var pfWrap = document.createElement("div");
-    pfWrap.id = "agni-pagefind-wrap";
-    pfWrap.className = "active";
+    // Search panel
+    var panelSearch = document.createElement("div");
+    panelSearch.id = "agni-panel-search";
+    panelSearch.className = "active";
     var pfContainer = document.createElement("div");
     pfContainer.id = "agni-search-container";
-    pfWrap.appendChild(pfContainer);
+    panelSearch.appendChild(pfContainer);
 
     // AI panel
-    var aiWrap = document.createElement("div");
-    aiWrap.id = "agni-ai-wrap";
+    var panelAi = document.createElement("div");
+    panelAi.id = "agni-panel-ai";
 
     var aiMessages = document.createElement("div");
     aiMessages.id = "agni-ai-messages";
 
-    // Welcome message
+    // Welcome
     var welcomeDiv = document.createElement("div");
-    welcomeDiv.className = "agni-ai-welcome";
-    var h3 = document.createElement("h3");
-    h3.textContent = "Agni AI Assistant";
-    var p = document.createElement("p");
-    p.textContent = "Ask me anything about Agni voice AI platform";
-    var sugDiv = document.createElement("div");
-    sugDiv.className = "agni-ai-suggestions";
-    welcomeDiv.appendChild(h3);
-    welcomeDiv.appendChild(p);
-    welcomeDiv.appendChild(sugDiv);
+    welcomeDiv.className = "agni-welcome";
+    welcomeDiv.innerHTML = '<div class="agni-welcome-icon">\u{1F525}</div><h3>Agni AI Assistant</h3><p>Ask anything about Agni voice AI platform</p><div class="agni-suggestions"></div>';
     aiMessages.appendChild(welcomeDiv);
 
-    // Input area
+    var sugDiv = welcomeDiv.querySelector(".agni-suggestions");
+    SUGGESTIONS.forEach(function (text) {
+      var btn = document.createElement("button");
+      btn.className = "agni-sug";
+      btn.textContent = text;
+      btn.addEventListener("click", function () { askAI(text); });
+      sugDiv.appendChild(btn);
+    });
+
+    // Input
     var inputWrap = document.createElement("div");
     inputWrap.id = "agni-ai-input-wrap";
     var aiInput = document.createElement("input");
@@ -101,289 +196,196 @@ document.addEventListener("keydown", function (e) {
     inputWrap.appendChild(aiInput);
     inputWrap.appendChild(sendBtn);
 
-    aiWrap.appendChild(aiMessages);
-    aiWrap.appendChild(inputWrap);
+    panelAi.appendChild(aiMessages);
+    panelAi.appendChild(inputWrap);
 
-    // Hint footer
-    var hint = document.createElement("div");
-    hint.className = "agni-search-hint";
-    hint.innerHTML = "<kbd>Esc</kbd>&nbsp;to close&nbsp;\u2022&nbsp;<kbd>Ctrl</kbd>+<kbd>K</kbd>&nbsp;to search";
+    // Footer
+    var footer = document.createElement("div");
+    footer.className = "agni-footer";
+    footer.innerHTML = "<kbd>Esc</kbd>&nbsp;close&nbsp;\u2022&nbsp;<kbd>Ctrl+K</kbd>&nbsp;search";
 
-    // Assemble modal
+    // Assemble
     modal.appendChild(tabsDiv);
-    modal.appendChild(pfWrap);
-    modal.appendChild(aiWrap);
-    modal.appendChild(hint);
+    modal.appendChild(panelSearch);
+    modal.appendChild(panelAi);
+    modal.appendChild(footer);
     ov.appendChild(modal);
     document.body.appendChild(ov);
 
-    // Add suggestion buttons
-    SUGGESTIONS.forEach(function (text) {
-      var btn = document.createElement("button");
-      btn.className = "agni-ai-suggestion";
-      btn.textContent = text;
-      btn.addEventListener("click", function () { askAI(text); });
-      sugDiv.appendChild(btn);
-    });
-
-    // ===== Tab switching =====
+    // ===== TABS =====
     function switchTab(which) {
       searchTab.classList.toggle("active", which === "search");
       aiTab.classList.toggle("active", which === "ai");
-      pfWrap.classList.toggle("active", which === "search");
-      aiWrap.classList.toggle("active", which === "ai");
+      panelSearch.classList.toggle("active", which === "search");
+      panelAi.classList.toggle("active", which === "ai");
       if (which === "search") {
         initPagefind();
         setTimeout(function () {
-          var inp = pfWrap.querySelector(".pagefind-ui__search-input");
+          var inp = pfContainer.querySelector(".pagefind-ui__search-input");
           if (inp) { inp.focus(); inp.select(); }
         }, 120);
       } else {
         aiInput.focus();
       }
     }
-
     searchTab.addEventListener("click", function () { switchTab("search"); });
     aiTab.addEventListener("click", function () { switchTab("ai"); });
 
-    // ===== Pagefind =====
-    var pfInit = false;
-    var pfRetries = 0;
+    // ===== PAGEFIND =====
+    var pfDone = false;
+    var pfTries = 0;
     function initPagefind() {
-      if (pfInit) return;
+      if (pfDone) return;
       if (typeof window.PagefindUI === "undefined") {
-        pfRetries++;
-        if (pfRetries < 20) {
-          console.log("[Agni] Pagefind not loaded yet, retry " + pfRetries);
-          setTimeout(initPagefind, 300);
-        } else {
-          console.error("[Agni] Pagefind failed to load after retries");
-          pfContainer.innerHTML = '<div style="padding:24px;text-align:center;color:rgba(0,0,0,0.4);">Search is loading... Please try again.</div>';
-        }
+        if (++pfTries < 30) setTimeout(initPagefind, 300);
         return;
       }
-      pfInit = true;
+      pfDone = true;
       try {
         new window.PagefindUI({
           element: "#agni-search-container",
           showSubResults: true,
           showImages: false,
-          placeholder: "Search Agni documentation...",
+          placeholder: "Search Agni docs...",
           autofocus: true,
           resetStyles: false
         });
-        console.log("[Agni] Pagefind initialized");
-      } catch (err) {
-        console.error("[Agni] Pagefind init error:", err);
-        pfContainer.innerHTML = '<div style="padding:24px;text-align:center;color:rgba(0,0,0,0.4);">Search failed to initialize. Please refresh.</div>';
-      }
+      } catch (e) { console.error("[Agni] Pagefind error:", e); }
     }
+    initPagefind(); // start immediately
 
-    // Start loading Pagefind immediately (don't wait for user to open)
-    initPagefind();
-
-    // ===== Open/Close =====
+    // ===== OPEN/CLOSE =====
     function openSearch(tab) {
       ov.classList.add("active");
       switchTab(tab || "search");
     }
-    function closeSearch() {
-      ov.classList.remove("active");
-    }
+    function closeSearch() { ov.classList.remove("active"); }
 
-    // ===== AI Chat =====
+    // ===== AI CHAT =====
     var chatHistory = [];
-    var isSending = false;
+    var sending = false;
 
-    function createMsg(role, html) {
+    function addBubble(cls, content) {
       var el = document.createElement("div");
-      el.className = "agni-ai-msg " + role;
-      el.innerHTML = html;
+      el.className = cls;
+      el.innerHTML = content;
       aiMessages.appendChild(el);
       aiMessages.scrollTop = aiMessages.scrollHeight;
       return el;
     }
 
-    function markdownToHtml(text) {
-      if (!text) return "";
-      return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-        .replace(/`([^`]+)`/g, "<code>$1</code>")
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
-        .replace(/^[\-\*]\s+(.+)$/gm, "<li>$1</li>")
-        .replace(/\n/g, "<br>");
-    }
-
     function askAI(query) {
-      if (isSending || !query || !query.trim()) return;
+      if (sending || !query || !query.trim()) return;
 
       // Remove welcome
-      var welcome = aiMessages.querySelector(".agni-ai-welcome");
-      if (welcome) welcome.remove();
+      var w = aiMessages.querySelector(".agni-welcome");
+      if (w) w.remove();
 
-      isSending = true;
+      sending = true;
       sendBtn.disabled = true;
       aiInput.value = "";
 
-      // Show user message
-      createMsg("user", markdownToHtml(query));
+      addBubble("agni-msg-user", escHtml(query));
       chatHistory.push({ role: "user", content: query });
 
-      // Show thinking indicator
-      var thinkEl = createMsg("thinking", "Thinking...");
+      // Thinking dots
+      var think = addBubble("agni-msg-thinking", '<div class="agni-dots"><span></span><span></span><span></span></div>Thinking...');
 
-      // Call AI API
       fetch("/api/ai-search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: query, history: chatHistory.slice(-6) })
+        body: JSON.stringify({ query: query, history: chatHistory.slice(-4) })
       })
-      .then(function (response) {
-        if (!response.ok) throw new Error("HTTP " + response.status);
-        return response.json();
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
       })
       .then(function (data) {
-        if (thinkEl.parentNode) thinkEl.remove();
-        if (data.error) {
-          createMsg("assistant", "Sorry, I encountered an error: " + markdownToHtml(data.error));
-        } else {
-          var answer = data.answer || "No response received.";
-          createMsg("assistant", markdownToHtml(answer));
-          chatHistory.push({ role: "assistant", content: answer });
-        }
+        if (think.parentNode) think.remove();
+        var answer = data.answer || data.error || "No response.";
+        addBubble("agni-msg-ai", renderMarkdown(answer));
+        chatHistory.push({ role: "assistant", content: answer });
       })
       .catch(function (err) {
-        if (thinkEl.parentNode) thinkEl.remove();
-        createMsg("assistant", "Sorry, couldn\u2019t connect to the AI service. Error: " + err.message);
+        if (think.parentNode) think.remove();
+        addBubble("agni-msg-ai", "<p>Sorry, couldn\u2019t connect to the AI. Please try again.</p>");
         console.error("[Agni AI]", err);
       })
       .finally(function () {
-        isSending = false;
+        sending = false;
         sendBtn.disabled = false;
         aiInput.focus();
       });
     }
 
-    // Send button click
-    sendBtn.addEventListener("click", function () {
-      askAI(aiInput.value);
-    });
-
-    // Enter key to send
+    sendBtn.addEventListener("click", function () { askAI(aiInput.value); });
     aiInput.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        askAI(aiInput.value);
-      }
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); askAI(aiInput.value); }
     });
 
-    // ===== Intercept Mintlify search bars =====
-    function isSearchElement(el) {
+    // ===== INTERCEPT MINTLIFY SEARCH =====
+    function isSearch(el) {
       if (!el) return false;
       if (el.id === "search-bar-entry" || el.id === "search-bar-entry-mobile") return true;
-      if (el.getAttribute && el.getAttribute("data-search") !== null) return true;
-      var cls = el.className || "";
-      if (typeof cls === "string" && (cls.indexOf("search-bar") !== -1 || cls.indexOf("SearchEntry") !== -1)) return true;
+      if (el.closest && (el.closest("#search-bar-entry") || el.closest("#search-bar-entry-mobile") || el.closest("[data-search]") || el.closest('[class*="search-bar"]'))) return true;
       if (el.tagName === "INPUT" && el.placeholder && el.placeholder.toLowerCase().indexOf("search") !== -1) return true;
       return false;
     }
 
-    function interceptSearch(el) {
-      if (isSearchElement(el) || (el && el.closest && (
-        el.closest("#search-bar-entry") || el.closest("#search-bar-entry-mobile") ||
-        el.closest("[data-search]") || el.closest('[class*="search-bar"]')
-      ))) {
-        return true;
-      }
-      return false;
-    }
-
-    document.addEventListener("click", function (e) {
-      if (interceptSearch(e.target)) { e.preventDefault(); e.stopPropagation(); openSearch("search"); }
-    }, true);
-
-    document.addEventListener("mousedown", function (e) {
-      if (interceptSearch(e.target)) { e.preventDefault(); e.stopPropagation(); openSearch("search"); }
-    }, true);
-
-    document.addEventListener("focus", function (e) {
-      if (isSearchElement(e.target)) { e.preventDefault(); e.stopPropagation(); openSearch("search"); }
-    }, true);
-
-    // Close on overlay click
-    ov.addEventListener("click", function (e) {
-      if (e.target === ov) closeSearch();
+    ["click", "mousedown", "focus"].forEach(function (evt) {
+      document.addEventListener(evt, function (e) {
+        if (isSearch(e.target)) { e.preventDefault(); e.stopPropagation(); openSearch("search"); }
+      }, true);
     });
 
-    // Keyboard shortcuts
+    ov.addEventListener("click", function (e) { if (e.target === ov) closeSearch(); });
+
     document.addEventListener("keydown", function (e) {
-      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
-        e.preventDefault();
-        ov.classList.contains("active") ? closeSearch() : openSearch("search");
-      }
-      if (e.key === "Escape" && ov.classList.contains("active")) {
-        e.preventDefault();
-        closeSearch();
-      }
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); ov.classList.contains("active") ? closeSearch() : openSearch("search"); }
+      if (e.key === "Escape" && ov.classList.contains("active")) { e.preventDefault(); closeSearch(); }
     });
 
-    // ===== Rebrand Mintlify =====
+    // ===== KILL MINTLIFY DIALOGS =====
+    function killDialogs() {
+      document.querySelectorAll("[data-radix-portal]").forEach(function (el) {
+        if (!el.closest("#agni-search-overlay")) el.style.display = "none";
+      });
+    }
+    var dObs = new MutationObserver(killDialogs);
+    dObs.observe(document.body, { childList: true });
+
+    // ===== REBRAND =====
     function rebrand() {
       try {
-        var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-        while (walker.nextNode()) {
-          var node = walker.currentNode;
-          if (node.nodeValue && /mintlify/i.test(node.nodeValue)) {
-            node.nodeValue = node.nodeValue
+        // Replace text nodes
+        var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        while (w.nextNode()) {
+          var n = w.currentNode;
+          if (n.nodeValue && /mintlify/i.test(n.nodeValue)) {
+            n.nodeValue = n.nodeValue
+              .replace(/Powered\s+by\s+mintlify/gi, "Agni by Ravan.ai")
               .replace(/Powered\s+by\s+Mintlify/gi, "Agni by Ravan.ai")
               .replace(/Built\s+with\s+Mintlify/gi, "Agni by Ravan.ai")
-              .replace(/Mintlify/gi, "Agni");
+              .replace(/mintlify/gi, "Agni");
           }
         }
+        // Replace links
         document.querySelectorAll('a[href*="mintlify.com"]').forEach(function (a) {
           a.href = "https://ravan.ai";
-          if (a.textContent && /mintlify/i.test(a.textContent)) {
-            a.textContent = a.textContent
-              .replace(/Powered\s+by\s+Mintlify/gi, "Agni by Ravan.ai")
-              .replace(/Mintlify/gi, "Ravan.ai");
-          }
+          a.textContent = "Agni by Ravan.ai";
         });
-      } catch (e) { /* ignore */ }
+      } catch (e) { /* */ }
     }
-
     rebrand();
-    var observer = new MutationObserver(rebrand);
-    observer.observe(document.body, { childList: true, subtree: true });
-    setTimeout(function () { observer.disconnect(); }, 12000);
+    var rObs = new MutationObserver(rebrand);
+    rObs.observe(document.body, { childList: true, subtree: true });
+    // Keep observing longer - Mintlify re-renders footer dynamically
+    setTimeout(function () { rObs.disconnect(); }, 30000);
 
-    // Kill any Mintlify search dialogs that appear
-    function killMintlifyDialogs() {
-      // Remove radix portals (Mintlify uses Radix UI for dialogs)
-      document.querySelectorAll("[data-radix-portal]").forEach(function (el) {
-        if (!el.closest("#agni-search-overlay")) {
-          el.style.display = "none";
-          el.setAttribute("aria-hidden", "true");
-        }
-      });
-      // Remove any other modal overlays that aren't ours
-      document.querySelectorAll('[role="dialog"][aria-modal="true"]').forEach(function (el) {
-        if (!el.closest("#agni-search-overlay") && el.id !== "agni-search-modal") {
-          el.style.display = "none";
-        }
-      });
-    }
-
-    // Watch for Mintlify dialogs and kill them
-    var dialogObserver = new MutationObserver(function () { killMintlifyDialogs(); });
-    dialogObserver.observe(document.body, { childList: true, subtree: true });
-
-    console.log("[Agni] Overrides loaded successfully");
+    console.log("[Agni] v3 loaded");
   }
 
-  // Run after page hydration
+  // Run after hydration
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () { setTimeout(init, 1200); });
   } else {
