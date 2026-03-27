@@ -360,10 +360,38 @@ function inlineMd(s) {
     var chatHistory = [];
     var sending = false;
 
-    function addBubble(cls, content) {
+    function addMessage(role, content) {
+      var row = document.createElement("div");
+      row.className = "agni-msg-row " + role;
+
+      var avatar = document.createElement("div");
+      avatar.className = "agni-msg-avatar";
+      avatar.textContent = role === "user" ? "Y" : "\u{1F525}";
+
+      var contentWrap = document.createElement("div");
+      contentWrap.className = "agni-msg-content";
+
+      var label = document.createElement("div");
+      label.className = "agni-msg-label";
+      label.textContent = role === "user" ? "You" : "Agni AI";
+
+      var body = document.createElement("div");
+      body.className = "agni-msg-body";
+      body.innerHTML = content;
+
+      contentWrap.appendChild(label);
+      contentWrap.appendChild(body);
+      row.appendChild(avatar);
+      row.appendChild(contentWrap);
+      aiMessages.appendChild(row);
+      aiMessages.scrollTop = aiMessages.scrollHeight;
+      return row;
+    }
+
+    function addThinking() {
       var el = document.createElement("div");
-      el.className = cls;
-      el.innerHTML = content;
+      el.className = "agni-msg-thinking";
+      el.innerHTML = '<div class="agni-msg-avatar">\u{1F525}</div><div class="agni-dots"><span></span><span></span><span></span></div><span>Agni is thinking\u2026</span>';
       aiMessages.appendChild(el);
       aiMessages.scrollTop = aiMessages.scrollHeight;
       return el;
@@ -380,11 +408,10 @@ function inlineMd(s) {
       sendBtn.disabled = true;
       aiInput.value = "";
 
-      addBubble("agni-msg-user", escHtml(query));
+      addMessage("user", escHtml(query));
       chatHistory.push({ role: "user", content: query });
 
-      // Thinking dots
-      var think = addBubble("agni-msg-thinking", '<div class="agni-dots"><span></span><span></span><span></span></div>Thinking...');
+      var think = addThinking();
 
       fetch("/api/ai-search", {
         method: "POST",
@@ -398,12 +425,12 @@ function inlineMd(s) {
       .then(function (data) {
         if (think.parentNode) think.remove();
         var answer = data.answer || data.error || "No response.";
-        addBubble("agni-msg-ai", renderMarkdown(answer));
+        addMessage("assistant", renderMarkdown(answer));
         chatHistory.push({ role: "assistant", content: answer });
       })
       .catch(function (err) {
         if (think.parentNode) think.remove();
-        addBubble("agni-msg-ai", "<p>Sorry, couldn\u2019t connect to the AI. Please try again.</p>");
+        addMessage("assistant", "<p>Sorry, couldn\u2019t connect to the AI. Please try again.</p>");
         console.error("[Agni AI]", err);
       })
       .finally(function () {
