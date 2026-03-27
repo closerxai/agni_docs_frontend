@@ -16,6 +16,13 @@ window.addEventListener("error", function (e) {
   }
 });
 
+// Block Mintlify's Ctrl+K handler BEFORE it registers
+document.addEventListener("keydown", function (e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+    e.stopImmediatePropagation();
+  }
+}, true); // capture phase runs first
+
 (function () {
   "use strict";
 
@@ -334,6 +341,27 @@ window.addEventListener("error", function (e) {
     var observer = new MutationObserver(rebrand);
     observer.observe(document.body, { childList: true, subtree: true });
     setTimeout(function () { observer.disconnect(); }, 12000);
+
+    // Kill any Mintlify search dialogs that appear
+    function killMintlifyDialogs() {
+      // Remove radix portals (Mintlify uses Radix UI for dialogs)
+      document.querySelectorAll("[data-radix-portal]").forEach(function (el) {
+        if (!el.closest("#agni-search-overlay")) {
+          el.style.display = "none";
+          el.setAttribute("aria-hidden", "true");
+        }
+      });
+      // Remove any other modal overlays that aren't ours
+      document.querySelectorAll('[role="dialog"][aria-modal="true"]').forEach(function (el) {
+        if (!el.closest("#agni-search-overlay") && el.id !== "agni-search-modal") {
+          el.style.display = "none";
+        }
+      });
+    }
+
+    // Watch for Mintlify dialogs and kill them
+    var dialogObserver = new MutationObserver(function () { killMintlifyDialogs(); });
+    dialogObserver.observe(document.body, { childList: true, subtree: true });
 
     console.log("[Agni] Overrides loaded successfully");
   }

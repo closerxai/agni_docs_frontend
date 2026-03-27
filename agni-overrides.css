@@ -1,5 +1,29 @@
 /* Agni Docs - Search & AI Assistant */
 
+/* Hide Mintlify's native search dialog */
+[data-radix-portal],
+[role="dialog"][aria-modal="true"],
+div[data-state="open"][class*="Dialog"],
+div[class*="cmdk-dialog"],
+div[class*="CommandMenu"],
+div[class*="search-dialog"],
+div[class*="SearchDialog"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  z-index: -1 !important;
+}
+/* But keep our overlay visible */
+#agni-search-overlay,
+#agni-search-overlay * {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+#agni-search-overlay { z-index: 99999 !important; }
+#agni-search-overlay:not(.active) { display: none !important; }
+
 /* ===== OVERLAY ===== */
 #agni-search-overlay {
   display: none;
