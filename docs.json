@@ -25,8 +25,7 @@
           {
             "group": "Welcome to Agni",
             "pages": [
-              "index",
-              "guides/trust-center"
+              "index"
             ]
           },
           {
@@ -66,6 +65,12 @@
               "ai-tools/claude-code",
               "ai-tools/cursor",
               "ai-tools/windsurf"
+            ]
+          },
+          {
+            "group": "Security & Compliance",
+            "pages": [
+              "guides/trust-center"
             ]
           }
         ]
