@@ -1,0 +1,117 @@
+---
+title: "List Campaign Contacts"
+openapi: "GET /api/v1/campaigns/{id}/contacts"
+description: "List contacts assigned to a campaign with their call status, attempt count, and results."
+---
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Path Parameters
+<ParamField path="id" type="string" required>Campaign UUID.</ParamField>
+
+### Query Parameters
+<ParamField query="limit" type="integer">Max results per page.</ParamField>
+<ParamField query="offset" type="integer">Pagination offset.</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object[]">
+  Array of campaign contact records.
+
+  <Expandable title="data[]">
+    <ResponseField name="id" type="string">Campaign-contact join UUID.</ResponseField>
+    <ResponseField name="contact_id" type="string">Contact UUID.</ResponseField>
+    <ResponseField name="name" type="string">Contact name.</ResponseField>
+    <ResponseField name="phone" type="string">Contact phone number.</ResponseField>
+    <ResponseField name="email" type="string">Contact email.</ResponseField>
+    <ResponseField name="status" type="string">Call status. Values: `pending`, `in_progress`, `successful`, `failed`, `no_answer`.</ResponseField>
+    <ResponseField name="attempt_count" type="integer">Number of call attempts made.</ResponseField>
+    <ResponseField name="last_attempted_at" type="string">ISO 8601 timestamp of last attempt.</ResponseField>
+    <ResponseField name="next_retry_at" type="string">ISO 8601 timestamp of next scheduled retry.</ResponseField>
+    <ResponseField name="call_duration_sec" type="integer">Duration of the last call in seconds.</ResponseField>
+    <ResponseField name="error_message" type="string">Error details if the call failed.</ResponseField>
+    <ResponseField name="call_session_id" type="string">Session UUID for the call (links to call logs).</ResponseField>
+    <ResponseField name="tags" type="string[]">Contact tags.</ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="meta" type="object">Pagination metadata with `total`, `limit`, `offset`.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl "https://api.ravan.ai/api/v1/campaigns/019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c/contacts?limit=20&offset=0" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+response = requests.get("https://api.ravan.ai/api/v1/campaigns/019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c/contacts",
+    headers={"X-Api-Key": "YOUR_API_KEY"}, params={"limit": 20, "offset": 0})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/campaigns/019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c/contacts?limit=20&offset=0",
+  { headers: { "X-Api-Key": "YOUR_API_KEY" } });
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Campaign contacts fetched successfully",
+  "data": [
+    {
+      "id": "019d6c5d-9e0f-1a2b-3c4d-5e6f7a8b9c0d",
+      "contact_id": "019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b",
+      "name": "John Smith",
+      "phone": "+14155550100",
+      "email": "john@example.com",
+      "status": "successful",
+      "attempt_count": 1,
+      "last_attempted_at": "2026-03-21T09:15:00Z",
+      "next_retry_at": null,
+      "call_duration_sec": 125,
+      "error_message": "",
+      "call_session_id": "019d2b3c-8e9f-7a0b-1c2d-4e5f6a7b8c9d",
+      "tags": ["vip", "enterprise"]
+    },
+    {
+      "id": "019d6c5d-af10-2b3c-4d5e-6f7a8b9c0d1e",
+      "contact_id": "019d3a2b-6d7e-8f9a-0b1c-2d3e4f5a6b7c",
+      "name": "Jane Doe",
+      "phone": "+14155550200",
+      "email": "jane@example.com",
+      "status": "no_answer",
+      "attempt_count": 2,
+      "last_attempted_at": "2026-03-21T10:30:00Z",
+      "next_retry_at": "2026-03-21T11:00:00Z",
+      "call_duration_sec": 0,
+      "error_message": "",
+      "call_session_id": "",
+      "tags": []
+    }
+  ],
+  "meta": { "total": 150, "limit": 20, "offset": 0 }
+}
+```
+
+```json 401
+{ "code": 16, "message": "API key is missing or invalid", "details": [] }
+```
+
+```json 500
+{ "success": false, "message": "Something went wrong on our end", "error": { "code": "INTERNAL_ERROR", "message": "An unexpected error occurred. Please try again later." } }
+```
+
+```json 502
+{ "success": false, "message": "Service temporarily unavailable", "error": { "code": "BAD_GATEWAY", "message": "Unable to reach upstream service. Please try again." } }
+```
+
+</ResponseExample>

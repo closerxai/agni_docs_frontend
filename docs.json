@@ -121,6 +121,22 @@
             ]
           },
           {
+            "group": "Campaign API",
+            "pages": [
+              "api-reference/campaigns/create",
+              "api-reference/campaigns/get",
+              "api-reference/campaigns/list",
+              "api-reference/campaigns/update",
+              "api-reference/campaigns/delete",
+              "api-reference/campaigns/start",
+              "api-reference/campaigns/pause",
+              "api-reference/campaigns/resume",
+              "api-reference/campaigns/add-contacts",
+              "api-reference/campaigns/remove-contact",
+              "api-reference/campaigns/list-contacts"
+            ]
+          },
+          {
             "group": "Contact API",
             "pages": [
               "api-reference/contacts/create",
@@ -141,21 +157,7 @@
           {
             "group": "Appointment API",
             "pages": [
-              "api-reference/appointments/manage-ghl",
               "api-reference/appointments/manage-calcom"
-            ]
-          },
-          {
-            "group": "GHL Integration API",
-            "pages": [
-              "api-reference/ghl/list-appointments",
-              "api-reference/ghl/get-appointment",
-              "api-reference/ghl/oauth-authorize",
-              "api-reference/ghl/oauth-callback",
-              "api-reference/ghl/setup-status",
-              "api-reference/ghl/list-calendars",
-              "api-reference/ghl/get-agent-by-calendar",
-              "api-reference/ghl/disconnect"
             ]
           },
           {

@@ -1,0 +1,79 @@
+---
+title: "Update Campaign"
+openapi: "PATCH /api/v1/campaigns/{id}"
+description: "Update an existing campaign's name, agent, phone number, or schedule. Only non-empty fields are applied."
+---
+
+<Note>This is a partial update. Only include the fields you want to change.</Note>
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Path Parameters
+<ParamField path="id" type="string" required>Campaign UUID.</ParamField>
+
+### Body
+<ParamField body="name" type="string">Updated campaign name.</ParamField>
+<ParamField body="agent_id" type="string">New agent UUID.</ParamField>
+<ParamField body="phone_number_id" type="string">New phone number UUID.</ParamField>
+<ParamField body="from_phone_number" type="string">New caller ID (E.164).</ParamField>
+<ParamField body="schedule" type="object">Updated scheduling configuration (see [Create Campaign](/api-reference/campaigns/create) for schedule fields).</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object">The updated campaign object.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X PATCH https://api.ravan.ai/api/v1/campaigns/019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c \
+  -H "X-Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" \
+  -d '{"name": "Q2 Outbound Blitz v2", "schedule": {"max_concurrent": 10, "timezone": "Asia/Dubai"}}'
+```
+
+```python Python
+import requests
+response = requests.patch("https://api.ravan.ai/api/v1/campaigns/019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+    headers={"X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json"},
+    json={"name": "Q2 Outbound Blitz v2", "schedule": {"max_concurrent": 10}})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/campaigns/019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c", {
+  method: "PATCH", headers: { "X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json" },
+  body: JSON.stringify({ name: "Q2 Outbound Blitz v2", schedule: { max_concurrent: 10 } })
+});
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{ "success": true, "message": "Campaign updated successfully", "data": { "id": "019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c", "name": "Q2 Outbound Blitz v2", "status": "draft" } }
+```
+
+```json 400
+{ "code": 3, "message": "Invalid request parameters", "details": [] }
+```
+
+```json 401
+{ "code": 16, "message": "API key is missing or invalid", "details": [] }
+```
+
+```json 403
+{ "success": false, "message": "You do not have permission to perform this action", "error": { "code": "FORBIDDEN", "message": "Insufficient permissions for this resource" } }
+```
+
+```json 500
+{ "success": false, "message": "Something went wrong on our end", "error": { "code": "INTERNAL_ERROR", "message": "An unexpected error occurred. Please try again later." } }
+```
+
+```json 502
+{ "success": false, "message": "Service temporarily unavailable", "error": { "code": "BAD_GATEWAY", "message": "Unable to reach upstream service. Please try again." } }
+```
+
+</ResponseExample>

@@ -32,9 +32,6 @@
       "name": "AppointmentService"
     },
     {
-      "name": "GHLService"
-    },
-    {
       "name": "CalComService"
     },
     {
@@ -48,6 +45,9 @@
     },
     {
       "name": "WebhookService"
+    },
+    {
+      "name": "CampaignService"
     }
   ],
   "paths": {
@@ -2753,118 +2753,6 @@
         }
       }
     },
-    "/api/v1/ghl/appointments/manage": {
-      "post": {
-        "tags": [
-          "AppointmentService"
-        ],
-        "summary": "Manage GHL Appointment",
-        "operationId": "ManageGHLAppointment",
-        "description": "Unified appointment management endpoint for GHL. Supports book, reschedule, cancel, suggest, and availability actions. No X-Api-Key required \u00e2\u20ac\u201d org_id comes from the request body.",
-        "security": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ManageAppointmentRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ManageAppointmentResponse"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Slot unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SlotUnavailableResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request \u2014 invalid parameters, missing required fields, or malformed request body.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 3,
-                  "message": "invalid uuid \"abc\": invalid UUID length: 3",
-                  "details": []
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden \u2014 your API key does not have permission to access this resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "You do not have permission to perform this action",
-                  "error": {
-                    "code": "FORBIDDEN",
-                    "message": "Insufficient permissions for this resource"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error \u2014 an unexpected error occurred on the server.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Something went wrong on our end",
-                  "error": {
-                    "code": "INTERNAL_ERROR",
-                    "message": "An unexpected error occurred. Please try again later."
-                  }
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "Bad Gateway \u2014 the server received an invalid response from an upstream service.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Service temporarily unavailable",
-                  "error": {
-                    "code": "BAD_GATEWAY",
-                    "message": "Unable to reach upstream service. Please try again."
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/v1/calcom/appointments/manage": {
       "post": {
         "tags": [
@@ -2915,912 +2803,6 @@
                 "example": {
                   "code": 3,
                   "message": "invalid uuid \"abc\": invalid UUID length: 3",
-                  "details": []
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden \u2014 your API key does not have permission to access this resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "You do not have permission to perform this action",
-                  "error": {
-                    "code": "FORBIDDEN",
-                    "message": "Insufficient permissions for this resource"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error \u2014 an unexpected error occurred on the server.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Something went wrong on our end",
-                  "error": {
-                    "code": "INTERNAL_ERROR",
-                    "message": "An unexpected error occurred. Please try again later."
-                  }
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "Bad Gateway \u2014 the server received an invalid response from an upstream service.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Service temporarily unavailable",
-                  "error": {
-                    "code": "BAD_GATEWAY",
-                    "message": "Unable to reach upstream service. Please try again."
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/ghl/appointments": {
-      "get": {
-        "tags": [
-          "GHLService"
-        ],
-        "summary": "List GHL Appointments",
-        "operationId": "ListGHLAppointments",
-        "parameters": [
-          {
-            "name": "agent_id",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filter by agent ID"
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filter by appointment status"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50,
-              "maximum": 200
-            },
-            "description": "Number of results to return (max 200)"
-          },
-          {
-            "name": "org_id",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Organization ID (fallback)"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ListGHLAppointmentsResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request \u2014 invalid parameters, missing required fields, or malformed request body.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 3,
-                  "message": "invalid uuid \"abc\": invalid UUID length: 3",
-                  "details": []
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized \u2014 API key is missing, invalid, or expired.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 16,
-                  "message": "API key is missing or invalid",
-                  "details": []
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden \u2014 your API key does not have permission to access this resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "You do not have permission to perform this action",
-                  "error": {
-                    "code": "FORBIDDEN",
-                    "message": "Insufficient permissions for this resource"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error \u2014 an unexpected error occurred on the server.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Something went wrong on our end",
-                  "error": {
-                    "code": "INTERNAL_ERROR",
-                    "message": "An unexpected error occurred. Please try again later."
-                  }
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "Bad Gateway \u2014 the server received an invalid response from an upstream service.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Service temporarily unavailable",
-                  "error": {
-                    "code": "BAD_GATEWAY",
-                    "message": "Unable to reach upstream service. Please try again."
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/ghl/appointments/{appointment_id}": {
-      "get": {
-        "tags": [
-          "GHLService"
-        ],
-        "summary": "Get GHL Appointment",
-        "operationId": "GetGHLAppointment",
-        "parameters": [
-          {
-            "name": "appointment_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Appointment ID"
-          },
-          {
-            "name": "org_id",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Organization ID (fallback)"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetGHLAppointmentResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request \u2014 invalid parameters, missing required fields, or malformed request body.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 3,
-                  "message": "invalid uuid \"abc\": invalid UUID length: 3",
-                  "details": []
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized \u2014 API key is missing, invalid, or expired.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 16,
-                  "message": "API key is missing or invalid",
-                  "details": []
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden \u2014 your API key does not have permission to access this resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "You do not have permission to perform this action",
-                  "error": {
-                    "code": "FORBIDDEN",
-                    "message": "Insufficient permissions for this resource"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error \u2014 an unexpected error occurred on the server.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Something went wrong on our end",
-                  "error": {
-                    "code": "INTERNAL_ERROR",
-                    "message": "An unexpected error occurred. Please try again later."
-                  }
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "Bad Gateway \u2014 the server received an invalid response from an upstream service.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Service temporarily unavailable",
-                  "error": {
-                    "code": "BAD_GATEWAY",
-                    "message": "Unable to reach upstream service. Please try again."
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/ghl/oauth/authorize": {
-      "get": {
-        "tags": [
-          "GHLService"
-        ],
-        "summary": "GHL OAuth Authorize",
-        "operationId": "GHLOAuthAuthorize",
-        "description": "Redirects the user to the GoHighLevel OAuth authorization flow.",
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Your organization ID"
-          }
-        ],
-        "responses": {
-          "302": {
-            "description": "Redirect to GHL OAuth"
-          },
-          "400": {
-            "description": "Bad Request \u2014 invalid parameters, missing required fields, or malformed request body.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 3,
-                  "message": "invalid uuid \"abc\": invalid UUID length: 3",
-                  "details": []
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized \u2014 API key is missing, invalid, or expired.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 16,
-                  "message": "API key is missing or invalid",
-                  "details": []
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden \u2014 your API key does not have permission to access this resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "You do not have permission to perform this action",
-                  "error": {
-                    "code": "FORBIDDEN",
-                    "message": "Insufficient permissions for this resource"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error \u2014 an unexpected error occurred on the server.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Something went wrong on our end",
-                  "error": {
-                    "code": "INTERNAL_ERROR",
-                    "message": "An unexpected error occurred. Please try again later."
-                  }
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "Bad Gateway \u2014 the server received an invalid response from an upstream service.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Service temporarily unavailable",
-                  "error": {
-                    "code": "BAD_GATEWAY",
-                    "message": "Unable to reach upstream service. Please try again."
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/ghl/oauth/callback": {
-      "get": {
-        "tags": [
-          "GHLService"
-        ],
-        "summary": "GHL OAuth Callback",
-        "operationId": "GHLOAuthCallback",
-        "description": "Handles the OAuth callback from GHL and redirects to the frontend.",
-        "responses": {
-          "302": {
-            "description": "Redirect to frontend with success or failure flag"
-          },
-          "400": {
-            "description": "Bad Request \u2014 invalid parameters, missing required fields, or malformed request body.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 3,
-                  "message": "invalid uuid \"abc\": invalid UUID length: 3",
-                  "details": []
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized \u2014 API key is missing, invalid, or expired.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 16,
-                  "message": "API key is missing or invalid",
-                  "details": []
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden \u2014 your API key does not have permission to access this resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "You do not have permission to perform this action",
-                  "error": {
-                    "code": "FORBIDDEN",
-                    "message": "Insufficient permissions for this resource"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error \u2014 an unexpected error occurred on the server.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Something went wrong on our end",
-                  "error": {
-                    "code": "INTERNAL_ERROR",
-                    "message": "An unexpected error occurred. Please try again later."
-                  }
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "Bad Gateway \u2014 the server received an invalid response from an upstream service.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Service temporarily unavailable",
-                  "error": {
-                    "code": "BAD_GATEWAY",
-                    "message": "Unable to reach upstream service. Please try again."
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/ghl/setup/status": {
-      "get": {
-        "tags": [
-          "GHLService"
-        ],
-        "summary": "GHL Setup Status",
-        "operationId": "GHLSetupStatus",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GHLSetupStatusResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request \u2014 invalid parameters, missing required fields, or malformed request body.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 3,
-                  "message": "invalid uuid \"abc\": invalid UUID length: 3",
-                  "details": []
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized \u2014 API key is missing, invalid, or expired.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 16,
-                  "message": "API key is missing or invalid",
-                  "details": []
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden \u2014 your API key does not have permission to access this resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "You do not have permission to perform this action",
-                  "error": {
-                    "code": "FORBIDDEN",
-                    "message": "Insufficient permissions for this resource"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error \u2014 an unexpected error occurred on the server.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Something went wrong on our end",
-                  "error": {
-                    "code": "INTERNAL_ERROR",
-                    "message": "An unexpected error occurred. Please try again later."
-                  }
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "Bad Gateway \u2014 the server received an invalid response from an upstream service.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Service temporarily unavailable",
-                  "error": {
-                    "code": "BAD_GATEWAY",
-                    "message": "Unable to reach upstream service. Please try again."
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/ghl/setup/calendars": {
-      "get": {
-        "tags": [
-          "GHLService"
-        ],
-        "summary": "List GHL Calendars",
-        "operationId": "ListGHLCalendars",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ListGHLCalendarsResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request \u2014 invalid parameters, missing required fields, or malformed request body.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 3,
-                  "message": "invalid uuid \"abc\": invalid UUID length: 3",
-                  "details": []
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized \u2014 API key is missing, invalid, or expired.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 16,
-                  "message": "API key is missing or invalid",
-                  "details": []
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden \u2014 your API key does not have permission to access this resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "You do not have permission to perform this action",
-                  "error": {
-                    "code": "FORBIDDEN",
-                    "message": "Insufficient permissions for this resource"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error \u2014 an unexpected error occurred on the server.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Something went wrong on our end",
-                  "error": {
-                    "code": "INTERNAL_ERROR",
-                    "message": "An unexpected error occurred. Please try again later."
-                  }
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "Bad Gateway \u2014 the server received an invalid response from an upstream service.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Service temporarily unavailable",
-                  "error": {
-                    "code": "BAD_GATEWAY",
-                    "message": "Unable to reach upstream service. Please try again."
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/ghl/setup/agents/calendar/{calendar_id}": {
-      "get": {
-        "tags": [
-          "GHLService"
-        ],
-        "summary": "Get GHL Agent by Calendar",
-        "operationId": "GetGHLAgentByCalendar",
-        "parameters": [
-          {
-            "name": "calendar_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "GHL Calendar ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetGHLAgentByCalendarResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request \u2014 invalid parameters, missing required fields, or malformed request body.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 3,
-                  "message": "invalid uuid \"abc\": invalid UUID length: 3",
-                  "details": []
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized \u2014 API key is missing, invalid, or expired.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 16,
-                  "message": "API key is missing or invalid",
-                  "details": []
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden \u2014 your API key does not have permission to access this resource.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "You do not have permission to perform this action",
-                  "error": {
-                    "code": "FORBIDDEN",
-                    "message": "Insufficient permissions for this resource"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error \u2014 an unexpected error occurred on the server.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Something went wrong on our end",
-                  "error": {
-                    "code": "INTERNAL_ERROR",
-                    "message": "An unexpected error occurred. Please try again later."
-                  }
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "Bad Gateway \u2014 the server received an invalid response from an upstream service.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "success": false,
-                  "message": "Service temporarily unavailable",
-                  "error": {
-                    "code": "BAD_GATEWAY",
-                    "message": "Unable to reach upstream service. Please try again."
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/ghl/disconnect": {
-      "post": {
-        "tags": [
-          "GHLService"
-        ],
-        "summary": "Disconnect GHL",
-        "operationId": "DisconnectGHL",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DisconnectResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request \u2014 invalid parameters, missing required fields, or malformed request body.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 3,
-                  "message": "invalid uuid \"abc\": invalid UUID length: 3",
-                  "details": []
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized \u2014 API key is missing, invalid, or expired.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GrpcErrorResponse"
-                },
-                "example": {
-                  "code": 16,
-                  "message": "API key is missing or invalid",
                   "details": []
                 }
               }
@@ -7185,6 +6167,1307 @@
           }
         }
       }
+    },
+    "/api/v1/campaigns/": {
+      "get": {
+        "tags": [
+          "CampaignService"
+        ],
+        "summary": "List Campaigns",
+        "operationId": "ListCampaigns",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCampaignsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 3,
+                  "message": "Invalid request parameters",
+                  "details": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 16,
+                  "message": "API key is missing or invalid",
+                  "details": []
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Forbidden",
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "Insufficient permissions"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Internal error",
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "An unexpected error occurred"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Service unavailable",
+                  "error": {
+                    "code": "BAD_GATEWAY",
+                    "message": "Unable to reach upstream service"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "CampaignService"
+        ],
+        "summary": "Create Campaign",
+        "operationId": "CreateCampaign",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampaignRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 3,
+                  "message": "Invalid request parameters",
+                  "details": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 16,
+                  "message": "API key is missing or invalid",
+                  "details": []
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Forbidden",
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "Insufficient permissions"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Internal error",
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "An unexpected error occurred"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Service unavailable",
+                  "error": {
+                    "code": "BAD_GATEWAY",
+                    "message": "Unable to reach upstream service"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/campaigns/{id}": {
+      "get": {
+        "tags": [
+          "CampaignService"
+        ],
+        "summary": "Get Campaign",
+        "operationId": "GetCampaign",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign UUID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 3,
+                  "message": "Invalid request parameters",
+                  "details": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 16,
+                  "message": "API key is missing or invalid",
+                  "details": []
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Forbidden",
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "Insufficient permissions"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Internal error",
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "An unexpected error occurred"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Service unavailable",
+                  "error": {
+                    "code": "BAD_GATEWAY",
+                    "message": "Unable to reach upstream service"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "CampaignService"
+        ],
+        "summary": "Update Campaign",
+        "operationId": "UpdateCampaign",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign UUID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 3,
+                  "message": "Invalid request parameters",
+                  "details": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 16,
+                  "message": "API key is missing or invalid",
+                  "details": []
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Forbidden",
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "Insufficient permissions"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Internal error",
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "An unexpected error occurred"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Service unavailable",
+                  "error": {
+                    "code": "BAD_GATEWAY",
+                    "message": "Unable to reach upstream service"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CampaignService"
+        ],
+        "summary": "Delete Campaign",
+        "operationId": "DeleteCampaign",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign UUID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 3,
+                  "message": "Invalid request parameters",
+                  "details": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 16,
+                  "message": "API key is missing or invalid",
+                  "details": []
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Forbidden",
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "Insufficient permissions"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Internal error",
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "An unexpected error occurred"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Service unavailable",
+                  "error": {
+                    "code": "BAD_GATEWAY",
+                    "message": "Unable to reach upstream service"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/campaigns/{id}/start": {
+      "post": {
+        "tags": [
+          "CampaignService"
+        ],
+        "summary": "Start Campaign",
+        "operationId": "StartCampaign",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign UUID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 3,
+                  "message": "Invalid request parameters",
+                  "details": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 16,
+                  "message": "API key is missing or invalid",
+                  "details": []
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Forbidden",
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "Insufficient permissions"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Internal error",
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "An unexpected error occurred"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Service unavailable",
+                  "error": {
+                    "code": "BAD_GATEWAY",
+                    "message": "Unable to reach upstream service"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/campaigns/{id}/pause": {
+      "post": {
+        "tags": [
+          "CampaignService"
+        ],
+        "summary": "Pause Campaign",
+        "operationId": "PauseCampaign",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign UUID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 3,
+                  "message": "Invalid request parameters",
+                  "details": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 16,
+                  "message": "API key is missing or invalid",
+                  "details": []
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Forbidden",
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "Insufficient permissions"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Internal error",
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "An unexpected error occurred"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Service unavailable",
+                  "error": {
+                    "code": "BAD_GATEWAY",
+                    "message": "Unable to reach upstream service"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/campaigns/{id}/resume": {
+      "post": {
+        "tags": [
+          "CampaignService"
+        ],
+        "summary": "Resume Campaign",
+        "operationId": "ResumeCampaign",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign UUID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 3,
+                  "message": "Invalid request parameters",
+                  "details": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 16,
+                  "message": "API key is missing or invalid",
+                  "details": []
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Forbidden",
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "Insufficient permissions"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Internal error",
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "An unexpected error occurred"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Service unavailable",
+                  "error": {
+                    "code": "BAD_GATEWAY",
+                    "message": "Unable to reach upstream service"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/campaigns/{id}/contacts": {
+      "get": {
+        "tags": [
+          "CampaignService"
+        ],
+        "summary": "List Campaign Contacts",
+        "operationId": "ListCampaignContacts",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign UUID"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCampaignContactsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 3,
+                  "message": "Invalid request parameters",
+                  "details": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 16,
+                  "message": "API key is missing or invalid",
+                  "details": []
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Forbidden",
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "Insufficient permissions"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Internal error",
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "An unexpected error occurred"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Service unavailable",
+                  "error": {
+                    "code": "BAD_GATEWAY",
+                    "message": "Unable to reach upstream service"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "CampaignService"
+        ],
+        "summary": "Add Contacts to Campaign",
+        "operationId": "AddContactsToCampaign",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign UUID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddContactsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 3,
+                  "message": "Invalid request parameters",
+                  "details": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 16,
+                  "message": "API key is missing or invalid",
+                  "details": []
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Forbidden",
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "Insufficient permissions"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Internal error",
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "An unexpected error occurred"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Service unavailable",
+                  "error": {
+                    "code": "BAD_GATEWAY",
+                    "message": "Unable to reach upstream service"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/campaigns/{id}/contacts/{contact_id}": {
+      "delete": {
+        "tags": [
+          "CampaignService"
+        ],
+        "summary": "Remove Contact from Campaign",
+        "operationId": "RemoveContactFromCampaign",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Campaign UUID"
+          },
+          {
+            "name": "contact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Contact UUID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 3,
+                  "message": "Invalid request parameters",
+                  "details": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrpcErrorResponse"
+                },
+                "example": {
+                  "code": 16,
+                  "message": "API key is missing or invalid",
+                  "details": []
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Forbidden",
+                  "error": {
+                    "code": "FORBIDDEN",
+                    "message": "Insufficient permissions"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Internal error",
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "An unexpected error occurred"
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "success": false,
+                  "message": "Service unavailable",
+                  "error": {
+                    "code": "BAD_GATEWAY",
+                    "message": "Unable to reach upstream service"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -8517,200 +8800,6 @@
           }
         }
       },
-      "GHLAppointment": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "ghl_appointment_id": {
-            "type": "string"
-          },
-          "contact_id": {
-            "type": "string"
-          },
-          "agent_id": {
-            "type": "string"
-          },
-          "agent_name": {
-            "type": "string"
-          },
-          "contact_name": {
-            "type": "string"
-          },
-          "contact_email": {
-            "type": "string"
-          },
-          "contact_phone": {
-            "type": "string"
-          },
-          "appointment_time": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          }
-        }
-      },
-      "ListGHLAppointmentsResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "message": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "appointments": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/GHLAppointment"
-                }
-              },
-              "count": {
-                "type": "integer"
-              }
-            }
-          }
-        }
-      },
-      "GetGHLAppointmentResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "message": {
-            "type": "string"
-          },
-          "data": {
-            "$ref": "#/components/schemas/GHLAppointment"
-          }
-        }
-      },
-      "GHLSetupStatusResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "message": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "ghl_connected": {
-                "type": "boolean"
-              },
-              "location_id": {
-                "type": "string"
-              },
-              "company_id": {
-                "type": "string"
-              },
-              "token_valid": {
-                "type": "boolean"
-              },
-              "agents_created": {
-                "type": "boolean"
-              },
-              "agent_count": {
-                "type": "integer"
-              },
-              "setup_complete": {
-                "type": "boolean"
-              },
-              "message": {
-                "type": "string"
-              },
-              "next_step": {
-                "type": "string",
-                "description": "One of: CONNECT_GHL, CREATE_AGENT, or empty string when fully set up"
-              }
-            }
-          }
-        }
-      },
-      "GHLCalendar": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "locationId": {
-            "type": "string"
-          },
-          "serviceTitle": {
-            "type": "string"
-          }
-        }
-      },
-      "ListGHLCalendarsResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "message": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "calendars": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/GHLCalendar"
-                }
-              },
-              "count": {
-                "type": "integer"
-              }
-            }
-          }
-        }
-      },
-      "GetGHLAgentByCalendarResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "message": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "agent_id": {
-                "type": "string"
-              },
-              "agent_name": {
-                "type": "string"
-              },
-              "calendar_id": {
-                "type": "string"
-              },
-              "is_active": {
-                "type": "boolean"
-              },
-              "created_at": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
       "DisconnectResponse": {
         "type": "object",
         "properties": {
@@ -9288,6 +9377,301 @@
           "details": {
             "type": "array",
             "items": {}
+          }
+        }
+      },
+      "CampaignSchedule": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          },
+          "window_start": {
+            "type": "string"
+          },
+          "window_end": {
+            "type": "string"
+          },
+          "window_days": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "max_concurrent": {
+            "type": "integer"
+          },
+          "retry_attempts": {
+            "type": "integer"
+          },
+          "retry_gap_min": {
+            "type": "integer"
+          }
+        }
+      },
+      "CampaignStats": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer"
+          },
+          "contacted": {
+            "type": "integer"
+          },
+          "successful": {
+            "type": "integer"
+          },
+          "failed": {
+            "type": "integer"
+          },
+          "no_answer": {
+            "type": "integer"
+          },
+          "pending": {
+            "type": "integer"
+          },
+          "in_progress": {
+            "type": "integer"
+          }
+        }
+      },
+      "Campaign": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "organization_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "agent_id": {
+            "type": "string"
+          },
+          "phone_number_id": {
+            "type": "string"
+          },
+          "from_phone_number": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "running",
+              "paused",
+              "completed"
+            ]
+          },
+          "execution_status": {
+            "type": "string"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/CampaignSchedule"
+          },
+          "contact_stats": {
+            "$ref": "#/components/schemas/CampaignStats"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CampaignContact": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "contact_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "in_progress",
+              "successful",
+              "failed",
+              "no_answer"
+            ]
+          },
+          "attempt_count": {
+            "type": "integer"
+          },
+          "last_attempted_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "next_retry_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "call_duration_sec": {
+            "type": "integer"
+          },
+          "error_message": {
+            "type": "string"
+          },
+          "call_session_id": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateCampaignRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "agent_id",
+          "phone_number_id",
+          "from_phone_number",
+          "contact_ids"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "agent_id": {
+            "type": "string"
+          },
+          "phone_number_id": {
+            "type": "string"
+          },
+          "from_phone_number": {
+            "type": "string"
+          },
+          "contact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/CampaignSchedule"
+          }
+        }
+      },
+      "UpdateCampaignRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "agent_id": {
+            "type": "string"
+          },
+          "phone_number_id": {
+            "type": "string"
+          },
+          "from_phone_number": {
+            "type": "string"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/CampaignSchedule"
+          }
+        }
+      },
+      "CampaignResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Campaign"
+          }
+        }
+      },
+      "ListCampaignsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Campaign"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "AddContactsRequest": {
+        "type": "object",
+        "required": [
+          "contact_ids"
+        ],
+        "properties": {
+          "contact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ListCampaignContactsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignContact"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
           }
         }
       }

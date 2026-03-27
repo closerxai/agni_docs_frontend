@@ -1,0 +1,63 @@
+---
+title: "Delete Campaign"
+openapi: "DELETE /api/v1/campaigns/{id}"
+description: "Permanently delete a campaign and all its contact associations."
+---
+
+<Warning>This action is irreversible. The campaign and all contact assignments will be permanently removed.</Warning>
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Path Parameters
+<ParamField path="id" type="string" required>Campaign UUID.</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X DELETE https://api.ravan.ai/api/v1/campaigns/019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+response = requests.delete("https://api.ravan.ai/api/v1/campaigns/019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+    headers={"X-Api-Key": "YOUR_API_KEY"})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/campaigns/019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c",
+  { method: "DELETE", headers: { "X-Api-Key": "YOUR_API_KEY" } });
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{ "success": true, "message": "Campaign deleted successfully" }
+```
+
+```json 400
+{ "code": 3, "message": "Invalid request parameters", "details": [] }
+```
+
+```json 401
+{ "code": 16, "message": "API key is missing or invalid", "details": [] }
+```
+
+```json 500
+{ "success": false, "message": "Something went wrong on our end", "error": { "code": "INTERNAL_ERROR", "message": "An unexpected error occurred. Please try again later." } }
+```
+
+```json 502
+{ "success": false, "message": "Service temporarily unavailable", "error": { "code": "BAD_GATEWAY", "message": "Unable to reach upstream service. Please try again." } }
+```
+
+</ResponseExample>

@@ -1,0 +1,69 @@
+---
+title: "Add Contacts to Campaign"
+openapi: "POST /api/v1/campaigns/{id}/contacts"
+description: "Add one or more contacts to an existing campaign. New contacts will be queued as pending."
+---
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Path Parameters
+<ParamField path="id" type="string" required>Campaign UUID.</ParamField>
+
+### Body
+<ParamField body="contact_ids" type="string[]" required>Array of contact UUIDs to add to the campaign.</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="added_count" type="integer">Number of contacts successfully added.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/campaigns/019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c/contacts \
+  -H "X-Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" \
+  -d '{"contact_ids": ["019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b", "019d3a2b-6d7e-8f9a-0b1c-2d3e4f5a6b7c", "019d3a2b-7e8f-9a0b-1c2d-3e4f5a6b7c8d"]}'
+```
+
+```python Python
+import requests
+response = requests.post("https://api.ravan.ai/api/v1/campaigns/019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c/contacts",
+    headers={"X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json"},
+    json={"contact_ids": ["019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b", "019d3a2b-6d7e-8f9a-0b1c-2d3e4f5a6b7c"]})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/campaigns/019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c/contacts", {
+  method: "POST", headers: { "X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json" },
+  body: JSON.stringify({ contact_ids: ["019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b", "019d3a2b-6d7e-8f9a-0b1c-2d3e4f5a6b7c"] })
+});
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{ "success": true, "message": "Added 3 contacts to campaign", "added_count": 3 }
+```
+
+```json 400
+{ "code": 3, "message": "Invalid request parameters", "details": [] }
+```
+
+```json 401
+{ "code": 16, "message": "API key is missing or invalid", "details": [] }
+```
+
+```json 500
+{ "success": false, "message": "Something went wrong on our end", "error": { "code": "INTERNAL_ERROR", "message": "An unexpected error occurred. Please try again later." } }
+```
+
+```json 502
+{ "success": false, "message": "Service temporarily unavailable", "error": { "code": "BAD_GATEWAY", "message": "Unable to reach upstream service. Please try again." } }
+```
+
+</ResponseExample>

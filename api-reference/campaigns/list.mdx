@@ -1,0 +1,68 @@
+---
+title: "List Campaigns"
+openapi: "GET /api/v1/campaigns/"
+description: "List all campaigns in your organization with pagination and optional status filtering."
+---
+
+### Authorizations
+<ParamField header="X-Api-Key" type="string" required>Your Agni API key.</ParamField>
+
+### Query Parameters
+<ParamField query="limit" type="integer">Max results per page.</ParamField>
+<ParamField query="offset" type="integer">Pagination offset.</ParamField>
+<ParamField query="status" type="string">Filter by status: `draft`, `running`, `paused`, `completed`.</ParamField>
+
+### Response
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object[]">Array of campaign objects.</ResponseField>
+<ResponseField name="meta" type="object">Pagination metadata with `total`, `limit`, `offset`.</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl "https://api.ravan.ai/api/v1/campaigns/?limit=20&status=running" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+response = requests.get("https://api.ravan.ai/api/v1/campaigns/",
+    headers={"X-Api-Key": "YOUR_API_KEY"}, params={"limit": 20, "status": "running"})
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/campaigns/?limit=20&status=running",
+  { headers: { "X-Api-Key": "YOUR_API_KEY" } });
+console.log(await response.json());
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "success": true,
+  "message": "Campaigns fetched successfully",
+  "data": [
+    { "id": "019d5b4c-8d9e-0f1a-2b3c-4d5e6f7a8b9c", "name": "Q2 Outbound Blitz", "status": "running", "contact_stats": { "total": 150, "successful": 30, "pending": 100 }, "created_at": "2026-03-20T14:30:00Z" }
+  ],
+  "meta": { "total": 1, "limit": 20, "offset": 0 }
+}
+```
+
+```json 401
+{ "code": 16, "message": "API key is missing or invalid", "details": [] }
+```
+
+```json 500
+{ "success": false, "message": "Something went wrong on our end", "error": { "code": "INTERNAL_ERROR", "message": "An unexpected error occurred. Please try again later." } }
+```
+
+```json 502
+{ "success": false, "message": "Service temporarily unavailable", "error": { "code": "BAD_GATEWAY", "message": "Unable to reach upstream service. Please try again." } }
+```
+
+</ResponseExample>
