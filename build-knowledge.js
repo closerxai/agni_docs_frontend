@@ -71,7 +71,7 @@ for (const dir of DOC_DIRS) {
       title,
       description,
       path: "/" + urlPath,
-      content: content.substring(0, 4000), // Limit per-doc size
+      content: content.substring(0, 2500), // Limit per-doc size for token efficiency
     });
   }
 }

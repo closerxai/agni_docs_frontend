@@ -1,274 +1,304 @@
 /*
  * Agni Docs - Runtime overrides
- * Loaded after page hydration to add search, AI assistant, and rebrand
+ * Search (Pagefind) + AI Assistant (Claude) + Mintlify rebrand
  */
 
-// Suppress Mintlify "Connection closed" infinite retry loop
+// Suppress Mintlify connection errors
 window.addEventListener("unhandledrejection", function (e) {
-  if (e.reason && (
-    (typeof e.reason.message === "string" && e.reason.message.includes("Connection closed")) ||
-    (typeof e.reason === "string" && e.reason.includes("Connection closed"))
-  )) {
+  if (e.reason && typeof e.reason === "object" && e.reason.message &&
+      (e.reason.message.includes("Connection closed") || e.reason.message.includes("WebSocket"))) {
+    e.preventDefault();
+  }
+});
+window.addEventListener("error", function (e) {
+  if (e.message && (e.message.includes("Connection closed") || e.message.includes("WebSocket"))) {
     e.preventDefault();
   }
 });
 
 (function () {
+  "use strict";
+
   var SUGGESTIONS = [
     "How do I create an agent?",
     "What API authentication is needed?",
     "How does call transfer work?",
     "What are the pricing details?",
-    "How to set up Cal.com integration?",
+    "How to set up Cal.com integration?"
   ];
 
   function init() {
-    // Create search overlay
+    // Build the modal HTML
     var ov = document.createElement("div");
     ov.id = "agni-search-overlay";
-    ov.innerHTML =
-      '<div id="agni-search-modal">' +
-      '<div class="agni-search-tabs">' +
-      '<button class="agni-search-tab active" data-tab="search">Search</button>' +
-      '<button class="agni-search-tab" data-tab="ai">Ask AI</button>' +
-      "</div>" +
-      '<div id="agni-pagefind-wrap" class="active"><div id="agni-search-container"></div></div>' +
-      '<div id="agni-ai-wrap">' +
-      '<div id="agni-ai-messages">' +
-      '<div class="agni-ai-welcome">' +
-      "<h3>Agni AI Assistant</h3>" +
-      "<p>Ask me anything about Agni voice AI platform</p>" +
-      '<div class="agni-ai-suggestions"></div>' +
-      "</div>" +
-      "</div>" +
-      '<div id="agni-ai-input-wrap">' +
-      '<input id="agni-ai-input" placeholder="Ask about Agni..." autocomplete="off">' +
-      '<button id="agni-ai-send">Send</button>' +
-      "</div>" +
-      "</div>" +
-      '<div class="agni-search-hint"><kbd>Esc</kbd>\u00a0to close\u00a0\u2022\u00a0<kbd>Ctrl</kbd>+<kbd>K</kbd>\u00a0to search</div>' +
-      "</div>";
+
+    var modal = document.createElement("div");
+    modal.id = "agni-search-modal";
+
+    // Tabs
+    var tabsDiv = document.createElement("div");
+    tabsDiv.className = "agni-search-tabs";
+
+    var searchTab = document.createElement("button");
+    searchTab.className = "agni-search-tab active";
+    searchTab.setAttribute("data-tab", "search");
+    searchTab.textContent = "Search";
+
+    var aiTab = document.createElement("button");
+    aiTab.className = "agni-search-tab";
+    aiTab.setAttribute("data-tab", "ai");
+    aiTab.textContent = "Ask AI";
+
+    tabsDiv.appendChild(searchTab);
+    tabsDiv.appendChild(aiTab);
+
+    // Pagefind panel
+    var pfWrap = document.createElement("div");
+    pfWrap.id = "agni-pagefind-wrap";
+    pfWrap.className = "active";
+    var pfContainer = document.createElement("div");
+    pfContainer.id = "agni-search-container";
+    pfWrap.appendChild(pfContainer);
+
+    // AI panel
+    var aiWrap = document.createElement("div");
+    aiWrap.id = "agni-ai-wrap";
+
+    var aiMessages = document.createElement("div");
+    aiMessages.id = "agni-ai-messages";
+
+    // Welcome message
+    var welcomeDiv = document.createElement("div");
+    welcomeDiv.className = "agni-ai-welcome";
+    var h3 = document.createElement("h3");
+    h3.textContent = "Agni AI Assistant";
+    var p = document.createElement("p");
+    p.textContent = "Ask me anything about Agni voice AI platform";
+    var sugDiv = document.createElement("div");
+    sugDiv.className = "agni-ai-suggestions";
+    welcomeDiv.appendChild(h3);
+    welcomeDiv.appendChild(p);
+    welcomeDiv.appendChild(sugDiv);
+    aiMessages.appendChild(welcomeDiv);
+
+    // Input area
+    var inputWrap = document.createElement("div");
+    inputWrap.id = "agni-ai-input-wrap";
+    var aiInput = document.createElement("input");
+    aiInput.id = "agni-ai-input";
+    aiInput.placeholder = "Ask about Agni...";
+    aiInput.autocomplete = "off";
+    var sendBtn = document.createElement("button");
+    sendBtn.id = "agni-ai-send";
+    sendBtn.textContent = "Send";
+    inputWrap.appendChild(aiInput);
+    inputWrap.appendChild(sendBtn);
+
+    aiWrap.appendChild(aiMessages);
+    aiWrap.appendChild(inputWrap);
+
+    // Hint footer
+    var hint = document.createElement("div");
+    hint.className = "agni-search-hint";
+    hint.innerHTML = "<kbd>Esc</kbd>&nbsp;to close&nbsp;\u2022&nbsp;<kbd>Ctrl</kbd>+<kbd>K</kbd>&nbsp;to search";
+
+    // Assemble modal
+    modal.appendChild(tabsDiv);
+    modal.appendChild(pfWrap);
+    modal.appendChild(aiWrap);
+    modal.appendChild(hint);
+    ov.appendChild(modal);
     document.body.appendChild(ov);
 
-    // Suggestion buttons
-    var sugWrap = ov.querySelector(".agni-ai-suggestions");
-    SUGGESTIONS.forEach(function (s) {
+    // Add suggestion buttons
+    SUGGESTIONS.forEach(function (text) {
       var btn = document.createElement("button");
       btn.className = "agni-ai-suggestion";
-      btn.textContent = s;
-      btn.onclick = function () {
-        askAI(s);
-      };
-      sugWrap.appendChild(btn);
+      btn.textContent = text;
+      btn.addEventListener("click", function () { askAI(text); });
+      sugDiv.appendChild(btn);
     });
 
-    // Tab switching
-    var tabs = ov.querySelectorAll(".agni-search-tab");
-    var pfWrap = document.getElementById("agni-pagefind-wrap");
-    var aiWrap = document.getElementById("agni-ai-wrap");
-    tabs.forEach(function (tab) {
-      tab.addEventListener("click", function () {
-        tabs.forEach(function (t) {
-          t.classList.remove("active");
-        });
-        tab.classList.add("active");
-        var which = tab.getAttribute("data-tab");
-        pfWrap.classList.toggle("active", which === "search");
-        aiWrap.classList.toggle("active", which === "ai");
-        if (which === "search") {
-          initPagefind();
-          setTimeout(function () {
-            var i = ov.querySelector(".pagefind-ui__search-input");
-            if (i) i.focus();
-          }, 100);
-        } else {
-          document.getElementById("agni-ai-input").focus();
-        }
-      });
-    });
+    // ===== Tab switching =====
+    function switchTab(which) {
+      searchTab.classList.toggle("active", which === "search");
+      aiTab.classList.toggle("active", which === "ai");
+      pfWrap.classList.toggle("active", which === "search");
+      aiWrap.classList.toggle("active", which === "ai");
+      if (which === "search") {
+        initPagefind();
+        setTimeout(function () {
+          var inp = pfWrap.querySelector(".pagefind-ui__search-input");
+          if (inp) { inp.focus(); inp.select(); }
+        }, 120);
+      } else {
+        aiInput.focus();
+      }
+    }
 
-    // Pagefind
+    searchTab.addEventListener("click", function () { switchTab("search"); });
+    aiTab.addEventListener("click", function () { switchTab("ai"); });
+
+    // ===== Pagefind =====
     var pfInit = false;
     function initPagefind() {
-      if (pfInit || typeof PagefindUI === "undefined") return;
+      if (pfInit) return;
+      if (typeof window.PagefindUI === "undefined") {
+        console.log("[Agni] Pagefind not loaded yet");
+        return;
+      }
       pfInit = true;
-      new PagefindUI({
+      new window.PagefindUI({
         element: "#agni-search-container",
         showSubResults: true,
         showImages: false,
         placeholder: "Search Agni documentation...",
         autofocus: true,
-        resetStyles: false,
+        resetStyles: false
       });
     }
 
+    // ===== Open/Close =====
     function openSearch(tab) {
       ov.classList.add("active");
-      if (tab === "ai") {
-        tabs[1].click();
-      } else {
-        tabs[0].click();
-        initPagefind();
-        setTimeout(function () {
-          var i = ov.querySelector(".pagefind-ui__search-input");
-          if (i) {
-            i.focus();
-            i.select();
-          }
-        }, 150);
-      }
+      switchTab(tab || "search");
     }
     function closeSearch() {
       ov.classList.remove("active");
     }
 
-    // AI Chat
-    var history = [];
-    var sending = false;
-    var messagesEl = document.getElementById("agni-ai-messages");
-    var inputEl = document.getElementById("agni-ai-input");
-    var sendBtn = document.getElementById("agni-ai-send");
+    // ===== AI Chat =====
+    var chatHistory = [];
+    var isSending = false;
 
-    function addMsg(role, text) {
+    function createMsg(role, html) {
       var el = document.createElement("div");
       el.className = "agni-ai-msg " + role;
-      el.innerHTML = formatMd(text);
-      messagesEl.appendChild(el);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
+      el.innerHTML = html;
+      aiMessages.appendChild(el);
+      aiMessages.scrollTop = aiMessages.scrollHeight;
       return el;
     }
 
-    function formatMd(text) {
+    function markdownToHtml(text) {
+      if (!text) return "";
       return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
         .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
         .replace(/`([^`]+)`/g, "<code>$1</code>")
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
         .replace(/^[\-\*]\s+(.+)$/gm, "<li>$1</li>")
-        .replace(/(<li>[\s\S]*?<\/li>)/g, "<ul>$1</ul>")
         .replace(/\n/g, "<br>");
     }
 
     function askAI(query) {
-      if (sending || !query.trim()) return;
-      var welcome = messagesEl.querySelector(".agni-ai-welcome");
+      if (isSending || !query || !query.trim()) return;
+
+      // Remove welcome
+      var welcome = aiMessages.querySelector(".agni-ai-welcome");
       if (welcome) welcome.remove();
 
-      sending = true;
+      isSending = true;
       sendBtn.disabled = true;
-      inputEl.value = "";
+      aiInput.value = "";
 
-      addMsg("user", query);
-      history.push({ role: "user", content: query });
+      // Show user message
+      createMsg("user", markdownToHtml(query));
+      chatHistory.push({ role: "user", content: query });
 
-      var thinkEl = document.createElement("div");
-      thinkEl.className = "agni-ai-msg thinking";
-      thinkEl.textContent = "Thinking";
-      messagesEl.appendChild(thinkEl);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
+      // Show thinking indicator
+      var thinkEl = createMsg("thinking", "Thinking...");
 
+      // Call AI API
       fetch("/api/ai-search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: query, history: history.slice(-6) }),
+        body: JSON.stringify({ query: query, history: chatHistory.slice(-6) })
       })
-        .then(function (r) {
-          return r.json();
-        })
-        .then(function (data) {
-          thinkEl.remove();
-          if (data.error) {
-            addMsg("assistant", "Sorry, I encountered an error: " + data.error);
-          } else {
-            addMsg("assistant", data.answer);
-            history.push({ role: "assistant", content: data.answer });
-          }
-        })
-        .catch(function () {
-          thinkEl.remove();
-          addMsg(
-            "assistant",
-            "Sorry, I couldn\u2019t connect to the AI service. Please try again."
-          );
-        })
-        .finally(function () {
-          sending = false;
-          sendBtn.disabled = false;
-          inputEl.focus();
-        });
+      .then(function (response) {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.json();
+      })
+      .then(function (data) {
+        if (thinkEl.parentNode) thinkEl.remove();
+        if (data.error) {
+          createMsg("assistant", "Sorry, I encountered an error: " + markdownToHtml(data.error));
+        } else {
+          var answer = data.answer || "No response received.";
+          createMsg("assistant", markdownToHtml(answer));
+          chatHistory.push({ role: "assistant", content: answer });
+        }
+      })
+      .catch(function (err) {
+        if (thinkEl.parentNode) thinkEl.remove();
+        createMsg("assistant", "Sorry, couldn\u2019t connect to the AI service. Error: " + err.message);
+        console.error("[Agni AI]", err);
+      })
+      .finally(function () {
+        isSending = false;
+        sendBtn.disabled = false;
+        aiInput.focus();
+      });
     }
 
+    // Send button click
     sendBtn.addEventListener("click", function () {
-      askAI(inputEl.value);
+      askAI(aiInput.value);
     });
-    inputEl.addEventListener("keydown", function (e) {
+
+    // Enter key to send
+    aiInput.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        askAI(inputEl.value);
+        askAI(aiInput.value);
       }
     });
 
-    // Intercept Mintlify search bars
-    document.addEventListener(
-      "click",
-      function (e) {
-        var t = e.target;
-        if (
-          t.closest("#search-bar-entry") ||
-          t.closest("#search-bar-entry-mobile") ||
-          t.closest("[data-search]") ||
-          t.closest('[class*="SearchEntry"]') ||
-          t.closest('[class*="search-bar"]') ||
-          (t.tagName === "INPUT" &&
-            t.placeholder &&
-            t.placeholder.toLowerCase().includes("search"))
-        ) {
-          e.preventDefault();
-          e.stopPropagation();
-          openSearch("search");
-        }
-      },
-      true
-    );
-    document.addEventListener(
-      "mousedown",
-      function (e) {
-        var t = e.target;
-        if (
-          t.closest("#search-bar-entry") ||
-          t.closest("#search-bar-entry-mobile") ||
-          t.closest('[class*="search-bar"]')
-        ) {
-          e.preventDefault();
-          e.stopPropagation();
-          openSearch("search");
-        }
-      },
-      true
-    );
-    document.addEventListener(
-      "focus",
-      function (e) {
-        var t = e.target;
-        if (
-          t.id === "search-bar-entry" ||
-          t.id === "search-bar-entry-mobile"
-        ) {
-          e.preventDefault();
-          e.stopPropagation();
-          openSearch("search");
-        }
-      },
-      true
-    );
+    // ===== Intercept Mintlify search bars =====
+    function isSearchElement(el) {
+      if (!el) return false;
+      if (el.id === "search-bar-entry" || el.id === "search-bar-entry-mobile") return true;
+      if (el.getAttribute && el.getAttribute("data-search") !== null) return true;
+      var cls = el.className || "";
+      if (typeof cls === "string" && (cls.indexOf("search-bar") !== -1 || cls.indexOf("SearchEntry") !== -1)) return true;
+      if (el.tagName === "INPUT" && el.placeholder && el.placeholder.toLowerCase().indexOf("search") !== -1) return true;
+      return false;
+    }
+
+    function interceptSearch(el) {
+      if (isSearchElement(el) || (el && el.closest && (
+        el.closest("#search-bar-entry") || el.closest("#search-bar-entry-mobile") ||
+        el.closest("[data-search]") || el.closest('[class*="search-bar"]')
+      ))) {
+        return true;
+      }
+      return false;
+    }
+
+    document.addEventListener("click", function (e) {
+      if (interceptSearch(e.target)) { e.preventDefault(); e.stopPropagation(); openSearch("search"); }
+    }, true);
+
+    document.addEventListener("mousedown", function (e) {
+      if (interceptSearch(e.target)) { e.preventDefault(); e.stopPropagation(); openSearch("search"); }
+    }, true);
+
+    document.addEventListener("focus", function (e) {
+      if (isSearchElement(e.target)) { e.preventDefault(); e.stopPropagation(); openSearch("search"); }
+    }, true);
+
+    // Close on overlay click
     ov.addEventListener("click", function (e) {
       if (e.target === ov) closeSearch();
     });
+
+    // Keyboard shortcuts
     document.addEventListener("keydown", function (e) {
       if ((e.ctrlKey || e.metaKey) && e.key === "k") {
         e.preventDefault();
-        ov.classList.contains("active")
-          ? closeSearch()
-          : openSearch("search");
+        ov.classList.contains("active") ? closeSearch() : openSearch("search");
       }
       if (e.key === "Escape" && ov.classList.contains("active")) {
         e.preventDefault();
@@ -276,47 +306,42 @@ window.addEventListener("unhandledrejection", function (e) {
       }
     });
 
-    // Rebrand Mintlify
+    // ===== Rebrand Mintlify =====
     function rebrand() {
-      var walk = document.createTreeWalker(
-        document.body,
-        NodeFilter.SHOW_TEXT,
-        null,
-        false
-      );
-      while (walk.nextNode()) {
-        var n = walk.currentNode;
-        if (n.nodeValue && /mintlify/i.test(n.nodeValue)) {
-          n.nodeValue = n.nodeValue
-            .replace(/Powered\s+by\s+Mintlify/gi, "Agni by Ravan.ai")
-            .replace(/Built\s+with\s+Mintlify/gi, "Agni by Ravan.ai")
-            .replace(/Mintlify/gi, "Agni");
+      try {
+        var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+        while (walker.nextNode()) {
+          var node = walker.currentNode;
+          if (node.nodeValue && /mintlify/i.test(node.nodeValue)) {
+            node.nodeValue = node.nodeValue
+              .replace(/Powered\s+by\s+Mintlify/gi, "Agni by Ravan.ai")
+              .replace(/Built\s+with\s+Mintlify/gi, "Agni by Ravan.ai")
+              .replace(/Mintlify/gi, "Agni");
+          }
         }
-      }
-      document.querySelectorAll('a[href*="mintlify.com"]').forEach(function (a) {
-        a.href = "https://ravan.ai";
-        if (a.textContent && /mintlify/i.test(a.textContent)) {
-          a.textContent = a.textContent
-            .replace(/Powered\s+by\s+Mintlify/gi, "Agni by Ravan.ai")
-            .replace(/Mintlify/gi, "Ravan.ai");
-        }
-      });
+        document.querySelectorAll('a[href*="mintlify.com"]').forEach(function (a) {
+          a.href = "https://ravan.ai";
+          if (a.textContent && /mintlify/i.test(a.textContent)) {
+            a.textContent = a.textContent
+              .replace(/Powered\s+by\s+Mintlify/gi, "Agni by Ravan.ai")
+              .replace(/Mintlify/gi, "Ravan.ai");
+          }
+        });
+      } catch (e) { /* ignore */ }
     }
+
     rebrand();
-    var obs = new MutationObserver(function () {
-      rebrand();
-    });
-    obs.observe(document.body, { childList: true, subtree: true });
-    setTimeout(function () {
-      obs.disconnect();
-    }, 10000);
+    var observer = new MutationObserver(rebrand);
+    observer.observe(document.body, { childList: true, subtree: true });
+    setTimeout(function () { observer.disconnect(); }, 12000);
+
+    console.log("[Agni] Overrides loaded successfully");
   }
 
+  // Run after page hydration
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () {
-      setTimeout(init, 1000);
-    });
+    document.addEventListener("DOMContentLoaded", function () { setTimeout(init, 1200); });
   } else {
-    setTimeout(init, 1000);
+    setTimeout(init, 1200);
   }
 })();

@@ -5,6 +5,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
+    { "source": "/socket.io/", "destination": "/api/socketio-mock" },
+    { "source": "/socket.io", "destination": "/api/socketio-mock" },
     { "source": "/socket.io/:path*", "destination": "/api/socketio-mock" },
     { "source": "/_mintlify/api/:path*", "destination": "/api/mintlify-mock" },
     { "source": "/_mintlify/:path*", "destination": "/api/mintlify-mock" }
