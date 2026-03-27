@@ -18,49 +18,28 @@ function findHtmlFiles(dir) {
   return results;
 }
 
-// Only inject external file references - no inline JS to avoid escaping issues
-const INJECT_HEAD = '<link rel="stylesheet" href="/agni-overrides.css">\n<link href="/_pagefind/pagefind-ui.css" rel="stylesheet">\n';
-const INJECT_BODY = '<script src="/_pagefind/pagefind-ui.js" defer></script>\n<script src="/agni-overrides.js" defer></script>\n';
-
-function processHtml(filePath) {
-  let html = fs.readFileSync(filePath, "utf8");
-
-  // Fix meta tags
-  html = html.replace(
-    /<meta\s+name="generator"\s+content="Mintlify"\s*\/?>/gi,
-    '<meta name="generator" content="Agni by Ravan.ai" />'
-  );
-
-  // Fix OG images
-  html = html.replace(
-    /https:\/\/mintlify\.mintlify\.app\/_next\/image[^"']*/g,
-    "/images/hero-dark.png"
-  );
-
-  // Inject CSS in head, JS before body close
-  if (html.includes("</head>")) {
-    html = html.replace("</head>", INJECT_HEAD + "</head>");
-  }
-  if (html.includes("</body>")) {
-    html = html.replace("</body>", INJECT_BODY + "</body>");
-  }
-
-  fs.writeFileSync(filePath, html, "utf8");
-}
-
 console.log("Agni Docs Post-Build Processing...");
 
 // 1. Copy override files into out/
 fs.copyFileSync(path.join(__dirname, "agni-overrides.js"), path.join(OUT_DIR, "agni-overrides.js"));
 fs.copyFileSync(path.join(__dirname, "agni-overrides.css"), path.join(OUT_DIR, "agni-overrides.css"));
-console.log("  Copied agni-overrides.js and agni-overrides.css");
+console.log("  Copied override files");
 
-// 2. Remove Node.js files that cause browser errors
-var filesToRemove = [
-  "serve.js", "build-openapi.js", "fix-newlines.js", "fix-tabs.js",
-  "LICENSE", ".mintignore", "Start Docs.bat", "Start Docs.command", "test.html",
-];
-filesToRemove.forEach(function (f) {
+// 2. Create favicon.ico redirect page (actual favicon served from CDN via HTML meta)
+var faviconDst = path.join(OUT_DIR, "favicon.ico");
+if (!fs.existsSync(faviconDst)) {
+  // Copy favicon.svg as fallback
+  var faviconSrc = path.join(OUT_DIR, "favicon.svg");
+  if (fs.existsSync(faviconSrc)) {
+    fs.copyFileSync(faviconSrc, faviconDst);
+    console.log("  Created favicon.ico fallback");
+  }
+}
+
+// 3. Remove Node.js files that cause browser errors
+["serve.js", "build-openapi.js", "fix-newlines.js", "fix-tabs.js",
+ "LICENSE", ".mintignore", "Start Docs.bat", "Start Docs.command", "test.html"
+].forEach(function (f) {
   var p = path.join(OUT_DIR, f);
   if (fs.existsSync(p)) { fs.unlinkSync(p); console.log("  Removed: " + f); }
 });
@@ -71,8 +50,30 @@ if (fs.existsSync(snippetsDir)) {
   console.log("  Removed: snippets/");
 }
 
-// 3. Process HTML files
+// 4. Inject ONLY external file references into HTML - no content modifications
+//    Append before </body> using simple string split to avoid breaking existing code
 var htmlFiles = findHtmlFiles(OUT_DIR);
 console.log("  Processing " + htmlFiles.length + " HTML files...");
-htmlFiles.forEach(function (file) { processHtml(file); });
+
+var cssTag = '<link rel="stylesheet" href="/agni-overrides.css"><link href="/_pagefind/pagefind-ui.css" rel="stylesheet">';
+var jsTag = '<script src="/_pagefind/pagefind-ui.js" defer><\/script><script src="/agni-overrides.js" defer><\/script>';
+
+htmlFiles.forEach(function (filePath) {
+  var html = fs.readFileSync(filePath, "utf8");
+
+  // Inject CSS right before first </head>
+  var headIdx = html.indexOf("</head>");
+  if (headIdx !== -1) {
+    html = html.slice(0, headIdx) + cssTag + html.slice(headIdx);
+  }
+
+  // Inject JS right before last </body>
+  var bodyIdx = html.lastIndexOf("</body>");
+  if (bodyIdx !== -1) {
+    html = html.slice(0, bodyIdx) + jsTag + html.slice(bodyIdx);
+  }
+
+  fs.writeFileSync(filePath, html, "utf8");
+});
+
 console.log("  Done!");

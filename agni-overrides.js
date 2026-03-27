@@ -2,6 +2,17 @@
  * Agni Docs - Runtime overrides
  * Loaded after page hydration to add search, AI assistant, and rebrand
  */
+
+// Suppress Mintlify "Connection closed" infinite retry loop
+window.addEventListener("unhandledrejection", function (e) {
+  if (e.reason && (
+    (typeof e.reason.message === "string" && e.reason.message.includes("Connection closed")) ||
+    (typeof e.reason === "string" && e.reason.includes("Connection closed"))
+  )) {
+    e.preventDefault();
+  }
+});
+
 (function () {
   var SUGGESTIONS = [
     "How do I create an agent?",
