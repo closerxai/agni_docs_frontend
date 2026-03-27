@@ -33,6 +33,80 @@ const response = await fetch("https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d
 console.log(await response.json());
 ```
 
+
+
+```go Go
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"io"
+)
+
+func main() {
+	req, _ := http.NewRequest("GET", "https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b/campaigns", nil)
+	req.Header.Set("X-Api-Key", "YOUR_API_KEY")
+	client := &http.Client{}
+	resp, _ := client.Do(req)
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+}
+```
+
+```ruby Ruby
+require "net/http"
+require "json"
+require "uri"
+
+uri = URI("https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b/campaigns")
+http = Net::HTTP.new(uri.host, uri.port)
+http.use_ssl = true
+
+request = Net::HTTP::Get.new(uri)
+request["X-Api-Key"] = "YOUR_API_KEY"
+
+response = http.request(request)
+puts response.body
+```
+
+```php PHP
+<?php
+
+$ch = curl_init("https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b/campaigns");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-Api-Key: YOUR_API_KEY']);
+
+$response = curl_exec($ch);
+curl_close($ch);
+echo $response;
+```
+
+```java Java
+import java.net.http.*;
+import java.net.URI;
+
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b/campaigns"))
+    .method("GET", HttpRequest.BodyPublishers.noBody())
+    .header("X-Api-Key", "YOUR_API_KEY")
+    .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+System.out.println(response.body());
+```
+
+```csharp C#
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("X-Api-Key", "YOUR_API_KEY");
+
+var response = await client.GetAsync("https://api.ravan.ai/api/v1/contacts/019d3a2b-5c6d-7e8f-9a0b-1c2d3e4f5a6b/campaigns");
+var body = await response.Content.ReadAsStringAsync();
+Console.WriteLine(body);
+```
+
 </RequestExample>
 
 <ResponseExample>

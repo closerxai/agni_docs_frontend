@@ -41,6 +41,75 @@ const data = await response.json();
 console.log(data);
 ```
 
+
+
+```go Go
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"io"
+)
+
+func main() {
+	req, _ := http.NewRequest("GET", "https://api.ravan.ai/health", nil)
+	client := &http.Client{}
+	resp, _ := client.Do(req)
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+}
+```
+
+```ruby Ruby
+require "net/http"
+require "json"
+require "uri"
+
+uri = URI("https://api.ravan.ai/health")
+http = Net::HTTP.new(uri.host, uri.port)
+http.use_ssl = true
+
+request = Net::HTTP::Get.new(uri)
+
+response = http.request(request)
+puts response.body
+```
+
+```php PHP
+<?php
+
+$ch = curl_init("https://api.ravan.ai/health");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($ch);
+curl_close($ch);
+echo $response;
+```
+
+```java Java
+import java.net.http.*;
+import java.net.URI;
+
+HttpClient client = HttpClient.newHttpClient();
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("https://api.ravan.ai/health"))
+    .method("GET", HttpRequest.BodyPublishers.noBody())
+    .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+System.out.println(response.body());
+```
+
+```csharp C#
+using var client = new HttpClient();
+
+var response = await client.GetAsync("https://api.ravan.ai/health");
+var body = await response.Content.ReadAsStringAsync();
+Console.WriteLine(body);
+```
+
 </RequestExample>
 
 <ResponseExample>
