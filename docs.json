@@ -222,7 +222,7 @@
         },
         {
           "anchor": "Website",
-          "href": "https://app.ravan.ai",
+          "href": "https://ravan.ai",
           "icon": "globe"
         }
       ]
@@ -241,8 +241,8 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Login",
-      "href": "https://app.ravan.ai"
+      "label": "Contact Us",
+      "href": "mailto:support@ravan.ai"
     }
   },
   "contextual": {

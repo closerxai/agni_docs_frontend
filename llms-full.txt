@@ -139,6 +139,6 @@ Agni provides enterprise-grade real-time voice AI agents. Key capabilities:
 ### Contact
 - Support: support@ravan.ai
 - Website: https://ravan.ai
-- App: https://app.ravan.ai
+- App: https://ravan.ai
 - Demo: https://agni.ravan.ai
 - Instagram: https://www.instagram.com/agnibyravan/
