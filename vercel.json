@@ -1,5 +1,5 @@
 {
-  "buildCommand": "node build-knowledge.js && npx mintlify@latest export && mkdir -p out && cd out && unzip -o ../export.zip && cd .. && node postbuild.js && npx pagefind@latest --site out --output-path out/_pagefind",
+  "buildCommand": "node build-knowledge.js && npx mintlify@latest export && mkdir -p out && cd out && unzip -o ../export.zip && cd .. && node postbuild.js",
   "outputDirectory": "out",
   "installCommand": "npm install",
   "cleanUrls": true,
@@ -16,13 +16,5 @@
       "memory": 256,
       "maxDuration": 30
     }
-  },
-  "headers": [
-    {
-      "source": "/_pagefind/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    }
-  ]
+  }
 }

@@ -141,29 +141,10 @@ function inlineMd(s) {
     var modal = document.createElement("div");
     modal.id = "agni-search-modal";
 
-    // Tabs
-    var tabsDiv = document.createElement("div");
-    tabsDiv.className = "agni-tabs";
-    var searchTab = document.createElement("button");
-    searchTab.className = "agni-tab active";
-    searchTab.textContent = "Search";
-    var aiTab = document.createElement("button");
-    aiTab.className = "agni-tab";
-    aiTab.textContent = "Ask AI";
-    tabsDiv.appendChild(searchTab);
-    tabsDiv.appendChild(aiTab);
-
-    // Search panel
-    var panelSearch = document.createElement("div");
-    panelSearch.id = "agni-panel-search";
-    panelSearch.className = "active";
-    var pfContainer = document.createElement("div");
-    pfContainer.id = "agni-search-container";
-    panelSearch.appendChild(pfContainer);
-
-    // AI panel
+    // AI panel (only panel - no tabs, no search)
     var panelAi = document.createElement("div");
     panelAi.id = "agni-panel-ai";
+    panelAi.className = "active";
 
     var aiMessages = document.createElement("div");
     aiMessages.id = "agni-ai-messages";
@@ -205,59 +186,15 @@ function inlineMd(s) {
     footer.innerHTML = "<kbd>Esc</kbd>&nbsp;close&nbsp;\u2022&nbsp;<kbd>Ctrl+K</kbd>&nbsp;search";
 
     // Assemble
-    modal.appendChild(tabsDiv);
-    modal.appendChild(panelSearch);
     modal.appendChild(panelAi);
     modal.appendChild(footer);
     ov.appendChild(modal);
     document.body.appendChild(ov);
 
-    // ===== TABS =====
-    function switchTab(which) {
-      searchTab.classList.toggle("active", which === "search");
-      aiTab.classList.toggle("active", which === "ai");
-      panelSearch.classList.toggle("active", which === "search");
-      panelAi.classList.toggle("active", which === "ai");
-      if (which === "search") {
-        initPagefind();
-        setTimeout(function () {
-          var inp = pfContainer.querySelector(".pagefind-ui__search-input");
-          if (inp) { inp.focus(); inp.select(); }
-        }, 120);
-      } else {
-        aiInput.focus();
-      }
-    }
-    searchTab.addEventListener("click", function () { switchTab("search"); });
-    aiTab.addEventListener("click", function () { switchTab("ai"); });
-
-    // ===== PAGEFIND =====
-    var pfDone = false;
-    var pfTries = 0;
-    function initPagefind() {
-      if (pfDone) return;
-      if (typeof window.PagefindUI === "undefined") {
-        if (++pfTries < 30) setTimeout(initPagefind, 300);
-        return;
-      }
-      pfDone = true;
-      try {
-        new window.PagefindUI({
-          element: "#agni-search-container",
-          showSubResults: true,
-          showImages: false,
-          placeholder: "Search Agni docs...",
-          autofocus: true,
-          resetStyles: false
-        });
-      } catch (e) { console.error("[Agni] Pagefind error:", e); }
-    }
-    initPagefind(); // start immediately
-
     // ===== OPEN/CLOSE =====
-    function openSearch(tab) {
+    function openSearch() {
       ov.classList.add("active");
-      switchTab(tab || "search");
+      aiInput.focus();
     }
     function closeSearch() { ov.classList.remove("active"); }
 
@@ -334,14 +271,14 @@ function inlineMd(s) {
 
     ["click", "mousedown", "focus"].forEach(function (evt) {
       document.addEventListener(evt, function (e) {
-        if (isSearch(e.target)) { e.preventDefault(); e.stopPropagation(); openSearch("search"); }
+        if (isSearch(e.target)) { e.preventDefault(); e.stopPropagation(); openSearch(); }
       }, true);
     });
 
     ov.addEventListener("click", function (e) { if (e.target === ov) closeSearch(); });
 
     document.addEventListener("keydown", function (e) {
-      if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); ov.classList.contains("active") ? closeSearch() : openSearch("search"); }
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); ov.classList.contains("active") ? closeSearch() : openSearch(); }
       if (e.key === "Escape" && ov.classList.contains("active")) { e.preventDefault(); closeSearch(); }
     });
 
