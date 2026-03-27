@@ -1,0 +1,177 @@
+---
+title: "Knowledge Base"
+description: "Give your voice agents domain expertise with RAG-powered knowledge bases. Upload documents, configure retrieval, and improve answer accuracy."
+---
+
+# Knowledge Base (RAG)
+
+Knowledge bases let your voice agents answer questions using your own data — product catalogs, FAQs, policies, pricing sheets, and more. Powered by Retrieval-Augmented Generation (RAG), your agent searches your knowledge base in real-time during calls to give accurate, contextual answers.
+
+---
+
+## How It Works
+
+<Steps>
+  <Step title="Upload documents" icon="upload">
+    Add your content — PDFs, text files, web pages, or raw text. Agni splits them into searchable chunks automatically.
+  </Step>
+  <Step title="Index & embed" icon="database">
+    Documents are processed into vector embeddings for semantic search. This happens automatically after upload.
+  </Step>
+  <Step title="Connect to agent" icon="link">
+    Attach the knowledge base to your agent. The agent will search it whenever a caller asks a relevant question.
+  </Step>
+  <Step title="Agent answers" icon="message">
+    During a call, the agent retrieves the most relevant chunks and uses them to craft an accurate response.
+  </Step>
+</Steps>
+
+---
+
+## Creating a Knowledge Base
+
+### Via Dashboard
+
+1. Navigate to your **Agent** → open the agent builder
+2. Find the **Knowledge Base** section
+3. Upload documents or paste text content
+4. The system indexes your content automatically
+5. Save — your agent now has access to this knowledge
+
+### Via API
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/rag/documents \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Product FAQ",
+    "content": "Q: What are your business hours?\nA: We are open Monday through Friday, 9am to 6pm EST.\n\nQ: Do you offer refunds?\nA: Yes, we offer full refunds within 30 days of purchase.",
+    "metadata": {
+      "category": "faq",
+      "last_updated": "2026-03-28"
+    }
+  }'
+```
+
+---
+
+## Content Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Q&A format" icon="circle-question">
+    Structure content as questions and answers. This matches how callers ask questions and improves retrieval accuracy.
+  </Card>
+  <Card title="Keep chunks focused" icon="scissors">
+    Each document should cover one topic. A 500-word FAQ works better than a 10,000-word manual.
+  </Card>
+  <Card title="Include context" icon="align-left">
+    Don't just list facts — include enough context for the agent to form natural responses.
+  </Card>
+  <Card title="Update regularly" icon="rotate">
+    Stale information leads to wrong answers. Set a schedule to refresh your knowledge base.
+  </Card>
+</CardGroup>
+
+### Example: Good vs Bad Content
+
+**Bad** (too terse):
+```text
+Hours: 9-6 M-F
+Returns: 30 days
+Shipping: Free over $50
+```
+
+**Good** (natural, contextual):
+```text
+Q: What are your business hours?
+A: Our office is open Monday through Friday from 9:00 AM to 6:00 PM Eastern Time. We are closed on weekends and major holidays. For urgent matters outside business hours, you can leave a voicemail and we'll return your call the next business day.
+
+Q: What is your return policy?
+A: We offer a full refund within 30 days of purchase, no questions asked. After 30 days, we can offer store credit or an exchange. To initiate a return, the customer needs their order number and the email used at checkout.
+```
+
+---
+
+## Querying the Knowledge Base
+
+You can also query the knowledge base programmatically:
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/rag/query \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "What is the return policy?",
+    "top_k": 3
+  }'
+```
+
+This returns the top matching chunks ranked by relevance, which you can use in your own applications.
+
+---
+
+## Managing Documents
+
+| Action | API Endpoint | Description |
+|--------|-------------|-------------|
+| **Upload** | `POST /api/v1/rag/documents` | Add or update a document |
+| **Get** | `GET /api/v1/rag/documents/{id}` | Retrieve a specific document |
+| **List** | `GET /api/v1/rag/documents` | List all documents |
+| **Query** | `POST /api/v1/rag/query` | Search the knowledge base |
+| **Refresh** | `POST /api/v1/rag/refresh` | Re-index all documents |
+| **Discover** | `POST /api/v1/rag/discover` | Auto-discover content from URLs |
+
+---
+
+## URL Discovery
+
+Automatically crawl and index content from your website:
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/rag/discover \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://yourcompany.com/faq",
+    "depth": 2
+  }'
+```
+
+This crawls the page and linked pages (up to the specified depth) and indexes the content.
+
+---
+
+## Exclusions
+
+Control what gets indexed by managing exclusions:
+
+```bash cURL
+# Add exclusion patterns
+curl -X POST https://api.ravan.ai/api/v1/rag/exclusions \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -d '{ "patterns": ["*/internal/*", "*/admin/*"] }'
+
+# List current exclusions
+curl https://api.ravan.ai/api/v1/rag/exclusions \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+---
+
+## Tips for Better Retrieval
+
+<AccordionGroup>
+  <Accordion title="Agent finds wrong information">
+    Your documents may be too broad. Split large documents into focused topics. Each document should cover one subject area.
+  </Accordion>
+  <Accordion title="Agent says 'I don't have that information'">
+    The content may not match how callers phrase their questions. Add multiple phrasings of common questions to your knowledge base.
+  </Accordion>
+  <Accordion title="Responses are too generic">
+    Add more specific content. Include exact product names, numbers, dates, and policies. The more concrete your knowledge base, the better the answers.
+  </Accordion>
+  <Accordion title="Knowledge base is outdated">
+    Use the refresh endpoint to re-index after updates. Set up a recurring workflow to refresh knowledge bases weekly or after content changes.
+  </Accordion>
+</AccordionGroup>

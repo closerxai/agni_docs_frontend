@@ -1,0 +1,158 @@
+---
+title: "Troubleshooting"
+description: "Diagnose and fix common issues with Agni voice agents. Call failures, voice quality, integration problems, and performance tips."
+---
+
+# Troubleshooting
+
+A quick reference for diagnosing and fixing the most common issues with Agni voice agents.
+
+---
+
+## Call Issues
+
+<AccordionGroup>
+  <Accordion icon="phone-slash" title="Calls aren't connecting">
+    **Check these in order:**
+    1. **Phone number active?** — Go to **Phone Numbers** in the dashboard. Ensure your number is active and not released.
+    2. **Agent status** — Verify the agent is set to `ACTIVE` (not paused or draft).
+    3. **Inbound dispatch rule** — For inbound calls, ensure a dispatch rule routes your phone number to the correct agent.
+    4. **Twilio balance** — If using BYOT, check your Twilio account has sufficient balance.
+    5. **Number region** — International calls may be blocked by default. Check Twilio geo-permissions.
+  </Accordion>
+
+  <Accordion icon="clock" title="Long delay before agent speaks">
+    **Common causes:**
+    - **Model too heavy** — Switch from `gpt-4o` to `gpt-4o-mini` for faster first response
+    - **Long system prompt** — Trim your prompt to under 500 words
+    - **Welcome message missing** — Set a `begin_message` so the agent speaks immediately on connection
+    - **Start speaker set to "user"** — If you want the agent to speak first, set `start_speaker` to `"agent"`
+  </Accordion>
+
+  <Accordion icon="volume-xmark" title="No audio / one-way audio">
+    **For web calls:**
+    - Allow microphone permission in your browser
+    - Check you're using a supported browser (Chrome, Edge, Firefox)
+    - Disable browser extensions that block WebRTC
+
+    **For phone calls:**
+    - Test with a different phone to rule out device issues
+    - Check if the call connects but only one party can hear — this usually indicates a network/NAT issue on the telephony side
+  </Accordion>
+
+  <Accordion icon="circle-xmark" title="Calls drop unexpectedly">
+    - **Max call duration** — Check `max_call_duration_ms` in agent settings. Default may be too short.
+    - **End on silence** — If `end_call_after_silence` is enabled, the agent hangs up during pauses. Increase the silence threshold or disable it.
+    - **Twilio limits** — BYOT accounts may have call duration limits. Check your Twilio console.
+    - **Network issues** — Intermittent connectivity on the caller's side causes drops.
+  </Accordion>
+
+  <Accordion icon="robot" title="Agent gives wrong answers">
+    - **Prompt too vague** — Add specific instructions and examples. See the [Prompt Engineering Guide](/guides/prompt-engineering).
+    - **Temperature too high** — Lower the temperature (0.3-0.5) for more deterministic responses.
+    - **Knowledge base stale** — Refresh your knowledge base if answers reference outdated information.
+    - **No guardrails** — Add explicit "do NOT" rules for topics the agent should avoid.
+  </Accordion>
+
+  <Accordion icon="right-left" title="Call transfer not working">
+    - **Transfer number format** — Use E.164 format: `+14155551234`
+    - **SIP address** — For SIP transfers, verify the SIP URI is correct and reachable
+    - **Tool configured?** — Ensure the Call Transfer tool is attached to the agent in the Functions tab
+    - **Trigger description** — The tool's trigger description must clearly define when to transfer
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Integration Issues
+
+<AccordionGroup>
+  <Accordion icon="calendar-xmark" title="Calendar integration not syncing">
+    **GoHighLevel:**
+    - Re-authorize the OAuth connection in **Settings → Integrations**
+    - Verify the GHL calendar ID is correct
+    - Check that the GHL account has the Calendars permission enabled
+
+    **Cal.com:**
+    - Reconnect via **Settings → Integrations → Cal.com**
+    - Ensure the event type exists and is active in your Cal.com dashboard
+    - Check timezone settings match between Agni and Cal.com
+  </Accordion>
+
+  <Accordion icon="webhook" title="Webhooks not firing">
+    - **URL accessible?** — Test your endpoint with `curl -X POST https://your-url.com/webhook`
+    - **HTTPS required** — Agni only sends webhooks over HTTPS
+    - **Check logs** — Look at your agent's webhook delivery logs in the dashboard
+    - **Return 200** — Your server must return HTTP 200 within 30 seconds or it's marked as failed
+    - See the [Webhooks Guide](/guides/webhooks) for setup details.
+  </Accordion>
+
+  <Accordion icon="key" title="API returns 401 Unauthorized">
+    - **Check API key** — Copy the key fresh from **Settings → API Keys**
+    - **Header name** — Use `X-Api-Key` (not `Authorization: Bearer`)
+    - **Key active?** — Regenerate the key if it may have been revoked
+    - **No extra spaces** — Ensure no trailing whitespace in the key
+  </Accordion>
+
+  <Accordion icon="ban" title="API returns 429 Too Many Requests">
+    You've hit the rate limit. Solutions:
+    - Add retry logic with exponential backoff
+    - Reduce request frequency
+    - Use webhooks instead of polling for status updates
+    - Contact [support@ravan.ai](mailto:support@ravan.ai) for higher limits on enterprise plans
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Voice Quality
+
+<AccordionGroup>
+  <Accordion icon="waveform-lines" title="Agent sounds robotic">
+    - **Try a different voice** — Some voices sound more natural. Test several in the voice picker.
+    - **Lower temperature** — Very low temperatures (0.1) can make speech sound mechanical. Try 0.5.
+    - **Shorten responses** — Add "Keep your responses to 1-2 sentences" to your prompt.
+    - **Add personality** — Prompts like "speak casually and warmly" improve naturalness.
+  </Accordion>
+
+  <Accordion icon="ear-listen" title="Agent talks over the caller">
+    - **Responsiveness** — Increase the responsiveness setting to make the agent more patient before responding
+    - **Turn-taking** — Enable backchanneling so the agent uses filler words ("Mhm", "I see") while listening
+    - **Prompt instruction** — Add: "Wait for the caller to finish speaking before responding."
+  </Accordion>
+
+  <Accordion icon="volume-low" title="Background noise issues">
+    - **Ambient sound volume** — If using background sounds, lower `ambient_sound_volume` to 0.1-0.3
+    - **Caller side** — Background noise from the caller is harder to control. The agent's speech recognition handles moderate noise well.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Quick Fixes Checklist
+
+| Symptom | Quick Fix |
+|---------|-----------|
+| Call doesn't connect | Check phone number is active + dispatch rule exists |
+| Agent doesn't speak | Set `begin_message` and `start_speaker: "agent"` |
+| Slow first response | Switch to `gpt-4o-mini`, shorten prompt |
+| Wrong answers | Lower temperature, add guardrails to prompt |
+| Transfer fails | Check E.164 format, verify tool is attached |
+| Webhook not received | Verify HTTPS URL, check it returns 200 |
+| 401 API error | Use `X-Api-Key` header with valid key |
+| Calendar not syncing | Re-authorize OAuth in Settings |
+
+---
+
+## Getting Help
+
+If you've gone through this guide and the issue persists:
+
+<CardGroup cols={2}>
+  <Card title="Email Support" icon="envelope" href="mailto:support@ravan.ai">
+    Reach out to support@ravan.ai with your agent ID and a description of the issue.
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Check the API docs for endpoint-specific error codes and parameters.
+  </Card>
+</CardGroup>

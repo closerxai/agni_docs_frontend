@@ -31,37 +31,42 @@
           {
             "group": "Getting Started",
             "pages": [
-              "guides/authentication"
+              "guides/authentication",
+              "guides/prompt-engineering"
             ]
           },
           {
             "group": "Platform",
             "pages": [
               "guides/dashboard",
-              "guides/analytics",
+              "guides/agents",
+              "guides/tools",
+              "guides/knowledge-base",
               "guides/calls",
-              "guides/appointments",
-              "guides/inbound-calls"
+              "guides/campaigns"
             ]
           },
           {
-            "group": "Management",
+            "group": "Integrations",
             "pages": [
-              "guides/agents",
-              "guides/tools"
+              "guides/appointments",
+              "guides/inbound-calls",
+              "guides/webhooks"
             ]
           },
           {
             "group": "Operations",
             "pages": [
               "guides/phone-numbers",
+              "guides/analytics",
               "guides/billing",
               "guides/settings"
             ]
           },
           {
-            "group": "AI Tools",
+            "group": "Help & Resources",
             "pages": [
+              "guides/troubleshooting",
               "ai-tools/claude-code",
               "ai-tools/cursor",
               "ai-tools/windsurf"

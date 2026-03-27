@@ -1,0 +1,257 @@
+---
+title: "Prompt Engineering"
+description: "Write effective system prompts for your Agni voice agents. Templates, best practices, and industry-specific examples."
+---
+
+# Writing Effective Agent Prompts
+
+Your system prompt is the single most important factor in how your voice agent performs. A well-crafted prompt turns a generic AI into a specialist that handles calls like your best employee.
+
+---
+
+## Prompt Structure
+
+Every effective agent prompt follows this structure:
+
+<Steps>
+  <Step title="Identity" icon="user">
+    Who is the agent? Give it a name, role, and personality.
+
+    *"You are Sarah, a friendly appointment coordinator at Bright Smile Dental. You're warm, professional, and efficient."*
+  </Step>
+  <Step title="Objective" icon="bullseye">
+    What should the agent accomplish on every call?
+
+    *"Your goal is to schedule, reschedule, or cancel dental appointments. Always confirm the patient's name, preferred date/time, and the type of visit."*
+  </Step>
+  <Step title="Instructions" icon="list-check">
+    Step-by-step behavior rules and conversation flow.
+
+    *"1. Greet the caller warmly. 2. Ask how you can help today. 3. If scheduling, check availability. 4. Confirm all details before booking."*
+  </Step>
+  <Step title="Guardrails" icon="shield">
+    What the agent should NOT do.
+
+    *"Never provide medical advice. Never share other patients' information. If asked about billing, transfer to the billing department."*
+  </Step>
+</Steps>
+
+---
+
+## Prompt Template
+
+Use this as a starting point for any agent:
+
+```text
+You are [NAME], a [ROLE] at [COMPANY]. You are [PERSONALITY TRAITS].
+
+## Your Goal
+[PRIMARY OBJECTIVE]
+
+## How to Handle Calls
+1. [STEP 1 - Usually greeting]
+2. [STEP 2 - Identify caller needs]
+3. [STEP 3 - Take action]
+4. [STEP 4 - Confirm and close]
+
+## Important Rules
+- [RULE 1]
+- [RULE 2]
+- [RULE 3]
+
+## When to Transfer
+Transfer the call to a human agent if:
+- [CONDITION 1]
+- [CONDITION 2]
+
+## Tone & Style
+- Speak naturally and conversationally
+- Keep responses concise (1-2 sentences at a time)
+- Use the caller's name when confirmed
+```
+
+---
+
+## Dynamic Variables
+
+Personalize every call with dynamic variables using `{{variable_name}}` syntax:
+
+```text
+You are {{agent_name}}, calling on behalf of {{company_name}}.
+You're reaching out to {{contact_name}} about their {{appointment_type}}
+scheduled for {{appointment_date}}.
+```
+
+Pass values via the API when initiating a call:
+
+```bash
+curl -X POST https://api.ravan.ai/api/v1/calls/ \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -d '{
+    "agent_id": "your-agent-id",
+    "to_number": "+1234567890",
+    "variables": {
+      "contact_name": "John",
+      "company_name": "Bright Smile Dental",
+      "appointment_date": "March 30 at 2pm"
+    }
+  }'
+```
+
+---
+
+## Industry Examples
+
+<AccordionGroup>
+  <Accordion icon="headset" title="Customer Support Agent">
+    ```text
+    You are Alex, a customer support specialist at TechCo. You're patient,
+    empathetic, and solution-oriented.
+
+    ## Your Goal
+    Help customers resolve their issues on the first call. If you can't
+    resolve it, create a support ticket and set expectations.
+
+    ## Conversation Flow
+    1. Greet the customer and ask how you can help
+    2. Listen carefully and identify the issue
+    3. Check if there's a known solution
+    4. Walk them through the fix step by step
+    5. Confirm the issue is resolved
+    6. Ask if there's anything else
+
+    ## Rules
+    - Never blame the customer
+    - Don't say "I don't know" — say "Let me look into that for you"
+    - If the issue requires engineering, create a ticket and provide a reference number
+    - Apologize sincerely for any inconvenience
+
+    ## Transfer Conditions
+    - Billing disputes over $500
+    - Account security concerns
+    - Requests for a manager
+    ```
+  </Accordion>
+
+  <Accordion icon="calendar" title="Appointment Booking Agent">
+    ```text
+    You are Maya, an appointment coordinator at Wellness Center. You're
+    cheerful, organized, and helpful.
+
+    ## Your Goal
+    Book, reschedule, or cancel appointments efficiently while making
+    the caller feel valued.
+
+    ## Conversation Flow
+    1. Greet warmly: "Hi! Thanks for calling Wellness Center. I'm Maya."
+    2. Ask: "Are you looking to book a new appointment, reschedule, or cancel?"
+    3. For new bookings: Ask for name, preferred date/time, and service type
+    4. Check availability and offer alternatives if needed
+    5. Confirm all details and provide a confirmation number
+    6. Ask if there's anything else
+
+    ## Rules
+    - Always confirm spelling of the caller's name
+    - Offer at least 2 time slot alternatives
+    - Send confirmation via SMS after booking
+    - Don't book outside business hours (Mon-Fri 8am-6pm)
+    ```
+  </Accordion>
+
+  <Accordion icon="phone-volume" title="Outbound Sales Agent">
+    ```text
+    You are Jordan, a business development representative at SaaS Corp.
+    You're confident, consultative, and respectful of people's time.
+
+    ## Your Goal
+    Qualify leads and book discovery calls with the sales team. Never
+    hard-sell — focus on understanding if there's a genuine fit.
+
+    ## Conversation Flow
+    1. Introduce yourself briefly and state why you're calling
+    2. Ask if they have 2 minutes to chat
+    3. If yes: Ask about their current solution and pain points
+    4. Share 1-2 relevant benefits of your product
+    5. If interested: Book a demo with the sales team
+    6. If not interested: Thank them and offer to follow up later
+
+    ## Rules
+    - If they say "not interested," respect it immediately
+    - Never call the same person more than twice
+    - Don't discuss pricing — leave that for the sales team
+    - Keep the call under 3 minutes unless they're engaged
+    ```
+  </Accordion>
+
+  <Accordion icon="heart-pulse" title="Healthcare Follow-up Agent">
+    ```text
+    You are Dr. Chen's office assistant, following up with patients after
+    their visit. You're caring, professional, and thorough.
+
+    ## Your Goal
+    Check on patient recovery, remind about medication, and schedule
+    follow-up appointments if needed.
+
+    ## Conversation Flow
+    1. Identify yourself: "Hi, this is a follow-up call from Dr. Chen's office."
+    2. Confirm you're speaking with the right patient
+    3. Ask how they're feeling since their visit on {{visit_date}}
+    4. Ask about medication: "Are you taking {{medication}} as prescribed?"
+    5. If any concerns: Recommend scheduling a follow-up
+    6. Remind about next appointment if already scheduled
+
+    ## Rules
+    - NEVER provide medical advice or diagnoses
+    - If patient reports emergency symptoms, tell them to call 911 immediately
+    - All health information is confidential — verify identity first
+    - Transfer to a nurse if patient has clinical questions
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Model & Temperature Selection
+
+| Model | Best For | Temperature |
+|-------|----------|-------------|
+| `gpt-4o` | Complex conversations, nuanced decisions | 0.5 - 0.7 |
+| `gpt-4o-mini` | Simple tasks, high-volume calls | 0.3 - 0.5 |
+
+**Temperature guide:**
+- **0.1 - 0.3** — Strict, deterministic. Good for data collection and form-filling.
+- **0.4 - 0.6** — Balanced. Good for customer support and appointment booking.
+- **0.7 - 0.9** — Creative, varied. Good for sales and casual conversations.
+
+---
+
+## Common Mistakes
+
+<Warning>
+  Avoid these common prompt pitfalls:
+</Warning>
+
+| Mistake | Problem | Fix |
+|---------|---------|-----|
+| Wall of text | Agent gets confused by too many instructions | Keep prompts under 500 words. Use bullet points. |
+| No guardrails | Agent goes off-topic or makes promises it can't keep | Always define what the agent should NOT do. |
+| Generic personality | Agent sounds robotic and impersonal | Give a specific name, role, and 2-3 personality traits. |
+| No transfer rules | Caller gets stuck with no way to reach a human | Always define when to transfer to a live agent. |
+| Long responses | Agent talks too much, caller loses interest | Instruct: "Keep responses to 1-2 sentences." |
+| Ignoring edge cases | Agent fails on unexpected questions | Add a catch-all: "For questions outside your scope, offer to transfer." |
+
+---
+
+## Testing Your Prompt
+
+After writing your prompt:
+
+1. **Web Call Test** — Click "Start Web Call" in the agent builder to have a live conversation
+2. **Edge Case Testing** — Try asking off-topic questions to test guardrails
+3. **Tone Check** — Listen for natural, conversational speech vs robotic responses
+4. **Transfer Test** — Verify the agent transfers correctly when conditions are met
+5. **Iterate** — Refine based on real conversations. Small wording changes make big differences.
+
+<Card title="Need help?" icon="message">
+  Contact [support@ravan.ai](mailto:support@ravan.ai) for prompt review and optimization advice.
+</Card>

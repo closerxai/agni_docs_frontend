@@ -1,0 +1,180 @@
+---
+title: "Campaigns"
+description: "Run outbound calling campaigns at scale. Create campaigns, manage contact lists, monitor performance, and optimize results."
+---
+
+# Running Outbound Campaigns
+
+Campaigns let you automate outbound calls at scale — from lead qualification and appointment reminders to customer follow-ups and surveys. Define your audience, assign an agent, and let Agni handle the rest.
+
+---
+
+## How Campaigns Work
+
+<Steps>
+  <Step title="Create a campaign" icon="megaphone">
+    Give your campaign a name, select the agent that will handle calls, and configure call settings (timing, retries, concurrency).
+  </Step>
+  <Step title="Add contacts" icon="users">
+    Import your contact list via CSV upload or the API. Each contact needs at least a phone number.
+  </Step>
+  <Step title="Launch" icon="play">
+    Start the campaign. Agni dials contacts automatically based on your schedule and concurrency settings.
+  </Step>
+  <Step title="Monitor & optimize" icon="chart-line">
+    Track completion rates, call outcomes, and agent performance in real-time from the dashboard.
+  </Step>
+</Steps>
+
+---
+
+## Campaign Settings
+
+| Setting | Description | Recommended |
+|---------|-------------|-------------|
+| **Agent** | Which voice agent handles the calls | Match agent to campaign purpose |
+| **Concurrency** | Max simultaneous calls | Start with 2-5, scale up based on results |
+| **Call window** | Hours when calls are made | Respect local time zones and regulations |
+| **Max attempts** | Retry limit per contact | 2-3 attempts over different days |
+| **Retry delay** | Time between retry attempts | 4-24 hours between attempts |
+| **Voicemail handling** | Leave message or skip | Enable voicemail messages for higher reach |
+
+---
+
+## Contact Management
+
+### Importing Contacts
+
+**Via CSV Upload:**
+Upload a CSV file with columns for phone number and optional fields (name, email, custom variables).
+
+```csv
+phone,name,company,appointment_date
++14155551234,John Smith,Acme Corp,March 30
++14155559876,Jane Doe,TechCo,April 2
++14155555555,Bob Wilson,StartupHQ,April 5
+```
+
+**Via API:**
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/contacts/ \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone": "+14155551234",
+    "first_name": "John",
+    "last_name": "Smith",
+    "company": "Acme Corp",
+    "custom_fields": {
+      "appointment_date": "March 30"
+    }
+  }'
+```
+
+### Using Contact Data in Calls
+
+Contact fields map to [dynamic variables](/guides/prompt-engineering#dynamic-variables) in your agent prompt:
+
+```text
+You are calling {{first_name}} {{last_name}} from {{company}}
+about their appointment on {{appointment_date}}.
+```
+
+---
+
+## Campaign Patterns
+
+<AccordionGroup>
+  <Accordion icon="calendar-check" title="Appointment Reminders">
+    **Goal:** Reduce no-shows by confirming appointments 24 hours ahead.
+
+    **Setup:**
+    - Agent prompt: Confirm date/time, offer reschedule
+    - Concurrency: 5-10 (high volume, short calls)
+    - Call window: Business hours, day before appointment
+    - Max attempts: 2
+    - Dynamic variables: `{{patient_name}}`, `{{appointment_date}}`, `{{doctor_name}}`
+  </Accordion>
+
+  <Accordion icon="phone-arrow-up-right" title="Lead Qualification">
+    **Goal:** Qualify inbound leads before passing to sales.
+
+    **Setup:**
+    - Agent prompt: Ask qualifying questions (budget, timeline, decision maker)
+    - Concurrency: 3-5 (longer conversations)
+    - Call window: Within 5 minutes of lead submission
+    - Max attempts: 3 (over 2 days)
+    - Post-call analysis: Extract qualification score
+  </Accordion>
+
+  <Accordion icon="clipboard-question" title="Customer Surveys">
+    **Goal:** Collect NPS or satisfaction feedback post-purchase.
+
+    **Setup:**
+    - Agent prompt: Ask 3-5 structured questions, thank the customer
+    - Concurrency: 5-8
+    - Call window: 2-7 days after purchase
+    - Max attempts: 2
+    - Post-call extraction: Rating (1-10), comments, follow-up needed
+  </Accordion>
+
+  <Accordion icon="arrows-rotate" title="Re-engagement">
+    **Goal:** Win back churned or inactive customers.
+
+    **Setup:**
+    - Agent prompt: Acknowledge they've been away, offer incentive, address concerns
+    - Concurrency: 3-5
+    - Call window: Weekday afternoons (highest answer rate)
+    - Max attempts: 2 (don't be pushy)
+    - Tone: Warm, no hard sell
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Monitoring Performance
+
+Track these metrics in the **Analytics** dashboard:
+
+| Metric | What It Tells You |
+|--------|------------------|
+| **Completion rate** | % of contacts successfully reached |
+| **Answer rate** | % of calls answered (vs voicemail/no-answer) |
+| **Avg call duration** | How long conversations last |
+| **Conversion rate** | % of calls achieving the campaign goal |
+| **Sentiment** | Overall caller mood (positive/neutral/negative) |
+| **Cost per contact** | Total spend / contacts reached |
+
+---
+
+## Cost Optimization
+
+<CardGroup cols={2}>
+  <Card title="Start small" icon="seedling">
+    Test with 50-100 contacts first. Optimize the prompt and settings before scaling to thousands.
+  </Card>
+  <Card title="Time it right" icon="clock">
+    Calls between 10am-12pm and 2pm-5pm local time have the highest answer rates. Avoid early mornings and late evenings.
+  </Card>
+  <Card title="Use voicemail" icon="voicemail">
+    Leave voicemail messages to increase callback rates without additional call costs.
+  </Card>
+  <Card title="Limit retries" icon="rotate-left">
+    2-3 attempts is the sweet spot. More retries rarely improve reach and increase costs.
+  </Card>
+</CardGroup>
+
+---
+
+## Compliance
+
+<Warning>
+  Outbound calling is regulated. Ensure compliance with local laws:
+</Warning>
+
+- **TCPA (US)** — Obtain prior express consent before automated calls. Honor Do Not Call lists.
+- **GDPR (EU)** — Lawful basis required for processing phone numbers. Provide opt-out on every call.
+- **Local regulations** — Check calling hour restrictions in your target regions.
+- **Caller ID** — Always display a valid caller ID number. Spoofing is illegal.
+
+Agni provides tools to manage opt-outs and consent — use them. Non-compliance can result in significant fines.

@@ -1,0 +1,211 @@
+---
+title: "Webhooks"
+description: "Receive real-time notifications for call events, transcripts, and post-call analysis using Agni webhooks."
+---
+
+# Using Webhooks
+
+Webhooks let you receive real-time HTTP callbacks when events happen in Agni — like when a call starts, ends, or when post-call analysis is ready. Instead of polling our API, we push data to your server instantly.
+
+---
+
+## How It Works
+
+<Steps>
+  <Step title="Configure your endpoint" icon="link">
+    Set up a publicly accessible HTTPS endpoint on your server that can receive POST requests.
+  </Step>
+  <Step title="Register in Agni" icon="gear">
+    Add your webhook URL in the agent's webhook settings or via the API.
+  </Step>
+  <Step title="Receive events" icon="bell">
+    Agni sends a POST request to your endpoint whenever a subscribed event occurs.
+  </Step>
+  <Step title="Process & respond" icon="check">
+    Your server processes the payload and returns a 200 status. We'll retry on failure.
+  </Step>
+</Steps>
+
+---
+
+## Webhook Events
+
+| Event | Trigger | Payload Includes |
+|-------|---------|-----------------|
+| `call.started` | Call is connected | Call ID, agent ID, caller number, direction |
+| `call.ended` | Call disconnects | Call ID, duration, end reason, status |
+| `call.transcript` | Transcript is ready | Full conversation transcript, speaker labels |
+| `call.analysis` | Post-call analysis complete | Summary, sentiment, extracted data, action items |
+| `call.recording` | Recording is available | Recording URL, duration, format |
+| `agent.status_changed` | Agent goes online/offline | Agent ID, old status, new status |
+
+---
+
+## Payload Format
+
+All webhook payloads follow this structure:
+
+```json
+{
+  "event": "call.ended",
+  "timestamp": "2026-03-28T14:30:00Z",
+  "data": {
+    "call_id": "019d1fdb-98e9-7c87-86c7-321e2fa98733",
+    "agent_id": "019d1fdb-6701-762d-97bd-93fc72606d7c",
+    "direction": "inbound",
+    "from_number": "+14155551234",
+    "to_number": "+14155559876",
+    "duration_ms": 185000,
+    "status": "completed",
+    "end_reason": "caller_hangup",
+    "sentiment": "positive",
+    "summary": "Customer called to reschedule their appointment from Thursday to Friday."
+  }
+}
+```
+
+---
+
+## Setting Up Your Webhook
+
+### Via Dashboard
+
+1. Navigate to **Agents** → Select your agent
+2. Open the **Webhook Settings** tab in the right sidebar
+3. Enter your endpoint URL (must be HTTPS)
+4. Select which events to subscribe to
+5. Click **Save**
+
+### Via API
+
+```bash cURL
+curl -X PUT https://api.ravan.ai/api/v1/agents/{agent_id} \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "webhook_url": "https://your-server.com/webhooks/agni",
+    "webhook_events": ["call.ended", "call.analysis"]
+  }'
+```
+
+---
+
+## Example Webhook Receivers
+
+<AccordionGroup>
+  <Accordion icon="js" title="Node.js (Express)">
+    ```javascript
+    const express = require('express');
+    const app = express();
+    app.use(express.json());
+
+    app.post('/webhooks/agni', (req, res) => {
+      const { event, data } = req.body;
+
+      switch (event) {
+        case 'call.ended':
+          console.log(`Call ${data.call_id} ended after ${data.duration_ms}ms`);
+          // Update your CRM, send notification, etc.
+          break;
+
+        case 'call.analysis':
+          console.log(`Analysis ready: ${data.summary}`);
+          console.log(`Sentiment: ${data.sentiment}`);
+          // Store analysis, trigger follow-up workflows
+          break;
+
+        case 'call.transcript':
+          console.log(`Transcript: ${data.transcript}`);
+          // Save to database, feed to analytics
+          break;
+      }
+
+      res.status(200).json({ received: true });
+    });
+
+    app.listen(3000);
+    ```
+  </Accordion>
+
+  <Accordion icon="python" title="Python (Flask)">
+    ```python
+    from flask import Flask, request, jsonify
+
+    app = Flask(__name__)
+
+    @app.route('/webhooks/agni', methods=['POST'])
+    def handle_webhook():
+        payload = request.json
+        event = payload.get('event')
+        data = payload.get('data', {})
+
+        if event == 'call.ended':
+            print(f"Call {data['call_id']} ended - {data['duration_ms']}ms")
+            # Update your CRM
+
+        elif event == 'call.analysis':
+            print(f"Summary: {data['summary']}")
+            print(f"Sentiment: {data['sentiment']}")
+            # Store analysis results
+
+        return jsonify({'received': True}), 200
+
+    if __name__ == '__main__':
+        app.run(port=3000)
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Retry Policy
+
+If your endpoint returns a non-2xx response or times out (30 seconds), Agni retries with exponential backoff:
+
+| Attempt | Delay |
+|---------|-------|
+| 1st retry | 30 seconds |
+| 2nd retry | 2 minutes |
+| 3rd retry | 10 minutes |
+| 4th retry | 1 hour |
+| Final retry | 6 hours |
+
+After 5 failed attempts, the webhook is marked as failing. You'll receive an email notification and can check failed deliveries in the dashboard.
+
+---
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Always return 200 quickly" icon="clock">
+    Process the webhook asynchronously. Return 200 immediately and handle the data in a background job.
+  </Card>
+  <Card title="Handle duplicates" icon="copy">
+    Use the `call_id` as an idempotency key. The same event may be delivered more than once during retries.
+  </Card>
+  <Card title="Validate payloads" icon="shield-check">
+    Check that the event type and required fields are present before processing. Ignore unknown event types gracefully.
+  </Card>
+  <Card title="Use HTTPS" icon="lock">
+    Webhook URLs must use HTTPS. We do not send payloads over unencrypted connections.
+  </Card>
+</CardGroup>
+
+---
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Not receiving webhooks">
+    - Verify your endpoint URL is correct and publicly accessible
+    - Check that your server returns 200 status within 30 seconds
+    - Ensure your firewall allows incoming POST requests from Agni's IP ranges
+    - Check the webhook logs in your agent's settings
+  </Accordion>
+  <Accordion title="Receiving duplicate events">
+    This is normal during retries. Implement idempotency using the `call_id` field — check if you've already processed that event before acting on it.
+  </Accordion>
+  <Accordion title="Webhook URL keeps failing">
+    After 5 consecutive failures, webhooks pause. Fix your endpoint, then re-save the webhook URL in agent settings to resume delivery.
+  </Accordion>
+</AccordionGroup>
