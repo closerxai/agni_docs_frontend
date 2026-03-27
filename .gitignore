@@ -2,3 +2,4 @@ node_modules/
 out/
 export.zip
 .mintlify/
+api/knowledge.json

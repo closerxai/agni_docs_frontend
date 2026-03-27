@@ -1,9 +1,15 @@
 {
-  "buildCommand": "npx mintlify@latest export && mkdir -p out && cd out && unzip -o ../export.zip && cd .. && node postbuild.js && npx pagefind@latest --site out --output-path out/_pagefind",
+  "buildCommand": "node build-knowledge.js && npx mintlify@latest export && mkdir -p out && cd out && unzip -o ../export.zip && cd .. && node postbuild.js && npx pagefind@latest --site out --output-path out/_pagefind",
   "outputDirectory": "out",
   "installCommand": "npm install",
   "cleanUrls": true,
   "trailingSlash": false,
+  "functions": {
+    "api/ai-search.js": {
+      "memory": 256,
+      "maxDuration": 30
+    }
+  },
   "headers": [
     {
       "source": "/_pagefind/(.*)",
