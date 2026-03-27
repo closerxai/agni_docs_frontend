@@ -1,13 +1,13 @@
 ---
 title: "List Agents"
 openapi: "GET /api/v1/agents/"
-description: "List Agents."
+description: "Retrieve a paginated list of all voice AI agents in your organization."
 ---
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
@@ -15,11 +15,11 @@ description: "List Agents."
 ### Query Parameters
 
 <ParamField query="limit" type="integer">
-  Number of results to return
+  Maximum number of agents to return per page. Defaults to all agents if not specified.
 </ParamField>
 
 <ParamField query="offset" type="integer">
-  Pagination offset
+  Number of records to skip for pagination. Defaults to `0`.
 </ParamField>
 
 ---
@@ -35,128 +35,39 @@ description: "List Agents."
 </ResponseField>
 
 <ResponseField name="data" type="object[]">
-  Returned data.
+  Array of agent objects.
 
   <Expandable title="data[]">
-    <ResponseField name="id" type="string">
-      Unique agent ID
-    </ResponseField>
-
-    <ResponseField name="organization_id" type="string">
-      Organization this agent belongs to
-    </ResponseField>
-
-    <ResponseField name="widget_settings_id" type="string">
-      Associated widget settings ID
-    </ResponseField>
-
-    <ResponseField name="name" type="string">
-      Internal name of the agent
-    </ResponseField>
-
-    <ResponseField name="agent_name" type="string">
-      Display name of the agent
-    </ResponseField>
-
-    <ResponseField name="status" type="string">
-      status field. Allowed values: `AGENT_STATUS_UNSPECIFIED`, `AGENT_STATUS_ACTIVE`, `AGENT_STATUS_INACTIVE`.
-    </ResponseField>
-
-    <ResponseField name="model" type="string">
-      LLM model identifier
-    </ResponseField>
-
-    <ResponseField name="s2s_model" type="string">
-      Speech-to-speech model identifier
-    </ResponseField>
-
-    <ResponseField name="voice_id" type="string">
-      Voice ID for TTS
-    </ResponseField>
-
-    <ResponseField name="temperature" type="number">
-      LLM temperature setting
-    </ResponseField>
-
-    <ResponseField name="reminder_trigger_ms" type="integer">
-      Milliseconds before sending a reminder
-    </ResponseField>
-
-    <ResponseField name="reminder_max_count" type="integer">
-      Maximum number of reminders to send
-    </ResponseField>
-
-    <ResponseField name="ambient_sound" type="string">
-      Ambient sound identifier
-    </ResponseField>
-
-    <ResponseField name="ambient_sound_volume" type="number">
-      Volume of ambient sound (0.0 - 1.0)
-    </ResponseField>
-
-    <ResponseField name="end_call_after_silence" type="boolean">
-      Whether to end the call after silence
-    </ResponseField>
-
-    <ResponseField name="max_call_duration_ms" type="integer">
-      Maximum call duration in milliseconds
-    </ResponseField>
-
-    <ResponseField name="ring_duration_ms" type="integer">
-      Ring duration in milliseconds
-    </ResponseField>
-
-    <ResponseField name="enable_voicemail_detection" type="boolean">
-      Whether to enable voicemail detection
-    </ResponseField>
-
-    <ResponseField name="voicemail_message" type="string">
-      Message to leave on voicemail
-    </ResponseField>
-
-    <ResponseField name="voicemail_detection_timeout_ms" type="integer">
-      Voicemail detection timeout in milliseconds
-    </ResponseField>
-
-    <ResponseField name="ivr_options" type="object">
-      IVR (Interactive Voice Response) configuration
-    </ResponseField>
-
-    <ResponseField name="post_call_analysis_model" type="string">
-      Model to use for post-call analysis
-    </ResponseField>
-
-    <ResponseField name="analysis_summary_prompt" type="string">
-      Prompt used for generating call summary
-    </ResponseField>
-
-    <ResponseField name="selected_tools" type="object">
-      Tools selected for this agent
-    </ResponseField>
-
-    <ResponseField name="integrations" type="object">
-      Integration configuration
-    </ResponseField>
-
-    <ResponseField name="knowledge_base" type="string">
-      Knowledge base content or reference
-    </ResponseField>
-
-    <ResponseField name="begin_message" type="string">
-      Opening message spoken by the agent
-    </ResponseField>
-
-    <ResponseField name="start_speaker" type="string">
-      Who speaks first: agent or user
-    </ResponseField>
-
-    <ResponseField name="created_at" type="string">
-      Creation timestamp
-    </ResponseField>
-
-    <ResponseField name="updated_at" type="string">
-      Last update timestamp
-    </ResponseField>
+    <ResponseField name="id" type="string">Unique agent ID (UUID).</ResponseField>
+    <ResponseField name="organization_id" type="string">ID of the organization that owns this agent.</ResponseField>
+    <ResponseField name="widget_settings_id" type="string">ID of the widget settings associated with this agent.</ResponseField>
+    <ResponseField name="name" type="string">Internal name used to identify the agent in your dashboard.</ResponseField>
+    <ResponseField name="agent_name" type="string">Display name shown to end users during calls.</ResponseField>
+    <ResponseField name="status" type="string">Current agent status. Allowed values: `AGENT_STATUS_UNSPECIFIED`, `AGENT_STATUS_ACTIVE`, `AGENT_STATUS_INACTIVE`.</ResponseField>
+    <ResponseField name="model" type="string">LLM model identifier used for conversation (e.g. `gpt-4o`, `gpt-4o-mini`).</ResponseField>
+    <ResponseField name="s2s_model" type="string">Speech-to-speech model identifier for real-time voice processing.</ResponseField>
+    <ResponseField name="voice_id" type="string">Voice profile ID used for text-to-speech output.</ResponseField>
+    <ResponseField name="temperature" type="number">LLM temperature (0.0–1.0). Lower values produce more deterministic responses.</ResponseField>
+    <ResponseField name="reminder_trigger_ms" type="integer">Milliseconds of silence before the agent sends a reminder prompt.</ResponseField>
+    <ResponseField name="reminder_max_count" type="integer">Maximum number of reminder prompts the agent will send per call.</ResponseField>
+    <ResponseField name="ambient_sound" type="string">Background ambient sound identifier (e.g. `office`, `cafe`).</ResponseField>
+    <ResponseField name="ambient_sound_volume" type="number">Volume level for ambient sound, from `0.0` (silent) to `1.0` (full).</ResponseField>
+    <ResponseField name="end_call_after_silence" type="boolean">Whether to automatically end the call after prolonged silence.</ResponseField>
+    <ResponseField name="max_call_duration_ms" type="integer">Maximum allowed call duration in milliseconds before auto-disconnect.</ResponseField>
+    <ResponseField name="ring_duration_ms" type="integer">How long the phone rings (in ms) before the call is considered unanswered.</ResponseField>
+    <ResponseField name="enable_voicemail_detection" type="boolean">Whether the agent should detect voicemail greetings and respond accordingly.</ResponseField>
+    <ResponseField name="voicemail_message" type="string">Message the agent leaves when voicemail is detected.</ResponseField>
+    <ResponseField name="voicemail_detection_timeout_ms" type="integer">Milliseconds to wait before concluding the call reached voicemail.</ResponseField>
+    <ResponseField name="ivr_options" type="object">Interactive Voice Response (IVR) menu configuration for inbound call routing.</ResponseField>
+    <ResponseField name="post_call_analysis_model" type="string">LLM model used to generate post-call analysis and summaries.</ResponseField>
+    <ResponseField name="analysis_summary_prompt" type="string">Custom prompt template used for generating the post-call summary.</ResponseField>
+    <ResponseField name="selected_tools" type="object">Map of tool IDs enabled for this agent during calls.</ResponseField>
+    <ResponseField name="integrations" type="object">Third-party integration configuration (e.g. GHL calendar ID, webhook URLs).</ResponseField>
+    <ResponseField name="knowledge_base" type="string">Knowledge base content or reference ID that provides context to the agent.</ResponseField>
+    <ResponseField name="begin_message" type="string">Opening greeting message the agent speaks at the start of each call.</ResponseField>
+    <ResponseField name="start_speaker" type="string">Who speaks first when the call connects — `"agent"` or `"user"`.</ResponseField>
+    <ResponseField name="created_at" type="string">ISO 8601 timestamp when the agent was created.</ResponseField>
+    <ResponseField name="updated_at" type="string">ISO 8601 timestamp when the agent was last modified.</ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -164,65 +75,98 @@ description: "List Agents."
   Pagination metadata.
 
   <Expandable title="meta">
-    <ResponseField name="total" type="integer">
-      Total number of records
-    </ResponseField>
-
-    <ResponseField name="limit" type="integer">
-      Page size limit
-    </ResponseField>
-
-    <ResponseField name="offset" type="integer">
-      Pagination offset
-    </ResponseField>
+    <ResponseField name="total" type="integer">Total number of agents in your organization.</ResponseField>
+    <ResponseField name="limit" type="integer">Page size used for this request.</ResponseField>
+    <ResponseField name="offset" type="integer">Number of records skipped.</ResponseField>
   </Expandable>
 </ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl https://api.ravan.ai/api/v1/agents/?limit=10&offset=0 \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.ravan.ai/api/v1/agents/",
+    headers={"X-Api-Key": "YOUR_API_KEY"},
+    params={"limit": 10, "offset": 0}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.ravan.ai/api/v1/agents/?limit=10&offset=0",
+  { headers: { "X-Api-Key": "YOUR_API_KEY" } }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "Agents fetched successfully",
   "data": [
     {
-      "id": "id_123",
-      "organization_id": "organization_123",
-      "widget_settings_id": "widget_settings_123",
-      "name": "Support Bot",
-      "agent_name": "Support Bot",
+      "id": "019d1fdb-98e9-7c87-86c7-321e2fa98733",
+      "organization_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+      "widget_settings_id": "019d1fdb-6701-762d-97bd-93fc72606d7c",
+      "name": "Sales Assistant",
+      "agent_name": "Ava",
       "status": "AGENT_STATUS_ACTIVE",
       "model": "gpt-4o",
-      "s2s_model": "gpt-4o",
-      "voice_id": "voice_123",
+      "s2s_model": "gpt-4o-realtime",
+      "voice_id": "alloy",
       "temperature": 0.7,
-      "reminder_trigger_ms": 5000,
-      "reminder_max_count": 1,
-      "ambient_sound": "example",
-      "ambient_sound_volume": 0.3,
+      "reminder_trigger_ms": 8000,
+      "reminder_max_count": 2,
+      "ambient_sound": "office",
+      "ambient_sound_volume": 0.15,
       "end_call_after_silence": true,
-      "max_call_duration_ms": 5000,
-      "ring_duration_ms": 5000,
+      "max_call_duration_ms": 600000,
+      "ring_duration_ms": 30000,
       "enable_voicemail_detection": true,
-      "voicemail_message": "en-US-female-1",
-      "voicemail_detection_timeout_ms": 5000,
-      "ivr_options": {},
+      "voicemail_message": "Hi, this is Ava from Acme Corp. Please call us back at your convenience.",
+      "voicemail_detection_timeout_ms": 10000,
+      "ivr_options": null,
       "post_call_analysis_model": "gpt-4o",
-      "analysis_summary_prompt": "example",
-      "selected_tools": {},
-      "integrations": {},
-      "knowledge_base": "example",
-      "begin_message": "Request completed successfully",
-      "start_speaker": "example",
-      "created_at": "2026-03-14T12:00:00Z",
-      "updated_at": "2026-03-14T12:00:00Z"
+      "analysis_summary_prompt": "Summarize the key points, action items, and customer sentiment from this call.",
+      "selected_tools": [],
+      "integrations": null,
+      "knowledge_base": "",
+      "begin_message": "Hello! This is Ava from Acme Corp. How can I help you today?",
+      "start_speaker": "agent",
+      "created_at": "2026-03-20T10:30:00Z",
+      "updated_at": "2026-03-20T14:15:00Z"
     }
   ],
   "meta": {
     "total": 1,
-    "limit": 20,
+    "limit": 10,
     "offset": 0
   }
+}
+```
+
+</ResponseExample>
+
+<ResponseExample>
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
 }
 ```
 

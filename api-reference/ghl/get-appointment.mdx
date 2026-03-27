@@ -1,13 +1,13 @@
 ---
 title: "Get GHL Appointment"
 openapi: "GET /api/v1/ghl/appointments/{appointment_id}"
-description: "Get GHL Appointment."
+description: "Retrieve details of a single GHL appointment by its ID, including contact information and current status."
 ---
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
@@ -15,92 +15,85 @@ description: "Get GHL Appointment."
 ### Path Parameters
 
 <ParamField path="appointment_id" type="string" required>
-  Appointment ID
+  The unique appointment ID to retrieve.
 </ParamField>
 
 ---
 
 ### Query Parameters
 
-<ParamField query="org_id" type="string">
-  Organization ID (fallback)
-</ParamField>
+<ParamField query="org_id" type="string">Organization ID (optional fallback for authentication).</ParamField>
 
 ---
 
 ### Response
 
-<ResponseField name="success" type="boolean">
-  Whether the request succeeded.
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Human-readable status message.
-</ResponseField>
-
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
 <ResponseField name="data" type="object">
-  data field.
+  The appointment record.
 
   <Expandable title="data">
-    <ResponseField name="id" type="string">
-      id field.
-    </ResponseField>
-  
-    <ResponseField name="ghl_appointment_id" type="string">
-      ghl_appointment_id field.
-    </ResponseField>
-  
-    <ResponseField name="contact_id" type="string">
-      contact_id field.
-    </ResponseField>
-  
-    <ResponseField name="agent_id" type="string">
-      agent_id field.
-    </ResponseField>
-  
-    <ResponseField name="agent_name" type="string">
-      agent_name field.
-    </ResponseField>
-  
-    <ResponseField name="contact_name" type="string">
-      contact_name field.
-    </ResponseField>
-  
-    <ResponseField name="contact_email" type="string">
-      contact_email field.
-    </ResponseField>
-  
-    <ResponseField name="contact_phone" type="string">
-      contact_phone field.
-    </ResponseField>
-  
-    <ResponseField name="appointment_time" type="string">
-      appointment_time field.
-    </ResponseField>
-  
-    <ResponseField name="status" type="string">
-      status field.
-    </ResponseField>
+    <ResponseField name="id" type="string">Internal appointment record ID.</ResponseField>
+    <ResponseField name="ghl_appointment_id" type="string">GoHighLevel appointment ID.</ResponseField>
+    <ResponseField name="contact_id" type="string">GHL contact ID of the customer.</ResponseField>
+    <ResponseField name="agent_id" type="string">ID of the agent handling this appointment.</ResponseField>
+    <ResponseField name="agent_name" type="string">Name of the agent.</ResponseField>
+    <ResponseField name="contact_name" type="string">Customer's full name.</ResponseField>
+    <ResponseField name="contact_email" type="string">Customer's email address.</ResponseField>
+    <ResponseField name="contact_phone" type="string">Customer's phone number.</ResponseField>
+    <ResponseField name="appointment_time" type="string">Appointment datetime in ISO 8601.</ResponseField>
+    <ResponseField name="status" type="string">Appointment status.</ResponseField>
   </Expandable>
 </ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl "https://api.ravan.ai/api/v1/ghl/appointments/019d2a1b-4c5e-7f8a-9b0c-1d2e3f4a5b6c" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+appt_id = "019d2a1b-4c5e-7f8a-9b0c-1d2e3f4a5b6c"
+response = requests.get(
+    f"https://api.ravan.ai/api/v1/ghl/appointments/{appt_id}",
+    headers={"X-Api-Key": "YOUR_API_KEY"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const apptId = "019d2a1b-4c5e-7f8a-9b0c-1d2e3f4a5b6c";
+const response = await fetch(
+  `https://api.ravan.ai/api/v1/ghl/appointments/${apptId}`,
+  { headers: { "X-Api-Key": "YOUR_API_KEY" } }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "Appointment fetched successfully",
   "data": {
-    "id": "id_123",
-    "ghl_appointment_id": "id_123",
-    "contact_id": "id_123",
-    "agent_id": "id_123",
-    "agent_name": "example",
-    "contact_name": "example",
-    "contact_email": "alex@example.com",
+    "id": "019d2a1b-4c5e-7f8a-9b0c-1d2e3f4a5b6c",
+    "ghl_appointment_id": "ghl_appt_abc123",
+    "contact_id": "ghl_ct_xyz789",
+    "agent_id": "019d1fdb-98e9-7c87-86c7-321e2fa98733",
+    "agent_name": "Ava",
+    "contact_name": "John Smith",
+    "contact_email": "john@example.com",
     "contact_phone": "+14155550100",
-    "appointment_time": "2026-03-14T12:00:00Z",
-    "status": "active"
+    "appointment_time": "2026-03-25T14:00:00Z",
+    "status": "confirmed"
   }
 }
 ```

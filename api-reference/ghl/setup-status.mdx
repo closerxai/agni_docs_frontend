@@ -1,90 +1,85 @@
 ---
 title: "GHL Setup Status"
 openapi: "GET /api/v1/ghl/setup/status"
-description: "GHL Setup Status."
+description: "Check the current GoHighLevel integration setup status, including whether GHL is connected, OAuth tokens are valid, and agents have been configured."
 ---
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
 
 ### Response
 
-<ResponseField name="success" type="boolean">
-  Whether the request succeeded.
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Human-readable status message.
-</ResponseField>
-
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
 <ResponseField name="data" type="object">
-  Current GHL setup status details.
+  GHL setup status details.
 
   <Expandable title="data">
-    <ResponseField name="ghl_connected" type="boolean">
-      ghl_connected field.
-    </ResponseField>
-  
-    <ResponseField name="location_id" type="string">
-      location_id field.
-    </ResponseField>
-  
-    <ResponseField name="company_id" type="string">
-      company_id field.
-    </ResponseField>
-  
-    <ResponseField name="token_valid" type="boolean">
-      token_valid field.
-    </ResponseField>
-  
-    <ResponseField name="agents_created" type="boolean">
-      agents_created field.
-    </ResponseField>
-  
-    <ResponseField name="agent_count" type="integer">
-      agent_count field.
-    </ResponseField>
-  
-    <ResponseField name="setup_complete" type="boolean">
-      setup_complete field.
-    </ResponseField>
-  
-    <ResponseField name="message" type="string">
-      message field.
-    </ResponseField>
-  
+    <ResponseField name="ghl_connected" type="boolean">Whether the GoHighLevel OAuth connection is active.</ResponseField>
+    <ResponseField name="location_id" type="string">GHL location ID linked to this organization.</ResponseField>
+    <ResponseField name="company_id" type="string">GHL company ID linked to this organization.</ResponseField>
+    <ResponseField name="token_valid" type="boolean">Whether the OAuth access token is still valid and not expired.</ResponseField>
+    <ResponseField name="agents_created" type="boolean">Whether at least one agent has been created with a GHL calendar.</ResponseField>
+    <ResponseField name="agent_count" type="integer">Number of agents configured with GHL calendars.</ResponseField>
+    <ResponseField name="setup_complete" type="boolean">Whether the full GHL setup is complete and ready to use.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable setup status description.</ResponseField>
     <ResponseField name="next_step" type="string">
-      One of: CONNECT_GHL, CREATE_AGENT, or empty string when fully set up
+      Next action to complete the setup:
+      - `CONNECT_GHL` — GHL is not connected yet, initiate OAuth.
+      - `CREATE_AGENT` — Connected, but no agents have calendars assigned.
+      - `""` (empty) — Setup is complete and operational.
     </ResponseField>
   </Expandable>
 </ResponseField>
 
+<RequestExample>
 
-`next_step` values:
-- `CONNECT_GHL`: GHL is not connected yet.
-- `CREATE_AGENT`: Connected, but no agents have calendars assigned.
-- `""` (empty string): Setup is complete.
+```bash cURL
+curl https://api.ravan.ai/api/v1/ghl/setup/status \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.ravan.ai/api/v1/ghl/setup/status",
+    headers={"X-Api-Key": "YOUR_API_KEY"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.ravan.ai/api/v1/ghl/setup/status",
+  { headers: { "X-Api-Key": "YOUR_API_KEY" } }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "GHL setup status fetched successfully",
   "data": {
     "ghl_connected": true,
-    "location_id": "id_123",
-    "company_id": "id_123",
+    "location_id": "loc_abc123def456",
+    "company_id": "comp_xyz789",
     "token_valid": true,
     "agents_created": true,
-    "agent_count": 1,
+    "agent_count": 2,
     "setup_complete": true,
-    "message": "Request completed successfully",
+    "message": "GHL integration is fully configured",
     "next_step": ""
   }
 }
@@ -92,3 +87,14 @@ description: "GHL Setup Status."
 
 </ResponseExample>
 
+<ResponseExample>
+
+```json 401
+{
+  "code": 16,
+  "message": "API key is missing or invalid",
+  "details": []
+}
+```
+
+</ResponseExample>

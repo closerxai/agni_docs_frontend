@@ -1,6 +1,6 @@
 ---
 title: "Billing"
-description: "Manage your Agni workspace subscription, purchase credits, and view billing history."
+description: "Manage your subscription plan, purchase credits, monitor usage costs, and access billing history."
 ---
 
 The **Billing** page is where you manage the financial aspects of your Agni workspace. Because Agni operates on a high-performance, usage-based infrastructure (flat $0.07/min), your billing is managed through a combination of your baseline subscription and your prepaid credit balance.
@@ -8,6 +8,28 @@ The **Billing** page is where you manage the financial aspects of your Agni work
 <Frame>
   <img src="/images/billing-overview.png" alt="Agni Billing Dashboard" />
 </Frame>
+
+---
+
+## How Pricing Works
+
+<CardGroup cols={3}>
+  <Card title="$0.07 / minute" icon="clock">
+    Flat rate for all voice AI calls. No tiering, no surcharges, no hidden fees.
+  </Card>
+  <Card title="Prepaid Credits" icon="coins">
+    Top up your balance before calls. Credits are consumed in real-time as agents handle calls.
+  </Card>
+  <Card title="Phone Number Fees" icon="phone">
+    Monthly fee per number (e.g., $1.15/mo for US) plus per-minute inbound/outbound rates.
+  </Card>
+</CardGroup>
+
+**Example cost breakdown for 1,000 minutes of calls:**
+- Voice AI: 1,000 min x $0.07 = **$70.00**
+- Phone number: 1 number x $1.15/mo = **$1.15**
+- Outbound calls: 1,000 min x $0.0945 = **$94.50**
+- **Total: ~$165.65/month**
 
 ---
 
@@ -39,14 +61,33 @@ Because real-time voice AI incurs immediate compute and telephony costs, Agni us
   </Card>
 </CardGroup>
 
-<Note>
-  **Important:** If your credit balance reaches zero, your agents will be temporarily paused and active dispatch rules will fail to connect. Ensure you maintain a positive balance to avoid service interruptions.
-</Note>
+<Warning>
+  If your credit balance reaches zero, your agents will be temporarily paused and active dispatch rules will fail to connect. Ensure you maintain a positive balance to avoid service interruptions.
+</Warning>
 
 ---
 
 ## Billing History
 
-At the bottom of the page, the **Billing History** table provides a transparent ledger of your past transactions. 
+At the bottom of the page, the **Billing History** table provides a transparent ledger of your past transactions.
 
-Whether you are purchasing prepaid credits or paying for your monthly subscription plan, your official invoices and receipts will automatically populate in this table. You can easily download them at any time for your accounting and tax records.
+Whether you are purchasing prepaid credits or paying for your monthly subscription plan, your official invoices and receipts will automatically populate in this table. You can download them at any time for your accounting and tax records.
+
+---
+
+## Cost Optimization Tips
+
+<AccordionGroup>
+  <Accordion title="Set max call duration limits" icon="stopwatch">
+    In your agent's [Call Settings](/guides/agents), set a **Max duration** to prevent runaway calls from consuming excessive credits. 10 minutes (600,000ms) is a good default for most use cases.
+  </Accordion>
+  <Accordion title="Enable end-call-on-silence" icon="volume-xmark">
+    Turn on **End call after silence** in your agent settings to automatically disconnect calls where the caller has gone silent, avoiding wasted minutes.
+  </Accordion>
+  <Accordion title="Monitor analytics weekly" icon="chart-line">
+    Check the [Analytics dashboard](/guides/analytics) regularly. Watch for unexpected spikes in call volume or duration that could indicate prompt issues or campaign misconfiguration.
+  </Accordion>
+  <Accordion title="Use the right model for the job" icon="microchip">
+    Not every use case needs the most expensive model. For simple routing or FAQ agents, a lighter model with lower temperature may perform just as well at lower cost.
+  </Accordion>
+</AccordionGroup>

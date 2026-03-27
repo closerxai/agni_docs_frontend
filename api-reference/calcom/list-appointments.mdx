@@ -1,136 +1,131 @@
 ---
 title: "List Cal.com Appointments"
 openapi: "GET /api/v1/calcom/appointments"
-description: "List Cal.com Appointments."
+description: "Retrieve appointments booked through Cal.com, including attendee details, meeting URLs, and booking status."
 ---
+
+<Note>
+  Requires an active Cal.com connection. Use the [Cal.com Status](/api-reference/calcom/status) endpoint to verify your connection.
+</Note>
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
 
 ### Query Parameters
 
-<ParamField query="status" type="string">
-  Filter by status
-</ParamField>
-
-<ParamField query="agent_id" type="string">
-  Filter by agent ID
-</ParamField>
-
-<ParamField query="limit" type="integer">
-  Number of results to return (max 200)
-</ParamField>
+<ParamField query="status" type="string">Filter by booking status (e.g. `accepted`, `cancelled`, `pending`).</ParamField>
+<ParamField query="agent_id" type="string">Filter appointments by agent ID.</ParamField>
+<ParamField query="limit" type="integer">Maximum number of appointments to return (max: `200`).</ParamField>
 
 ---
 
 ### Response
 
-<ResponseField name="success" type="boolean">
-  Whether the request succeeded.
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Human-readable status message.
-</ResponseField>
-
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
 <ResponseField name="data" type="object">
-  data field.
+  Appointment results.
 
   <Expandable title="data">
     <ResponseField name="appointments" type="object[]">
-      appointments field.
-  
+      Array of appointment records.
+
       <Expandable title="appointments[]">
-        <ResponseField name="id" type="string">
-          id field.
-        </ResponseField>
-    
-        <ResponseField name="organization_id" type="string">
-          organization_id field.
-        </ResponseField>
-    
-        <ResponseField name="agent_id" type="string">
-          agent_id field.
-        </ResponseField>
-    
-        <ResponseField name="calcom_booking_uid" type="string">
-          calcom_booking_uid field.
-        </ResponseField>
-    
-        <ResponseField name="attendee_name" type="string">
-          attendee_name field.
-        </ResponseField>
-    
-        <ResponseField name="attendee_email" type="string">
-          attendee_email field.
-        </ResponseField>
-    
-        <ResponseField name="attendee_phone" type="string">
-          attendee_phone field.
-        </ResponseField>
-    
-        <ResponseField name="attendee_timezone" type="string">
-          attendee_timezone field.
-        </ResponseField>
-    
-        <ResponseField name="start_time" type="string">
-          start_time field.
-        </ResponseField>
-    
-        <ResponseField name="end_time" type="string">
-          end_time field.
-        </ResponseField>
-    
-        <ResponseField name="duration_minutes" type="integer">
-          duration_minutes field.
-        </ResponseField>
-    
-        <ResponseField name="meeting_url" type="string">
-          meeting_url field.
-        </ResponseField>
-    
-        <ResponseField name="status" type="string">
-          status field.
-        </ResponseField>
-    </Expandable>
+        <ResponseField name="id" type="string">Internal appointment record ID.</ResponseField>
+        <ResponseField name="organization_id" type="string">Organization ID.</ResponseField>
+        <ResponseField name="agent_id" type="string">ID of the agent that handled this booking.</ResponseField>
+        <ResponseField name="calcom_booking_uid" type="string">Cal.com unique booking identifier.</ResponseField>
+        <ResponseField name="attendee_name" type="string">Full name of the attendee.</ResponseField>
+        <ResponseField name="attendee_email" type="string">Email address of the attendee.</ResponseField>
+        <ResponseField name="attendee_phone" type="string">Phone number of the attendee in E.164 format.</ResponseField>
+        <ResponseField name="attendee_timezone" type="string">IANA timezone of the attendee (e.g. `America/New_York`).</ResponseField>
+        <ResponseField name="start_time" type="string">Appointment start time in ISO 8601.</ResponseField>
+        <ResponseField name="end_time" type="string">Appointment end time in ISO 8601.</ResponseField>
+        <ResponseField name="duration_minutes" type="integer">Duration of the appointment in minutes.</ResponseField>
+        <ResponseField name="meeting_url" type="string">Video meeting URL (e.g. Google Meet, Zoom link).</ResponseField>
+        <ResponseField name="status" type="string">Booking status (e.g. `accepted`, `cancelled`, `pending`).</ResponseField>
+      </Expandable>
     </ResponseField>
-  
-    <ResponseField name="count" type="integer">
-      count field.
-    </ResponseField>
+
+    <ResponseField name="count" type="integer">Total number of appointments returned.</ResponseField>
   </Expandable>
 </ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl "https://api.ravan.ai/api/v1/calcom/appointments?limit=50" \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.ravan.ai/api/v1/calcom/appointments",
+    headers={"X-Api-Key": "YOUR_API_KEY"},
+    params={"limit": 50}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.ravan.ai/api/v1/calcom/appointments?limit=50",
+  { headers: { "X-Api-Key": "YOUR_API_KEY" } }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "Appointments fetched successfully",
   "data": {
     "appointments": [
       {
-        "id": "id_123",
-        "organization_id": "id_123",
-        "agent_id": "id_123",
-        "calcom_booking_uid": "id_123",
-        "attendee_name": "example",
-        "attendee_email": "alex@example.com",
+        "id": "019d2a1b-4c5e-7f8a-9b0c-1d2e3f4a5b6c",
+        "organization_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+        "agent_id": "019d1fdb-98e9-7c87-86c7-321e2fa98733",
+        "calcom_booking_uid": "bk_abc123def456",
+        "attendee_name": "Jane Doe",
+        "attendee_email": "jane@example.com",
         "attendee_phone": "+14155550100",
-        "attendee_timezone": "2026-03-14T12:00:00Z",
-        "start_time": "2026-03-14T12:00:00Z",
-        "end_time": "2026-03-14T12:00:00Z",
-        "duration_minutes": 1,
-        "meeting_url": "https://example.com/meeting",
-        "status": "active"
+        "attendee_timezone": "America/New_York",
+        "start_time": "2026-03-25T14:00:00Z",
+        "end_time": "2026-03-25T14:30:00Z",
+        "duration_minutes": 30,
+        "meeting_url": "https://meet.google.com/abc-defg-hij",
+        "status": "accepted"
       }
     ],
     "count": 1
+  }
+}
+```
+
+</ResponseExample>
+
+<ResponseExample>
+
+```json 400
+{
+  "success": false,
+  "message": "The integration doesn't seem to be connected. Please head to settings to set it up.",
+  "error": {
+    "code": "NOT_CONNECTED",
+    "message": "The integration doesn't seem to be connected. Please head to settings to set it up.",
+    "details": "Cal.com is not connected"
   }
 }
 ```

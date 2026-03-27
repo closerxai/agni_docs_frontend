@@ -1,13 +1,17 @@
 ---
 title: "Update Agent Tool"
 openapi: "PATCH /api/v1/tools/{id}/"
-description: "Update Agent Tool."
+description: "Update the name, description, type, or definition of an existing agent tool."
 ---
+
+<Note>
+  This is a partial update (PATCH). Only include the fields you want to change.
+</Note>
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
@@ -15,7 +19,7 @@ description: "Update Agent Tool."
 ### Path Parameters
 
 <ParamField path="id" type="string" required>
-  Tool ID
+  The unique UUID of the tool to update.
 </ParamField>
 
 ---
@@ -23,19 +27,19 @@ description: "Update Agent Tool."
 ### Body
 
 <ParamField body="name" type="string">
-  Tool name
+  Updated tool name (lowercase, underscores, no spaces).
 </ParamField>
 
 <ParamField body="description" type="string">
-  Tool description
+  Updated description of what the tool does.
 </ParamField>
 
 <ParamField body="type" type="string">
-  Tool type
+  Updated tool type — `function` or `webhook`.
 </ParamField>
 
 <ParamField body="definition" type="object">
-  Tool definition schema
+  Updated JSON Schema definition with parameter schema.
 </ParamField>
 
 ---
@@ -51,54 +55,106 @@ description: "Update Agent Tool."
 </ResponseField>
 
 <ResponseField name="data" type="object">
-  Returned data.
+  The updated tool object.
 
   <Expandable title="data">
-    <ResponseField name="id" type="string">
-      Unique tool ID
-    </ResponseField>
-
-    <ResponseField name="organization_id" type="string">
-      Organization this tool belongs to
-    </ResponseField>
-
-    <ResponseField name="name" type="string">
-      Tool name
-    </ResponseField>
-
-    <ResponseField name="description" type="string">
-      Tool description
-    </ResponseField>
-
-    <ResponseField name="type" type="string">
-      Tool type (e.g. webhook, function)
-    </ResponseField>
-
-    <ResponseField name="definition" type="object">
-      Tool definition schema
-    </ResponseField>
-
-    <ResponseField name="is_active" type="boolean">
-      Whether the tool is active
-    </ResponseField>
+    <ResponseField name="id" type="string">Unique tool ID (UUID).</ResponseField>
+    <ResponseField name="organization_id" type="string">Organization ID.</ResponseField>
+    <ResponseField name="name" type="string">Tool name.</ResponseField>
+    <ResponseField name="description" type="string">Tool description.</ResponseField>
+    <ResponseField name="type" type="string">Tool type.</ResponseField>
+    <ResponseField name="definition" type="object">Tool definition schema.</ResponseField>
+    <ResponseField name="is_active" type="boolean">Whether the tool is active.</ResponseField>
   </Expandable>
 </ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X PATCH https://api.ravan.ai/api/v1/tools/019d1fdb-3977-7bd5-ab27-8d3b37ddf4fc/ \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "description": "Check the real-time shipping status of a customer order"
+  }'
+```
+
+```python Python
+import requests
+
+tool_id = "019d1fdb-3977-7bd5-ab27-8d3b37ddf4fc"
+response = requests.patch(
+    f"https://api.ravan.ai/api/v1/tools/{tool_id}/",
+    headers={
+        "X-Api-Key": "YOUR_API_KEY",
+        "Content-Type": "application/json"
+    },
+    json={"description": "Check the real-time shipping status of a customer order"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const toolId = "019d1fdb-3977-7bd5-ab27-8d3b37ddf4fc";
+const response = await fetch(
+  `https://api.ravan.ai/api/v1/tools/${toolId}/`,
+  {
+    method: "PATCH",
+    headers: {
+      "X-Api-Key": "YOUR_API_KEY",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      description: "Check the real-time shipping status of a customer order"
+    })
+  }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "Tool updated successfully",
   "data": {
-    "id": "id_123",
-    "organization_id": "organization_123",
-    "name": "Support Bot",
-    "description": "Example description",
-    "type": "twilio",
-    "definition": {},
-    "is_active": true
+    "id": "019d1fdb-3977-7bd5-ab27-8d3b37ddf4fc",
+    "organizationId": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
+    "name": "check_order_status",
+    "description": "Check the real-time shipping status of a customer order",
+    "type": "function",
+    "definition": {
+      "name": "check_order_status",
+      "description": "Look up the current status of a customer order",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "description": "The unique order identifier"
+          }
+        },
+        "required": ["order_id"]
+      }
+    },
+    "isActive": false
   }
+}
+```
+
+</ResponseExample>
+
+<ResponseExample>
+
+```json 400
+{
+  "code": 3,
+  "message": "invalid uuid \"not-a-uuid\": invalid UUID length: 10",
+  "details": []
 }
 ```
 

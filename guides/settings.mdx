@@ -1,6 +1,6 @@
 ---
 title: "Workspace Settings"
-description: "Configure your organization, manage team access, secure your account, and connect third-party integrations."
+description: "Configure your organization, manage team access, secure your account, generate API keys, and connect third-party integrations."
 ---
 
 The **Settings** menu is your central hub for administering your Agni workspace. To access it, click on your user profile in the bottom-left corner of the dashboard and select **Settings**.
@@ -18,16 +18,16 @@ Manage the core identity of your workspace and your personal account details.
 <AccordionGroup>
   <Accordion title="Organization" icon="building">
     The **Organization** tab allows you to manage your top-level workspace settings.
-    - View your active organization ID and current plan.
+    - View your active **Organization ID** and current plan (you'll need the org ID for some API calls).
     - Update your **Organization Name** and **Website**.
-    - Restrict access by defining **Allowed Email Domains** (comma-separated).
+    - Restrict access by defining **Allowed Email Domains** (comma-separated). Only users with matching email domains can be invited to your workspace.
     - Set your default **Region** for data residency and latency optimization.
-    
+
     <Frame><img src="/images/settings-organization.png" alt="Organization Settings" /></Frame>
   </Accordion>
   <Accordion title="Profile" icon="user">
     The **Profile** tab displays your current role (e.g., ADMIN) and registered email address. You can update your **First Name** and **Last Name** here.
-    
+
     <Frame><img src="/images/settings-profile.png" alt="Profile Settings" /></Frame>
   </Accordion>
 </AccordionGroup>
@@ -42,16 +42,27 @@ Secure your account and manage programmatic access to your voice infrastructure.
   <Accordion title="Security" icon="shield-check">
     Protect your account from unauthorized access:
     - **Change Password:** Update your current login credentials.
-    - **Two-Factor Authentication (2FA):** Add an extra layer of security to your account.
+    - **Two-Factor Authentication (2FA):** Add an extra layer of security to your account. Highly recommended for production workspaces.
     - **Active Sessions:** Review all devices currently logged into your account. Use the **Revoke** button to instantly disconnect unrecognized or old sessions.
-    
+
     <Frame><img src="/images/settings-security.png" alt="Security Settings" /></Frame>
   </Accordion>
   <Accordion title="API Keys" icon="key">
-    Generate and manage the secret keys required to interact with the Agni REST API. 
-    Click **+ New Key** to generate a token. Keep this key secure and never expose it in client-side code.
-    
+    Generate and manage the secret keys required to interact with the Agni REST API.
+
+    Click **+ New Key** to generate a token. The key is displayed once -- copy it immediately and store it securely.
+
+    <Warning>
+      Never expose API keys in client-side code, public repos, or browser-accessible files. If a key is compromised, delete it immediately and generate a new one.
+    </Warning>
+
     <Frame><img src="/images/settings-api-keys.png" alt="API Keys" /></Frame>
+
+    Use your key in the `X-Api-Key` header:
+    ```bash
+    curl https://api.ravan.ai/api/v1/agents/ \
+      -H "X-Api-Key: YOUR_API_KEY"
+    ```
   </Accordion>
 </AccordionGroup>
 
@@ -66,12 +77,12 @@ Agni allows you to collaborate securely by inviting team members directly to you
     The **Users** tab displays a complete directory of everyone with access to your organization, along with their assigned roles and permissions.
   </Card>
   <Card title="Invite Team Members" icon="user-plus">
-    Navigate to the **Invite User** tab. Enter their **Email**, **First Name**, and **Last Name**, then click **Send Invitation**. 
+    Navigate to the **Invite User** tab. Enter their **Email**, **First Name**, and **Last Name**, then click **Send Invitation**.
   </Card>
 </CardGroup>
 
 <Note>
-  **Onboarding:** Invited users will receive an email containing a temporary password. They will be required to change this password upon their first successful login.
+  Invited users will receive an email containing a temporary password. They will be required to change this password upon their first successful login.
 </Note>
 
 ---
@@ -86,12 +97,26 @@ Connect Agni to your existing software stack to enable powerful automation, such
 
 <CardGroup cols={2}>
   <Card title="GoHighLevel" icon="calendar-check">
-    Connect your GHL sub-accounts to allow agents to manage CRM pipelines and book appointments seamlessly.
+    Connect your GHL sub-accounts to allow agents to manage CRM pipelines and book appointments seamlessly. Once connected, GHL calendars will appear in the agent builder's **Calendars** panel.
   </Card>
   <Card title="Cal.com" icon="link">
-    Sync your Cal.com event types and let your agents negotiate times, book, reschedule, or cancel appointments directly.
+    Sync your Cal.com event types and let your agents negotiate times, book, reschedule, or cancel appointments directly during live calls.
   </Card>
 </CardGroup>
+
+### Connecting an Integration
+
+<Steps>
+  <Step title="Click Connect" icon="plug">
+    Click the **Connect** button next to the integration you want to set up (GHL or Cal.com).
+  </Step>
+  <Step title="Authorize via OAuth" icon="shield-keyhole">
+    You'll be redirected to the provider's OAuth consent page. Log in and authorize Agni to access your account.
+  </Step>
+  <Step title="Verify connection" icon="check">
+    Once connected, the integration status will show as **Active** in the integrations panel. You can verify by checking the [GHL Setup Status](/api-reference/ghl/setup-status) or [Cal.com Status](/api-reference/calcom/status) API endpoints.
+  </Step>
+</Steps>
 
 ---
 
@@ -100,13 +125,13 @@ Connect Agni to your existing software stack to enable powerful automation, such
 Once you have generated your API Keys or connected your integrations, you can begin automating your workflow.
 
 <CardGroup cols={2}>
-  <Card title="API Authentication" icon="lock" href="/api-reference/introduction">
-    Learn how to pass your newly generated API Key in your request headers.
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Full REST API documentation with cURL, Python, and JavaScript examples.
   </Card>
-  <Card title="GHL Integration API" icon="robot" href="/api-reference/ghl/oauth-authorize">
+  <Card title="GHL Integration API" icon="robot" href="/api-reference/ghl/setup-status">
     Manage your GoHighLevel connections and appointments programmatically.
   </Card>
-  <Card title="Cal.com Integration API" icon="calendar" href="/api-reference/calcom/oauth-connect">
-    Manage your Cal.com webhooks and event types programmatically.
+  <Card title="Cal.com Integration API" icon="calendar" href="/api-reference/calcom/status">
+    Manage your Cal.com connections and event types programmatically.
   </Card>
 </CardGroup>

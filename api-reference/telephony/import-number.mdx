@@ -1,113 +1,140 @@
 ---
 title: "Import Phone Number"
 openapi: "POST /api/v1/phone-numbers/import/"
-description: "Import Phone Number."
+description: "Import an existing phone number from your own SIP trunk or telephony provider into the Agni platform."
 ---
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
 
 ### Body
 
-<ParamField body="phone" type="string">
-  Phone number to import (E.164 format)
+<ParamField body="phone" type="string" required>
+  Phone number to import in E.164 format (e.g. `+14155550100`).
 </ParamField>
 
-<ParamField body="type" type="string">
-  Type of phone number (e.g. sip, pstn)
+<ParamField body="type" type="string" required>
+  Type of telephony connection — e.g. `sip`, `pstn`.
 </ParamField>
 
 <ParamField body="name" type="string">
-  Friendly name for the number
+  Friendly name for the imported number (e.g. `"Office Main Line"`).
 </ParamField>
 
 <ParamField body="termination_uri" type="string">
-  SIP termination URI
+  SIP termination URI for routing calls (e.g. `sip:trunk@provider.com`).
 </ParamField>
 
 <ParamField body="sip_username" type="string">
-  SIP username for authentication
+  SIP authentication username.
 </ParamField>
 
 <ParamField body="sip_password" type="string">
-  SIP password for authentication
+  SIP authentication password.
 </ParamField>
 
 ---
 
 ### Response
 
-<ResponseField name="success" type="boolean">
-  Whether the request succeeded.
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Human-readable status message.
-</ResponseField>
-
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
 <ResponseField name="data" type="object">
-  Returned data.
+  The imported phone number record.
 
   <Expandable title="data">
-    <ResponseField name="id" type="string">
-      id field.
-    </ResponseField>
-
-    <ResponseField name="phone" type="string">
-      phone field.
-    </ResponseField>
-
-    <ResponseField name="type" type="string">
-      type field.
-    </ResponseField>
-
-    <ResponseField name="name" type="string">
-      name field.
-    </ResponseField>
-
-    <ResponseField name="termination_uri" type="string">
-      termination_uri field.
-    </ResponseField>
-
-    <ResponseField name="sip_username" type="string">
-      sip_username field.
-    </ResponseField>
-
-    <ResponseField name="sip_password" type="string">
-      sip_password field.
-    </ResponseField>
-
-    <ResponseField name="status" type="string">
-      status field.
-    </ResponseField>
-
-    <ResponseField name="created_at" type="string">
-      created_at field.
-    </ResponseField>
+    <ResponseField name="id" type="string">Unique record ID assigned by the server.</ResponseField>
+    <ResponseField name="phone" type="string">The imported phone number in E.164 format.</ResponseField>
+    <ResponseField name="type" type="string">Telephony connection type.</ResponseField>
+    <ResponseField name="name" type="string">Friendly name for the number.</ResponseField>
+    <ResponseField name="termination_uri" type="string">SIP termination URI.</ResponseField>
+    <ResponseField name="sip_username" type="string">SIP username.</ResponseField>
+    <ResponseField name="sip_password" type="string">SIP password (returned on creation only).</ResponseField>
+    <ResponseField name="status" type="string">Number status (e.g. `active`).</ResponseField>
+    <ResponseField name="created_at" type="string">ISO 8601 creation timestamp.</ResponseField>
   </Expandable>
 </ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/phone-numbers/import/ \
+  -H "X-Api-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phone": "+14155550100",
+    "type": "sip",
+    "name": "Office Main Line",
+    "termination_uri": "sip:trunk@provider.com",
+    "sip_username": "myuser",
+    "sip_password": "mysecret"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.ravan.ai/api/v1/phone-numbers/import/",
+    headers={
+        "X-Api-Key": "YOUR_API_KEY",
+        "Content-Type": "application/json"
+    },
+    json={
+        "phone": "+14155550100",
+        "type": "sip",
+        "name": "Office Main Line",
+        "termination_uri": "sip:trunk@provider.com",
+        "sip_username": "myuser",
+        "sip_password": "mysecret"
+    }
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.ravan.ai/api/v1/phone-numbers/import/", {
+  method: "POST",
+  headers: {
+    "X-Api-Key": "YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    phone: "+14155550100",
+    type: "sip",
+    name: "Office Main Line",
+    termination_uri: "sip:trunk@provider.com",
+    sip_username: "myuser",
+    sip_password: "mysecret"
+  })
+});
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "Phone number imported successfully",
   "data": {
-    "id": "id_123",
+    "id": "019d2a1b-4c5e-7f8a-9b0c-1d2e3f4a5b6c",
     "phone": "+14155550100",
-    "type": "twilio",
-    "name": "Support Bot",
-    "termination_uri": "sip:example@provider.com",
-    "sip_username": "sip-user",
-    "sip_password": "secret-password",
+    "type": "sip",
+    "name": "Office Main Line",
+    "termination_uri": "sip:trunk@provider.com",
+    "sip_username": "myuser",
+    "sip_password": "mysecret",
     "status": "active",
-    "created_at": "2026-03-14T12:00:00Z"
+    "created_at": "2026-03-20T14:30:00Z"
   }
 }
 ```

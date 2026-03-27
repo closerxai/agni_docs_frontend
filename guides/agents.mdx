@@ -1,13 +1,39 @@
 ---
 title: "Agents"
-description: "Create, configure, and test real-time voice AI agents."
+description: "Create, configure, and test real-time voice AI agents with custom voices, tools, and call handling behavior."
 ---
 
-The **Agents** dashboard is where you design the core intelligence of your voice infrastructure. An Agni agent is more than just a prompt. It is a fully configurable voice persona with customizable speech patterns, tool access, and call handling behavior.
+The **Agents** dashboard is where you design the core intelligence of your voice infrastructure. An Agni agent is more than just a prompt -- it is a fully configurable voice persona with customizable speech patterns, tool access, and call handling behavior.
 
 <Frame>
   <img src="/images/agents-empty-state.png" alt="Agni Agents Dashboard" />
 </Frame>
+
+---
+
+## Quick Start
+
+Get your first agent live in under 5 minutes:
+
+<Steps>
+  <Step title="Click + New Agent" icon="plus">
+    From the Agents dashboard, click **+ New Agent** to open the agent builder.
+  </Step>
+  <Step title="Write a system prompt" icon="pen">
+    Describe who the agent is, what it does, and how it should handle calls. Be specific about tone, objectives, and edge cases.
+  </Step>
+  <Step title="Pick a voice and model" icon="microphone">
+    Select an LLM model and voice profile. Preview voices before committing.
+  </Step>
+  <Step title="Set a welcome message" icon="comment">
+    Write the opening line the agent speaks when the call connects (e.g., *"Hi, this is Ava from Acme. How can I help?"*).
+  </Step>
+  <Step title="Test with a web call" icon="phone-volume">
+    Click **Start Web Call** in the testing panel to have a live conversation with your agent through your browser.
+  </Step>
+</Steps>
+
+---
 
 ## Creating a New Agent
 
@@ -27,13 +53,23 @@ You can inject **Dynamic Variables** into your prompt using double curly braces 
   **Pro Tip:** Use dynamic variables to pass user-specific context like CRM data or recent account activity directly into the agent's working memory at the start of a call.
 </Note>
 
+**Example system prompt:**
+
+```
+You are {{agent_name}}, a sales assistant at {{company}}.
+Your job is to qualify inbound leads by asking about their
+budget, timeline, and use case. Be warm, professional, and
+concise. If the caller is a good fit, offer to book a demo.
+If not, thank them and end the call politely.
+```
+
 ### AI Provider Settings
 
 Click the settings icon next to the model name to configure the underlying LLM:
 
 - **Model:** Choose the reasoning engine (e.g., Thunder Emotion Lite) powering the agent.
 - **Voice:** Click the voice selector button on the right side of the agent model field to open the voice picker. You can preview voices and select the one your agent should use.
-- **Temperature:** Adjust the creativity of the responses. Lower values produce strict, predictable outputs; higher values allow for more dynamic conversation.
+- **Temperature:** Adjust the creativity of the responses. Lower values (0.1--0.3) produce strict, predictable outputs; higher values (0.7--1.0) allow for more dynamic conversation.
 - **Structured Output:** Toggle this to force the model to return strict, schema-compliant responses (useful for data extraction).
 
 <Frame>
@@ -47,6 +83,10 @@ At the bottom of the prompt editor, configure how the call begins:
 - **Welcome Message:** Define the exact phrase the AI should say when the call connects.
 - **Start Speaker:** Choose whether the **User speaks first** or the **AI starts speaking after silence**.
 
+<Note>
+  For outbound calls, the AI should speak first. For inbound calls, it's common to let the user speak first or have the AI greet them.
+</Note>
+
 ---
 
 ## Agent Configuration
@@ -55,12 +95,17 @@ The right sidebar contains granular controls for your agent's capabilities and t
 
 <AccordionGroup>
   <Accordion title="Functions" icon="code">
-    Equip your agent with custom tools. This allows the AI to fetch real-time data, trigger webhooks, or interact with external APIs during a conversation.
+    Equip your agent with custom tools. This allows the AI to fetch real-time data, trigger webhooks, or interact with external APIs during a conversation. See the [Tools & Functions guide](/guides/tools) for details.
   </Accordion>
 
   <Accordion title="Calendars" icon="calendar">
     Enable scheduling capabilities. You can link your agent to a specific **Lead Connector (GoHighLevel)** calendar or a **Cal.com** event type, allowing the AI to negotiate times and book appointments automatically.
+
     <Frame><img src="/images/agent-calendars.png" alt="Calendar Integrations" /></Frame>
+
+    <Note>
+      You must first connect your GHL or Cal.com account in [Workspace Settings](/guides/settings) before calendars will appear here.
+    </Note>
   </Accordion>
 
   <Accordion title="Speech Settings" icon="waveform-lines">
@@ -77,13 +122,13 @@ The right sidebar contains granular controls for your agent's capabilities and t
     Configure the telephony rules for this specific agent:
     - **Voicemail Detection:** Automatically detect and leave a predefined message if a machine answers.
     - **End call on silence:** Disconnect automatically after a prolonged period of dead air.
-    - **Max duration:** Set a hard limit on call length.
-    - **Post-call data extraction:** Automatically summarize the call and extract key data points.
+    - **Max duration:** Set a hard limit on call length (useful for preventing runaway costs).
+    - **Post-call data extraction:** Automatically summarize the call and extract key data points using an LLM.
     <Frame><img src="/images/agent-call-settings.png" alt="Call Settings" /></Frame>
   </Accordion>
 
   <Accordion title="Webhook Settings" icon="webhook">
-    Add webhook URLs to receive automatic event notifications (like transcripts, summaries, and extraction data) the moment a call concludes.
+    Add webhook URLs to receive automatic event notifications (like transcripts, summaries, and extraction data) the moment a call concludes. This is how you push call data into your CRM, analytics tools, or custom backend.
     <Frame><img src="/images/agent-webhook-settings.png" alt="Webhook Settings" /></Frame>
   </Accordion>
 </AccordionGroup>
@@ -118,6 +163,29 @@ Test how the agent sounds over an actual cellular or VoIP network.
   <img src="/images/agent-test-phone.png" alt="Test Phone Call Interface" />
 </Frame>
 
+<Note>
+  **Testing tip:** Try to break your agent. Ask unexpected questions, interrupt it mid-sentence, stay silent for long periods, and test all edge cases before going live.
+</Note>
+
+---
+
+## Prompt Writing Best Practices
+
+<AccordionGroup>
+  <Accordion title="Be specific about the agent's identity" icon="id-card">
+    Don't just say "You are a helpful assistant." Specify the name, company, role, and personality. Example: *"You are Sarah, a friendly customer support agent at CloudByte. You speak in short, clear sentences and always confirm details before proceeding."*
+  </Accordion>
+  <Accordion title="Define the objective clearly" icon="bullseye">
+    Tell the agent exactly what a successful call looks like. Is it booking a demo? Resolving a ticket? Collecting payment info? The AI needs a concrete goal to work toward.
+  </Accordion>
+  <Accordion title="Handle edge cases in the prompt" icon="shield">
+    Specify what to do when the caller is angry, confused, off-topic, or asks about competitors. Without guidance, the AI will improvise -- and that's usually not what you want.
+  </Accordion>
+  <Accordion title="Keep it concise" icon="text-size">
+    Long, rambling prompts confuse the model. Use bullet points, short sentences, and clear structure. Under 500 words is ideal for most use cases.
+  </Accordion>
+</AccordionGroup>
+
 ---
 
 ## API Reference
@@ -125,10 +193,16 @@ Test how the agent sounds over an actual cellular or VoIP network.
 Once your agent is configured and tested, you can deploy it programmatically.
 
 <CardGroup cols={2}>
-  <Card title="Create Agent API" icon="plus" href="/api-reference/agents/create">
+  <Card title="Create Agent" icon="plus" href="/api-reference/agents/create">
     Create new agents programmatically via the REST API.
   </Card>
-  <Card title="Manage Agents" icon="gear" href="/api-reference/agents/update">
+  <Card title="Update Agent" icon="gear" href="/api-reference/agents/update">
     Update prompts, settings, and functions for existing agents.
+  </Card>
+  <Card title="List Agents" icon="list" href="/api-reference/agents/list">
+    Retrieve all agents in your workspace.
+  </Card>
+  <Card title="Update Status" icon="toggle-on" href="/api-reference/agents/update-status">
+    Activate or pause agents without changing their configuration.
   </Card>
 </CardGroup>

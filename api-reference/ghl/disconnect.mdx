@@ -1,41 +1,64 @@
 ---
 title: "Disconnect GHL"
 openapi: "POST /api/v1/ghl/disconnect"
-description: "Disconnect GHL."
+description: "Disconnect the GoHighLevel integration from your organization. This revokes OAuth tokens and removes all calendar-agent assignments."
 ---
+
+<Warning>
+  This will disconnect GHL from your organization. All GHL calendar-agent assignments will be removed. You will need to re-authorize via OAuth to reconnect.
+</Warning>
 
 ### Authorizations
 
 <ParamField header="X-Api-Key" type="string" required>
-  Your Agni API key. Find it in your [RavanAi](https://app.ravan.ai).
+  Your Agni API key. Find it in your [Ravan.ai Dashboard](https://app.ravan.ai) under **Settings → API Keys**.
 </ParamField>
 
 ---
 
 ### Response
 
-<ResponseField name="success" type="boolean">
-  Whether the request succeeded.
-</ResponseField>
+<ResponseField name="success" type="boolean">Whether the request succeeded.</ResponseField>
+<ResponseField name="message" type="string">Human-readable status message.</ResponseField>
+<ResponseField name="data" type="object">Empty object on success.</ResponseField>
 
-<ResponseField name="message" type="string">
-  Human-readable status message.
-</ResponseField>
+<RequestExample>
 
-<ResponseField name="data" type="object">
-  data field.
+```bash cURL
+curl -X POST https://api.ravan.ai/api/v1/ghl/disconnect \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
 
-  <Expandable title="data">
-    No fields are defined for this object in the schema.
-  </Expandable>
-</ResponseField>
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.ravan.ai/api/v1/ghl/disconnect",
+    headers={"X-Api-Key": "YOUR_API_KEY"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.ravan.ai/api/v1/ghl/disconnect",
+  {
+    method: "POST",
+    headers: { "X-Api-Key": "YOUR_API_KEY" }
+  }
+);
+const data = await response.json();
+console.log(data);
+```
+
+</RequestExample>
 
 <ResponseExample>
 
 ```json 200
 {
   "success": true,
-  "message": "Request completed successfully",
+  "message": "GHL disconnected successfully",
   "data": {}
 }
 ```
