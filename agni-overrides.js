@@ -55,12 +55,12 @@ function renderMarkdown(src) {
     // Code block toggle
     if (line.match(/^```/)) {
       if (inCode) {
-        html.push("</code></pre>");
+        html.push('</code><button class="agni-copy-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent).then(function(){event.target.textContent=\'Copied!\';setTimeout(function(){event.target.textContent=\'Copy\'},1500)})">Copy</button></pre>');
         inCode = false;
       } else {
         if (inList) { html.push(listType === "ul" ? "</ul>" : "</ol>"); inList = false; }
         var lang = line.replace(/^```/, "").trim();
-        html.push('<pre><code class="lang-' + (lang || "text") + '">');
+        html.push('<pre class="agni-code-wrap"><code class="lang-' + (lang || "text") + '">');
         inCode = true;
       }
       continue;
@@ -292,14 +292,62 @@ function inlineMd(s) {
   };
 
   function init() {
-    // ===== BUILD DOM =====
+    // ===== PAGE TRANSITION FADE =====
+    document.body.style.opacity = "0";
+    document.body.style.transition = "opacity 0.2s ease";
+    requestAnimationFrame(function () { document.body.style.opacity = "1"; });
+
+    // ===== SCROLL PROGRESS BAR =====
+    var progressBar = document.createElement("div");
+    progressBar.id = "agni-progress-bar";
+    document.body.appendChild(progressBar);
+    window.addEventListener("scroll", function () {
+      var scrollTop = window.scrollY;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = docHeight > 0 ? (scrollTop / docHeight * 100) + "%" : "0%";
+    });
+
+    // ===== COPY BUTTONS ON PAGE CODE BLOCKS =====
+    document.querySelectorAll("pre code").forEach(function (codeEl) {
+      var pre = codeEl.parentElement;
+      if (pre.querySelector(".agni-copy-btn")) return;
+      var btn = document.createElement("button");
+      btn.className = "agni-copy-btn";
+      btn.textContent = "Copy";
+      btn.addEventListener("click", function () {
+        navigator.clipboard.writeText(codeEl.textContent).then(function () {
+          btn.textContent = "Copied!";
+          setTimeout(function () { btn.textContent = "Copy"; }, 1500);
+        });
+      });
+      pre.style.position = "relative";
+      pre.appendChild(btn);
+    });
+
+    // ===== BUILD AI MODAL =====
     var ov = document.createElement("div");
     ov.id = "agni-search-overlay";
 
     var modal = document.createElement("div");
     modal.id = "agni-search-modal";
 
-    // AI panel (only panel - no tabs, no search)
+    // Header with title + clear button
+    var header = document.createElement("div");
+    header.className = "agni-modal-header";
+    header.innerHTML = '<div class="agni-modal-title">\u{1F525} Agni AI</div>';
+    var clearBtn = document.createElement("button");
+    clearBtn.className = "agni-clear-btn";
+    clearBtn.textContent = "New chat";
+    clearBtn.addEventListener("click", function () {
+      chatHistory = [];
+      sessionStorage.removeItem("agni-chat");
+      aiMessages.innerHTML = "";
+      aiMessages.appendChild(buildWelcome());
+      aiInput.focus();
+    });
+    header.appendChild(clearBtn);
+
+    // AI panel
     var panelAi = document.createElement("div");
     panelAi.id = "agni-panel-ai";
     panelAi.className = "active";
@@ -307,31 +355,48 @@ function inlineMd(s) {
     var aiMessages = document.createElement("div");
     aiMessages.id = "agni-ai-messages";
 
-    // Welcome
-    var welcomeDiv = document.createElement("div");
-    welcomeDiv.className = "agni-welcome";
-    welcomeDiv.innerHTML = '<div class="agni-welcome-icon">\u{1F525}</div><h3>Agni AI Assistant</h3><p>Ask anything about Agni voice AI platform</p><div class="agni-suggestions"></div>';
-    aiMessages.appendChild(welcomeDiv);
+    // Welcome builder
+    function buildWelcome() {
+      var welcomeDiv = document.createElement("div");
+      welcomeDiv.className = "agni-welcome";
+      welcomeDiv.innerHTML = '<div class="agni-welcome-icon">\u{1F525}</div><h3>Agni AI Assistant</h3><p>Ask anything about Agni voice AI platform</p><div class="agni-suggestions"></div>';
+      var sugDiv = welcomeDiv.querySelector(".agni-suggestions");
+      getSuggestions().forEach(function (text) {
+        var btn = document.createElement("button");
+        btn.className = "agni-sug";
+        btn.textContent = text;
+        btn.addEventListener("click", function () { askAI(text); });
+        sugDiv.appendChild(btn);
+      });
+      return welcomeDiv;
+    }
 
-    var sugDiv = welcomeDiv.querySelector(".agni-suggestions");
-    getSuggestions().forEach(function (text) {
-      var btn = document.createElement("button");
-      btn.className = "agni-sug";
-      btn.textContent = text;
-      btn.addEventListener("click", function () { askAI(text); });
-      sugDiv.appendChild(btn);
-    });
+    // Restore chat or show welcome
+    var savedChat = [];
+    try { savedChat = JSON.parse(sessionStorage.getItem("agni-chat") || "[]"); } catch (e) {}
+    if (savedChat.length > 0) {
+      savedChat.forEach(function (msg) {
+        var content = msg.role === "user" ? escHtml(msg.content) : renderMarkdown(msg.content);
+        addMessageToEl(aiMessages, msg.role === "user" ? "user" : "assistant", content);
+      });
+    } else {
+      aiMessages.appendChild(buildWelcome());
+    }
 
-    // Input
+    // Textarea input (multi-line)
     var inputWrap = document.createElement("div");
     inputWrap.id = "agni-ai-input-wrap";
-    var aiInput = document.createElement("input");
+    var aiInput = document.createElement("textarea");
     aiInput.id = "agni-ai-input";
-    aiInput.placeholder = "Ask about Agni...";
-    aiInput.autocomplete = "off";
+    aiInput.placeholder = "Ask Agni AI anything...";
+    aiInput.rows = 1;
+    aiInput.addEventListener("input", function () {
+      this.style.height = "auto";
+      this.style.height = Math.min(this.scrollHeight, 120) + "px";
+    });
     var sendBtn = document.createElement("button");
     sendBtn.id = "agni-ai-send";
-    sendBtn.textContent = "Send";
+    sendBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>';
     inputWrap.appendChild(aiInput);
     inputWrap.appendChild(sendBtn);
 
@@ -341,9 +406,10 @@ function inlineMd(s) {
     // Footer
     var footer = document.createElement("div");
     footer.className = "agni-footer";
-    footer.innerHTML = "<kbd>Esc</kbd>&nbsp;close&nbsp;\u2022&nbsp;<kbd>Ctrl+K</kbd>&nbsp;search";
+    footer.innerHTML = "<kbd>Esc</kbd>&nbsp;close&nbsp;\u2022&nbsp;<kbd>Ctrl+K</kbd>&nbsp;open";
 
     // Assemble
+    modal.appendChild(header);
     modal.appendChild(panelAi);
     modal.appendChild(footer);
     ov.appendChild(modal);
@@ -357,44 +423,47 @@ function inlineMd(s) {
     function closeSearch() { ov.classList.remove("active"); }
 
     // ===== AI CHAT =====
-    var chatHistory = [];
+    var chatHistory = savedChat.slice();
     var sending = false;
 
-    function addMessage(role, content) {
+    function addMessageToEl(container, role, content) {
       var row = document.createElement("div");
       row.className = "agni-msg-row " + role;
-
       var avatar = document.createElement("div");
       avatar.className = "agni-msg-avatar";
       avatar.textContent = role === "user" ? "Y" : "\u{1F525}";
-
       var contentWrap = document.createElement("div");
       contentWrap.className = "agni-msg-content";
-
       var label = document.createElement("div");
       label.className = "agni-msg-label";
       label.textContent = role === "user" ? "You" : "Agni AI";
-
       var body = document.createElement("div");
       body.className = "agni-msg-body";
       body.innerHTML = content;
-
       contentWrap.appendChild(label);
       contentWrap.appendChild(body);
       row.appendChild(avatar);
       row.appendChild(contentWrap);
-      aiMessages.appendChild(row);
-      aiMessages.scrollTop = aiMessages.scrollHeight;
+      container.appendChild(row);
+      container.scrollTop = container.scrollHeight;
       return row;
+    }
+
+    function addMessage(role, content) {
+      return addMessageToEl(aiMessages, role, content);
     }
 
     function addThinking() {
       var el = document.createElement("div");
       el.className = "agni-msg-thinking";
-      el.innerHTML = '<div class="agni-msg-avatar">\u{1F525}</div><div class="agni-dots"><span></span><span></span><span></span></div><span>Agni is thinking\u2026</span>';
+      el.innerHTML = '<div class="agni-msg-avatar">\u{1F525}</div><div class="agni-dots"><span></span><span></span><span></span></div><span class="agni-think-text">Agni is thinking\u2026</span>';
       aiMessages.appendChild(el);
       aiMessages.scrollTop = aiMessages.scrollHeight;
       return el;
+    }
+
+    function saveChat() {
+      try { sessionStorage.setItem("agni-chat", JSON.stringify(chatHistory.slice(-10))); } catch (e) {}
     }
 
     function askAI(query) {
@@ -407,11 +476,18 @@ function inlineMd(s) {
       sending = true;
       sendBtn.disabled = true;
       aiInput.value = "";
+      aiInput.style.height = "auto";
 
       addMessage("user", escHtml(query));
       chatHistory.push({ role: "user", content: query });
+      saveChat();
 
       var think = addThinking();
+
+      // Progressive loading feedback
+      var thinkText = think.querySelector(".agni-think-text");
+      var t1 = setTimeout(function () { if (thinkText) thinkText.textContent = "Still working\u2026"; }, 3000);
+      var t2 = setTimeout(function () { if (thinkText) thinkText.textContent = "Almost there\u2026"; }, 8000);
 
       fetch("/api/ai-search", {
         method: "POST",
@@ -423,12 +499,15 @@ function inlineMd(s) {
         return r.json();
       })
       .then(function (data) {
+        clearTimeout(t1); clearTimeout(t2);
         if (think.parentNode) think.remove();
         var answer = data.answer || data.error || "No response.";
         addMessage("assistant", renderMarkdown(answer));
         chatHistory.push({ role: "assistant", content: answer });
+        saveChat();
       })
       .catch(function (err) {
+        clearTimeout(t1); clearTimeout(t2);
         if (think.parentNode) think.remove();
         addMessage("assistant", "<p>Sorry, couldn\u2019t connect to the AI. Please try again.</p>");
         console.error("[Agni AI]", err);

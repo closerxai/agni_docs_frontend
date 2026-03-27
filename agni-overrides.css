@@ -77,32 +77,67 @@ div[class*="SearchDialog"] {
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ===== TABS ===== */
-.agni-tabs {
+/* ===== MODAL HEADER ===== */
+.agni-modal-header {
   display: flex;
-  flex-shrink: 0;
-  background: rgba(255,255,255,0.03);
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
 }
-.agni-tab {
-  flex: 1;
-  padding: 12px 0;
-  font-size: 13px;
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-  border: none;
-  background: none;
+.agni-modal-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #FF4500;
+  letter-spacing: 0.01em;
+}
+.agni-clear-btn {
+  font-size: 12px;
   color: rgba(255,255,255,0.35);
-  border-bottom: 2px solid transparent;
-  transition: color 0.15s, border-color 0.15s;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
 }
-.agni-tab:hover { color: rgba(255,255,255,0.6); }
-.agni-tab.active { color: #FF4500; border-bottom-color: #FF4500; }
+.agni-clear-btn:hover { color: #FF4500; border-color: rgba(255,69,0,0.3); }
+
+/* ===== SCROLL PROGRESS BAR ===== */
+#agni-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #FF4500, #FF7F50);
+  z-index: 99998;
+  transition: width 0.1s linear;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ===== COPY BUTTON ON CODE BLOCKS ===== */
+.agni-copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+  z-index: 2;
+}
+.agni-copy-btn:hover { background: rgba(255,69,0,0.15); color: #FF7F50; border-color: rgba(255,69,0,0.3); }
 
 /* ===== PANELS ===== */
-#agni-panel-search, #agni-panel-ai { display: none; flex-direction: column; flex: 1; min-height: 0; }
-#agni-panel-search.active, #agni-panel-ai.active { display: flex; }
+#agni-panel-ai { display: none; flex-direction: column; flex: 1; min-height: 0; }
+#agni-panel-ai.active { display: flex; }
 
 /* ===== PAGEFIND ===== */
 #agni-search-container { flex: 1; overflow-y: auto; }
@@ -303,6 +338,10 @@ div[class*="SearchDialog"] {
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s;
+  resize: none;
+  min-height: 20px;
+  max-height: 120px;
+  line-height: 1.5;
 }
 #agni-ai-input::placeholder { color: rgba(255,255,255,0.2); }
 #agni-ai-input:focus { border-color: rgba(255,69,0,0.5); }
@@ -311,13 +350,15 @@ div[class*="SearchDialog"] {
   color: #fff;
   border: none;
   border-radius: 12px;
-  padding: 0 20px;
-  font-size: 14px;
-  font-weight: 600;
+  width: 42px;
+  height: 42px;
   cursor: pointer;
   transition: background 0.15s;
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  align-self: flex-end;
 }
 #agni-ai-send:hover { background: #e63e00; }
 #agni-ai-send:disabled { opacity: 0.35; cursor: default; }
@@ -412,6 +453,11 @@ html.light .agni-msg-body blockquote, html:not(.dark) .agni-msg-body blockquote 
 html.light .agni-msg-body hr, html:not(.dark) .agni-msg-body hr { border-top-color: rgba(0,0,0,0.06); }
 html.light .agni-msg-body em, html:not(.dark) .agni-msg-body em { color: rgba(0,0,0,0.55); }
 html.light .agni-msg-thinking, html:not(.dark) .agni-msg-thinking { color: rgba(0,0,0,0.3); border-top-color: rgba(0,0,0,0.04); }
+html.light .agni-modal-header, html:not(.dark) .agni-modal-header { border-bottom-color: rgba(0,0,0,0.06); }
+html.light .agni-clear-btn, html:not(.dark) .agni-clear-btn { color: rgba(0,0,0,0.35); border-color: rgba(0,0,0,0.08); }
+html.light .agni-clear-btn:hover, html:not(.dark) .agni-clear-btn:hover { color: #FF4500; border-color: rgba(255,69,0,0.3); }
+html.light .agni-copy-btn, html:not(.dark) .agni-copy-btn { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.08); color: rgba(0,0,0,0.4); }
+html.light .agni-copy-btn:hover, html:not(.dark) .agni-copy-btn:hover { background: rgba(255,69,0,0.08); color: #cc3700; border-color: rgba(255,69,0,0.2); }
 html.light #agni-ai-input-wrap, html:not(.dark) #agni-ai-input-wrap { background: rgba(0,0,0,0.02); border-top-color: rgba(0,0,0,0.06); }
 html.light #agni-ai-input, html:not(.dark) #agni-ai-input {
   background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); color: #222;
