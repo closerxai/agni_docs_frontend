@@ -131,7 +131,14 @@
               "api-reference/telephony/release-number",
               "api-reference/telephony/list-purchased-numbers",
               "api-reference/telephony/import-number",
-              "api-reference/telephony/list-twilio-numbers"
+              "api-reference/telephony/list-imported-numbers",
+              "api-reference/telephony/get-imported-number",
+              "api-reference/telephony/update-imported-number",
+              "api-reference/telephony/delete-imported-number",
+              "api-reference/telephony/list-twilio-numbers",
+              "api-reference/telephony/add-twilio-number",
+              "api-reference/telephony/create-telephony-type",
+              "api-reference/telephony/get-selected-telephony"
             ]
           },
           {
