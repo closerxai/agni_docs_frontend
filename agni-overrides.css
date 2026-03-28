@@ -79,10 +79,7 @@ a[href*="mintlify.com"]::after {
   display: inline !important;
 }
 
-/* Hide Mintlify's native search dialog */
-[data-radix-portal],
-[role="dialog"][aria-modal="true"],
-div[data-state="open"][class*="Dialog"],
+/* Hide Mintlify's native search dialog (but NOT the mobile sidebar) */
 div[class*="cmdk-dialog"],
 div[class*="CommandMenu"],
 div[class*="search-dialog"],

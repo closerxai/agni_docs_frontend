@@ -696,10 +696,13 @@ function inlineMd(s) {
       if (e.key === "Escape" && ov.classList.contains("active")) { e.preventDefault(); closeSearch(); }
     });
 
-    // ===== KILL MINTLIFY DIALOGS =====
+    // ===== KILL MINTLIFY SEARCH DIALOGS (preserve mobile sidebar) =====
     function killDialogs() {
       document.querySelectorAll("[data-radix-portal]").forEach(function (el) {
-        if (!el.closest("#agni-search-overlay")) el.style.display = "none";
+        if (el.closest("#agni-search-overlay")) return;
+        // Only hide if it contains a search/command dialog, not the sidebar nav
+        var hasSearch = el.querySelector('[class*="cmdk"], [class*="CommandMenu"], [class*="search-dialog"], [class*="SearchDialog"]');
+        if (hasSearch) el.style.display = "none";
       });
     }
     var dObs = new MutationObserver(killDialogs);
