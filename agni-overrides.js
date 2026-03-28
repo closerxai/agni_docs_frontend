@@ -185,10 +185,10 @@ function inlineMd(s) {
     "/guides/phone-numbers": [
       "How do I buy a phone number?",
       "What is the BYOT setup?",
-      "What are the telephony pricing details?"
+      "How do I set up telephony?"
     ],
     "/guides/billing": [
-      "What is the per-minute pricing?",
+      "How do prepaid credits work?",
       "How do prepaid credits work?",
       "How can I optimize costs?"
     ],
@@ -208,7 +208,7 @@ function inlineMd(s) {
     "How do I create an agent?",
     "What API authentication is needed?",
     "How does call transfer work?",
-    "What are the pricing details?",
+    "How do I contact sales?",
     "How to set up appointments?"
   ];
 
