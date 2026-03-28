@@ -30,39 +30,85 @@ Webhooks let you receive real-time HTTP callbacks when events happen in Agni —
 
 ## Webhook Events
 
+The primary webhook event is `call.completed`, dispatched automatically when a call session ends.
+
 | Event | Trigger | Payload Includes |
 |-------|---------|-----------------|
-| `call.started` | Call is connected | Call ID, agent ID, caller number, direction |
-| `call.ended` | Call disconnects | Call ID, duration, end reason, status |
-| `call.transcript` | Transcript is ready | Full conversation transcript, speaker labels |
-| `call.analysis` | Post-call analysis complete | Summary, sentiment, extracted data, action items |
-| `call.recording` | Recording is available | Recording URL, duration, format |
-| `agent.status_changed` | Agent goes online/offline | Agent ID, old status, new status |
+| `call.completed` | Call session ends | Full call data, transcripts, recording, sentiment, post-call analysis |
+
+<Card title="Full Payload Reference" icon="code" href="/api-reference/webhooks/after-call">
+  See the complete After-Call Webhook API reference for every field in the payload, with types and descriptions.
+</Card>
 
 ---
 
-## Payload Format
+## `call.completed` Payload
 
-All webhook payloads follow this structure:
+When a call ends, Agni sends the complete call record including metadata, transcripts, AI analysis, and costs:
 
 ```json
 {
-  "event": "call.ended",
-  "timestamp": "2026-03-28T14:30:00Z",
+  "event": "call.completed",
+  "org_id": "1268c1f0-19f3-47db-aefb-c16a7c3ace6e",
   "data": {
-    "call_id": "019d1fdb-98e9-7c87-86c7-321e2fa98733",
-    "agent_id": "019d1fdb-6701-762d-97bd-93fc72606d7c",
-    "direction": "inbound",
-    "from_number": "+14155551234",
-    "to_number": "+14155559876",
-    "duration_ms": 185000,
+    "campaign_id": "uuid-or-null",
+    "contact_id": "uuid-or-null",
+    "phone": "+14155550100",
     "status": "completed",
-    "end_reason": "caller_hangup",
-    "sentiment": "positive",
-    "summary": "Customer called to reschedule their appointment from Thursday to Friday."
+    "duration_sec": 125,
+    "call_session_id": "019d2b3c-8e9f-7a0b-1c2d-4e5f6a7b8c9d",
+    "attempt": 1,
+    "summary": "AI-generated summary of the conversation...",
+    "recording_url": "https://storage.agniai.com/rec/019d2b3c-8e9f.mp3",
+    "caller_number": "+18881234567",
+    "callee_number": "+14155550100",
+    "caller_name": "John Doe",
+    "caller_email": "john@example.com",
+    "agent_name": "Support Agent",
+    "channel": "voice",
+    "disconnect_reason": "customer_hangup",
+    "cost_total": 0.42,
+    "call_latency_ms": 150,
+    "started_at": "2026-03-24T18:30:00Z",
+    "ended_at": "2026-03-24T18:32:05Z",
+    "created_at": "2026-03-24T18:30:00Z",
+    "post_call_analysis": {
+      "sentiment": "positive",
+      "disposition": "meeting_booked",
+      "goals_met": true,
+      "next_steps": "Send follow-up details via email"
+    },
+    "transcripts": [
+      {
+        "id": "t-001",
+        "timestamp_ms": 0,
+        "role": "agent",
+        "message": { "content": "Hello! How can I help you today?", "format": "text" },
+        "created_at": "2026-03-24T18:30:00Z"
+      },
+      {
+        "id": "t-002",
+        "timestamp_ms": 3200,
+        "role": "user",
+        "message": { "content": "I'd like to schedule an appointment.", "format": "text" },
+        "created_at": "2026-03-24T18:30:03Z"
+      }
+    ]
   }
 }
 ```
+
+### Key Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | string | `completed`, `failed`, `no_answer`, `busy`, `voicemail` |
+| `channel` | string | `voice` (phone), `web` (browser), `sip` |
+| `disconnect_reason` | string | `customer_hangup`, `agent_hangup`, `error` |
+| `post_call_analysis.sentiment` | string | `positive`, `neutral`, `negative` |
+| `post_call_analysis.disposition` | string | e.g. `meeting_booked`, `not_interested`, `callback_requested` |
+| `post_call_analysis.goals_met` | boolean | Whether the agent achieved its objective |
+| `transcripts[]` | array | Full conversation, ordered by `timestamp_ms` |
 
 ---
 
@@ -84,7 +130,7 @@ curl -X PUT https://api.ravan.ai/api/v1/agents/{agent_id} \
   -H "Content-Type: application/json" \
   -d '{
     "webhook_url": "https://your-server.com/webhooks/agni",
-    "webhook_events": ["call.ended", "call.analysis"]
+    "webhook_events": ["call.completed"]
   }'
 ```
 
@@ -100,24 +146,19 @@ curl -X PUT https://api.ravan.ai/api/v1/agents/{agent_id} \
     app.use(express.json());
 
     app.post('/webhooks/agni', (req, res) => {
-      const { event, data } = req.body;
+      const { event, org_id, data } = req.body;
 
-      switch (event) {
-        case 'call.ended':
-          console.log(`Call ${data.call_id} ended after ${data.duration_ms}ms`);
-          // Update your CRM, send notification, etc.
-          break;
+      if (event === 'call.completed') {
+        console.log(`Call ${data.call_session_id} completed`);
+        console.log(`Duration: ${data.duration_sec}s, Status: ${data.status}`);
+        console.log(`Summary: ${data.summary}`);
+        console.log(`Sentiment: ${data.post_call_analysis?.sentiment}`);
+        console.log(`Disposition: ${data.post_call_analysis?.disposition}`);
+        console.log(`Transcripts: ${data.transcripts?.length} messages`);
 
-        case 'call.analysis':
-          console.log(`Analysis ready: ${data.summary}`);
-          console.log(`Sentiment: ${data.sentiment}`);
-          // Store analysis, trigger follow-up workflows
-          break;
-
-        case 'call.transcript':
-          console.log(`Transcript: ${data.transcript}`);
-          // Save to database, feed to analytics
-          break;
+        // Store in your database
+        // Update CRM with call outcome
+        // Trigger follow-up workflows based on disposition
       }
 
       res.status(200).json({ received: true });
@@ -139,14 +180,20 @@ curl -X PUT https://api.ravan.ai/api/v1/agents/{agent_id} \
         event = payload.get('event')
         data = payload.get('data', {})
 
-        if event == 'call.ended':
-            print(f"Call {data['call_id']} ended - {data['duration_ms']}ms")
-            # Update your CRM
+        if event == 'call.completed':
+            print(f"Call {data['call_session_id']} completed")
+            print(f"Duration: {data['duration_sec']}s, Status: {data['status']}")
+            print(f"Summary: {data.get('summary')}")
 
-        elif event == 'call.analysis':
-            print(f"Summary: {data['summary']}")
-            print(f"Sentiment: {data['sentiment']}")
-            # Store analysis results
+            analysis = data.get('post_call_analysis', {})
+            print(f"Sentiment: {analysis.get('sentiment')}")
+            print(f"Disposition: {analysis.get('disposition')}")
+            print(f"Goals met: {analysis.get('goals_met')}")
+
+            transcripts = data.get('transcripts', [])
+            print(f"Transcript entries: {len(transcripts)}")
+
+            # Store in database, update CRM, trigger workflows
 
         return jsonify({'received': True}), 200
 
