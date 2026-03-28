@@ -1,6 +1,70 @@
 /* Agni Docs - Search & AI Assistant */
 /* v3 - Complete rewrite */
 
+/* ================================================================
+   CUSTOM BACKGROUND - Retell-style grid with Agni orange glow
+   ================================================================ */
+
+/* Radial gradient glow behind the hero/landing area */
+body::before {
+  content: "";
+  position: fixed;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 60%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 69, 0, 0.08) 0%,
+    rgba(255, 127, 80, 0.04) 30%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Light mode: warm orange glow on white background */
+html.light body::before,
+html:not(.dark) body::before {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 69, 0, 0.18) 0%,
+    rgba(255, 127, 80, 0.10) 25%,
+    rgba(255, 165, 0, 0.05) 50%,
+    transparent 70%
+  );
+}
+
+/* Dark mode: stronger glow */
+html.dark body::before {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 69, 0, 0.12) 0%,
+    rgba(255, 127, 80, 0.05) 35%,
+    transparent 70%
+  );
+}
+
+/* Grid line enhancement - more visible in light mode */
+html.light [class*="grid-background"],
+html:not(.dark) [class*="grid-background"],
+html.light [style*="grid"],
+html:not(.dark) [style*="grid"] {
+  opacity: 0.8;
+}
+
+html.dark [class*="grid-background"],
+html.dark [style*="grid"] {
+  opacity: 0.6;
+}
+
+/* Hero section gradient accent */
+main > div:first-child,
+article > div:first-child {
+  position: relative;
+}
+
 /* FORCE HIDE "Powered by mintlify" footer - multiple selectors for reliability */
 a[href*="mintlify.com"] { visibility: hidden !important; font-size: 0 !important; height: 0 !important; overflow: hidden !important; display: inline-block !important; }
 footer a[href*="mintlify.com"],

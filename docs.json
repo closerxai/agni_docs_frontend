@@ -8,6 +8,9 @@
     "dark": "#CC3700"
   },
   "favicon": "/favicon.svg",
+  "background": {
+    "style": "grid"
+  },
   "api": {
     "mdx": {
       "server": "https://api.ravan.ai",
