@@ -211,17 +211,147 @@ curl -X POST https://api.ravan.ai/api/v1/calls/ \
 
 ---
 
-## Model & Temperature Selection
+## Voice Models
 
-| Model | Best For | Temperature |
-|-------|----------|-------------|
-| `gpt-4o` | Complex conversations, nuanced decisions | 0.5 - 0.7 |
-| `gpt-4o-mini` | Simple tasks, high-volume calls | 0.3 - 0.5 |
+Agni offers two real-time voice models optimized for different use cases:
+
+| Model | Best For | Strengths |
+|-------|----------|-----------|
+| **Thunder** | Complex conversations, nuanced decisions, emotional intelligence | Deeper reasoning, natural turn-taking, handles multi-step conversations with ease. Ideal for sales, healthcare, and high-value calls. |
+| **Thunder Lite** | High-volume calls, simple tasks, fast responses | Ultra-low latency, cost-efficient, great for appointment booking, confirmations, and data collection at scale. |
+
+<Tip>
+  **When to use which?** Start with **Thunder** for any customer-facing call where conversation quality matters. Use **Thunder Lite** when you need speed and volume — like outbound confirmation calls or simple FAQ handling.
+</Tip>
 
 **Temperature guide:**
 - **0.1 - 0.3** — Strict, deterministic. Good for data collection and form-filling.
 - **0.4 - 0.6** — Balanced. Good for customer support and appointment booking.
 - **0.7 - 0.9** — Creative, varied. Good for sales and casual conversations.
+
+---
+
+## Pronunciation Guide
+
+Voice agents read text aloud, so how you write things in your prompt directly affects how they sound. Use these techniques to make your agent pronounce emails, phone numbers, dates, and other tricky content naturally.
+
+### Email Addresses
+
+Write emails exactly as you want them spoken. Use "at" and "dot" in plain words.
+
+```text
+❌ Don't write: support@ravan.ai
+✅ Write: support at ravan dot A I
+
+❌ Don't write: john.doe@gmail.com
+✅ Write: john dot doe at gmail dot com
+```
+
+<Tip>
+  In your prompt instructions, add: *"When reading email addresses aloud, say 'at' for the @ symbol and 'dot' for periods. Spell out the domain letter by letter if it's uncommon."*
+</Tip>
+
+### Phone Numbers
+
+Break phone numbers into natural spoken groups. Never read them as one big number.
+
+```text
+❌ Don't write: +12125551234
+✅ Write: 2 1 2, 5 5 5, 1 2 3 4
+
+❌ Don't write: Call us at 8005551234
+✅ Write: Call us at 800, 555, 1 2 3 4
+```
+
+Add this to your prompt:
+```text
+When reading phone numbers, say each digit individually. Group them as:
+area code (3 digits), then 3 digits, then 4 digits. Pause briefly
+between each group.
+```
+
+### Dates & Times
+
+Write dates the way you want them spoken — avoid numeric-only formats.
+
+```text
+❌ Don't write: 03/28/2026
+✅ Write: March 28th, 2026
+
+❌ Don't write: DOB: 1990-05-15
+✅ Write: Date of birth: May 15th, 1990
+
+❌ Don't write: Appointment at 14:00
+✅ Write: Appointment at 2 PM
+```
+
+Add this to your prompt:
+```text
+Always say dates in full spoken form — for example, "March twenty-eighth,
+twenty twenty-six." Never read dates as raw numbers like "oh three slash
+twenty-eight." For times, use 12-hour format with AM or PM.
+```
+
+### Date of Birth
+
+When collecting or confirming date of birth, instruct the agent to repeat it back clearly:
+
+```text
+When confirming a date of birth, always repeat it back in full spoken form.
+For example: "Just to confirm, your date of birth is January 5th, 1992 —
+is that correct?"
+
+If the caller says something like "oh one oh five ninety-two", interpret
+it as January 5th, 1992 and confirm in full.
+```
+
+### Dollar Amounts & Numbers
+
+```text
+❌ Don't write: $1250.00
+✅ Write: twelve hundred and fifty dollars
+
+❌ Don't write: Your balance is 49.99
+✅ Write: Your balance is forty-nine dollars and ninety-nine cents
+
+❌ Don't write: Reference #A1B2C3
+✅ Write: Reference number: A as in Alpha, 1, B as in Bravo, 2, C as in Charlie, 3
+```
+
+### Addresses
+
+Break addresses into natural spoken chunks:
+
+```text
+❌ Don't write: 123 W 45th St, Ste 200, NY, NY 10036
+✅ Write: 123 West 45th Street, Suite 200, New York, New York, 10036
+
+When reading zip codes, say each digit: "one zero zero three six."
+```
+
+### Spelling Out Names & Codes
+
+For anything that needs to be spelled out (confirmation codes, names, etc.):
+
+```text
+Add to your prompt:
+"When spelling out words or codes, use the NATO phonetic alphabet.
+For example, spell 'BKNG42' as: Bravo, Kilo, November, Golf, Four, Two."
+```
+
+### General Pronunciation Tips
+
+Add these instructions to any agent prompt for cleaner speech:
+
+```text
+## Speech Rules
+- Never read raw URLs, file paths, or code aloud
+- Say "percent" not "%", "dollar" not "$", "and" not "&"
+- For abbreviations like "Dr." say "Doctor", "St." say "Street"
+- Spell out acronyms unless they're commonly spoken words (e.g., say "NASA" but spell out "C R M")
+- When reading a list, pause briefly between items
+- If you need to read a long number like an account number, group digits in sets of 3 or 4 with pauses
+```
 
 ---
 
