@@ -11,13 +11,17 @@
   "background": {
     "style": "grid"
   },
+  "openapi": [
+    "openapi.json"
+  ],
   "api": {
-    "mdx": {
-      "server": "https://api.ravan.ai",
-      "auth": {
-        "method": "key",
-        "name": "X-Api-Key"
-      }
+    "baseUrl": "https://api.ravan.ai",
+    "auth": {
+      "method": "key",
+      "name": "X-Api-Key"
+    },
+    "playground": {
+      "mode": "simple"
     }
   },
   "navigation": {

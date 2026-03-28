@@ -292,161 +292,6 @@ function inlineMd(s) {
   };
 
   function init() {
-    // ===== SPA-STYLE NAVIGATION =====
-    // Intercept internal link clicks and swap content without full reload
-    function isSameOriginLink(el) {
-      if (!el || el.tagName !== "A") return false;
-      var href = el.getAttribute("href");
-      if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("http") || href.startsWith("javascript:")) return false;
-      if (el.target === "_blank") return false;
-      if (el.hasAttribute("download")) return false;
-      return true;
-    }
-
-    var isNavigating = false;
-    function spaNavigate(url) {
-      if (isNavigating) return;
-      isNavigating = true;
-
-      // Show loading bar
-      var bar = document.getElementById("agni-progress-bar");
-      if (bar) { bar.style.width = "30%"; bar.style.transition = "width 0.3s"; }
-
-      fetch(url)
-        .then(function (r) {
-          if (!r.ok) throw new Error("HTTP " + r.status);
-          return r.text();
-        })
-        .then(function (html) {
-          if (bar) { bar.style.width = "80%"; }
-
-          // Parse new page
-          var parser = new DOMParser();
-          var newDoc = parser.parseFromString(html, "text/html");
-
-          // Swap content area
-          var newContent = newDoc.getElementById("content-area");
-          var oldContent = document.getElementById("content-area");
-          if (newContent && oldContent) {
-            oldContent.style.opacity = "0";
-            oldContent.style.transition = "opacity 0.15s";
-            setTimeout(function () {
-              oldContent.innerHTML = newContent.innerHTML;
-              oldContent.style.opacity = "1";
-
-              // Update page title
-              var newTitle = newDoc.querySelector("title");
-              if (newTitle) document.title = newTitle.textContent;
-
-              // Update URL
-              history.pushState(null, "", url);
-
-              // Update sidebar active state
-              var newSidebar = newDoc.getElementById("sidebar-content");
-              var oldSidebar = document.getElementById("sidebar-content");
-              if (newSidebar && oldSidebar) oldSidebar.innerHTML = newSidebar.innerHTML;
-
-              // Re-run page-specific features
-              reinitPage();
-
-              // Scroll to top
-              window.scrollTo(0, 0);
-
-              if (bar) { bar.style.width = "100%"; setTimeout(function () { bar.style.transition = "none"; bar.style.width = "0%"; }, 300); }
-              isNavigating = false;
-            }, 150);
-          } else {
-            // Fallback: full navigation
-            window.location.href = url;
-          }
-        })
-        .catch(function () {
-          window.location.href = url;
-          isNavigating = false;
-        });
-    }
-
-    // Intercept clicks on internal links
-    document.addEventListener("click", function (e) {
-      var link = e.target.closest("a");
-      if (link && isSameOriginLink(link) && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
-        var href = link.getAttribute("href");
-        e.preventDefault();
-        spaNavigate(href);
-      }
-    });
-
-    // Handle browser back/forward
-    window.addEventListener("popstate", function () {
-      spaNavigate(window.location.pathname);
-    });
-
-    // Re-initialize page-specific features after SPA navigation
-    function reinitPage() {
-      // Copy buttons on code blocks
-      document.querySelectorAll("#content-area pre code").forEach(function (codeEl) {
-        var pre = codeEl.parentElement;
-        if (pre.querySelector(".agni-copy-btn")) return;
-        var btn = document.createElement("button");
-        btn.className = "agni-copy-btn";
-        btn.textContent = "Copy";
-        btn.addEventListener("click", function () {
-          navigator.clipboard.writeText(codeEl.textContent).then(function () {
-            btn.textContent = "Copied!";
-            setTimeout(function () { btn.textContent = "Copy"; }, 1500);
-          });
-        });
-        pre.style.position = "relative";
-        pre.appendChild(btn);
-      });
-
-      // Reading time
-      try {
-        var article = document.getElementById("content-area");
-        if (article) {
-          var existingRt = article.querySelector(".agni-reading-time");
-          if (existingRt) existingRt.remove();
-          var wordCount = (article.textContent || "").trim().split(/\s+/).length;
-          var minutes = Math.max(1, Math.ceil(wordCount / 200));
-          var titleEl = article.querySelector("h1");
-          if (titleEl) {
-            var rtSpan = document.createElement("span");
-            rtSpan.className = "agni-reading-time";
-            rtSpan.textContent = minutes + " min read";
-            titleEl.parentNode.insertBefore(rtSpan, titleEl.nextSibling);
-          }
-        }
-      } catch (e) {}
-
-      // Related articles
-      try {
-        var pagePath = window.location.pathname.replace(/\/$/, "") || "/";
-        var related = RELATED_ARTICLES[pagePath];
-        var articleEl = document.getElementById("content-area");
-        if (related && related.length > 0 && articleEl) {
-          var existing = articleEl.querySelector(".agni-related-articles");
-          if (existing) existing.remove();
-          var relDiv = document.createElement("div");
-          relDiv.className = "agni-related-articles";
-          relDiv.innerHTML = "<h4>Related Articles</h4>";
-          var relGrid = document.createElement("div");
-          relGrid.className = "agni-related-grid";
-          related.forEach(function (r) {
-            var a = document.createElement("a");
-            a.href = r.href;
-            a.className = "agni-related-card";
-            a.innerHTML = '<span class="agni-related-title">' + escHtml(r.title) + '</span><span class="agni-related-arrow">\u2192</span>';
-            relGrid.appendChild(a);
-          });
-          relDiv.appendChild(relGrid);
-          articleEl.appendChild(relDiv);
-        }
-      } catch (e) {}
-
-      // Rebrand
-      rebrand();
-    }
-
     // ===== SCROLL PROGRESS BAR =====
     var progressBar = document.createElement("div");
     progressBar.id = "agni-progress-bar";
@@ -455,23 +300,6 @@ function inlineMd(s) {
       var scrollTop = window.scrollY;
       var docHeight = document.documentElement.scrollHeight - window.innerHeight;
       progressBar.style.width = docHeight > 0 ? (scrollTop / docHeight * 100) + "%" : "0%";
-    });
-
-    // ===== COPY BUTTONS ON PAGE CODE BLOCKS =====
-    document.querySelectorAll("pre code").forEach(function (codeEl) {
-      var pre = codeEl.parentElement;
-      if (pre.querySelector(".agni-copy-btn")) return;
-      var btn = document.createElement("button");
-      btn.className = "agni-copy-btn";
-      btn.textContent = "Copy";
-      btn.addEventListener("click", function () {
-        navigator.clipboard.writeText(codeEl.textContent).then(function () {
-          btn.textContent = "Copied!";
-          setTimeout(function () { btn.textContent = "Copy"; }, 1500);
-        });
-      });
-      pre.style.position = "relative";
-      pre.appendChild(btn);
     });
 
     // ===== BUILD AI MODAL =====
@@ -696,13 +524,14 @@ function inlineMd(s) {
       if (e.key === "Escape" && ov.classList.contains("active")) { e.preventDefault(); closeSearch(); }
     });
 
-    // ===== KILL MINTLIFY SEARCH DIALOGS (preserve mobile sidebar) =====
+    // ===== KILL MINTLIFY SEARCH DIALOGS (preserve mobile sidebar & API playground) =====
     function killDialogs() {
       document.querySelectorAll("[data-radix-portal]").forEach(function (el) {
         if (el.closest("#agni-search-overlay")) return;
-        // Only hide if it contains a search/command dialog, not the sidebar nav
+        // Only hide if it's specifically a command menu / search dialog
         var hasSearch = el.querySelector('[class*="cmdk"], [class*="CommandMenu"], [class*="search-dialog"], [class*="SearchDialog"]');
-        if (hasSearch) el.style.display = "none";
+        var hasPlayground = el.querySelector('[class*="playground"], [class*="Playground"], [class*="api-"], [class*="select"], [class*="Select"], [class*="dropdown"], [class*="Dropdown"], [class*="popover"], [class*="Popover"]');
+        if (hasSearch && !hasPlayground) el.style.display = "none";
       });
     }
     var dObs = new MutationObserver(killDialogs);
