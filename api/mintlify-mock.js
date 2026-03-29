@@ -39,8 +39,8 @@ module.exports = function handler(req, res) {
     return res.status(200).json({ revalidated: true });
   }
 
-  // /_mintlify/api/request or any connection-type endpoint
-  if (url.includes("/request") || url.includes("/connect")) {
+  // /_mintlify/api/connect
+  if (url.includes("/connect")) {
     return res.status(200).json({ ok: true });
   }
 
