@@ -1,0 +1,218 @@
+/* ================================================================
+   Agni SDK Code Generator — Tabbed code snippets
+   ================================================================ */
+
+#agni-sdk {
+  margin: 0 0 32px;
+  background: #1a1625;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  color: #ddd;
+}
+
+/* --- Header --- */
+.agni-sdk-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px 0;
+}
+
+.agni-sdk-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #FF4500;
+  opacity: 0.7;
+}
+
+.agni-sdk-copy {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.agni-sdk-copy:hover {
+  color: #FF7F50;
+  border-color: rgba(255, 69, 0, 0.3);
+  background: rgba(255, 69, 0, 0.08);
+}
+
+/* --- Tabs --- */
+.agni-sdk-tabs {
+  display: flex;
+  gap: 0;
+  padding: 10px 18px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.agni-sdk-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.agni-sdk-tab {
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.agni-sdk-tab:hover {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.agni-sdk-tab.active {
+  color: #FF4500;
+  border-bottom-color: #FF4500;
+}
+
+/* --- Code --- */
+.agni-sdk-code {
+  margin: 0;
+  padding: 16px 18px;
+  background: #0d0d14;
+  color: #ddd;
+  font-size: 12.5px;
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+  max-height: 420px;
+  overflow-y: auto;
+  border-radius: 0 0 14px 14px;
+}
+
+.agni-sdk-code code {
+  font-family: inherit;
+  font-size: inherit;
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* ================================================================
+   LIGHT MODE
+   ================================================================ */
+html.light #agni-sdk,
+html:not(.dark) #agni-sdk {
+  background: #f9f9fb;
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #333;
+}
+
+html.light .agni-sdk-header,
+html:not(.dark) .agni-sdk-header {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light .agni-sdk-copy,
+html:not(.dark) .agni-sdk-copy {
+  color: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+html.light .agni-sdk-copy:hover,
+html:not(.dark) .agni-sdk-copy:hover {
+  color: #cc3700;
+  border-color: rgba(255, 69, 0, 0.3);
+  background: rgba(255, 69, 0, 0.05);
+}
+
+html.light .agni-sdk-tabs,
+html:not(.dark) .agni-sdk-tabs {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light .agni-sdk-tab,
+html:not(.dark) .agni-sdk-tab {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+html.light .agni-sdk-tab:hover,
+html:not(.dark) .agni-sdk-tab:hover {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+html.light .agni-sdk-tab.active,
+html:not(.dark) .agni-sdk-tab.active {
+  color: #FF4500;
+  border-bottom-color: #FF4500;
+}
+
+html.light .agni-sdk-code,
+html:not(.dark) .agni-sdk-code {
+  background: #1e1e2e;
+  color: #ddd;
+}
+
+/* ================================================================
+   MOBILE
+   ================================================================ */
+@media (max-width: 768px) {
+  #agni-sdk {
+    border-radius: 10px;
+  }
+
+  .agni-sdk-header {
+    padding: 10px 14px 0;
+  }
+
+  .agni-sdk-tabs {
+    padding: 8px 14px 0;
+  }
+
+  .agni-sdk-tab {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .agni-sdk-code {
+    padding: 12px 14px;
+    font-size: 11.5px;
+    max-height: 320px;
+    border-radius: 0 0 10px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  #agni-sdk {
+    border-radius: 8px;
+  }
+
+  .agni-sdk-tabs {
+    padding: 6px 10px 0;
+  }
+
+  .agni-sdk-tab {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .agni-sdk-code {
+    padding: 10px 12px;
+    font-size: 11px;
+    max-height: 260px;
+    border-radius: 0 0 8px 8px;
+  }
+}

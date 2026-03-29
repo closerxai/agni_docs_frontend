@@ -78,7 +78,15 @@ fs.copyFileSync(path.join(__dirname, "agni-overrides.js"), path.join(OUT_DIR, "a
 fs.copyFileSync(path.join(__dirname, "agni-overrides.css"), path.join(OUT_DIR, "agni-overrides.css"));
 fs.copyFileSync(path.join(__dirname, "agni-playground.js"), path.join(OUT_DIR, "agni-playground.js"));
 fs.copyFileSync(path.join(__dirname, "agni-playground.css"), path.join(OUT_DIR, "agni-playground.css"));
-console.log("  Copied override + playground files");
+fs.copyFileSync(path.join(__dirname, "agni-sdk.js"), path.join(OUT_DIR, "agni-sdk.js"));
+fs.copyFileSync(path.join(__dirname, "agni-sdk.css"), path.join(OUT_DIR, "agni-sdk.css"));
+// Copy openapi.json so the playground can fetch it at runtime
+var openapiSrc = path.join(__dirname, "openapi.json");
+if (fs.existsSync(openapiSrc)) {
+  fs.copyFileSync(openapiSrc, path.join(OUT_DIR, "openapi.json"));
+  console.log("  Copied openapi.json");
+}
+console.log("  Copied override + playground + SDK files");
 
 // 2. Copy SEO files (robots.txt, llms.txt, llms-full.txt)
 ["robots.txt", "llms.txt", "llms-full.txt"].forEach(function (f) {
@@ -211,9 +219,10 @@ htmlFiles.forEach(function (filePath) {
     seoHead += '<script type="application/ld+json">' + JSON.stringify(bcSchema) + '</script>';
   }
 
-  // Override CSS + Playground CSS
+  // Override CSS + Playground CSS + SDK CSS
   seoHead += '<link rel="stylesheet" href="/agni-overrides.css">';
   seoHead += '<link rel="stylesheet" href="/agni-playground.css">';
+  seoHead += '<link rel="stylesheet" href="/agni-sdk.css">';
 
   // Inject into <head>
   var headIdx = html.indexOf("</head>");
@@ -224,6 +233,7 @@ htmlFiles.forEach(function (filePath) {
   // Inject JS before </body>
   var jsTag = '<script src="/agni-overrides.js" defer><\/script>';
   jsTag += '<script src="/agni-playground.js" defer><\/script>';
+  jsTag += '<script src="/agni-sdk.js" defer><\/script>';
   var bodyIdx = html.lastIndexOf("</body>");
   if (bodyIdx !== -1) {
     html = html.slice(0, bodyIdx) + jsTag + html.slice(bodyIdx);
