@@ -106,9 +106,11 @@ if (!fs.existsSync(faviconDst)) {
   }
 }
 
-// 4. Remove Node.js files
+// 4. Remove Node.js files and disabled scripts from output
 ["serve.js", "build-openapi.js", "fix-newlines.js", "fix-tabs.js",
- "LICENSE", ".mintignore", "Start Docs.bat", "Start Docs.command", "test.html"
+ "LICENSE", ".mintignore", "Start Docs.bat", "Start Docs.command", "test.html",
+ "build-knowledge.js", "postbuild.js", "add-language-examples.js",
+ "agni-playground.js", "agni-playground.css", "agni-sdk.js", "agni-sdk.css"
 ].forEach(function (f) {
   var p = path.join(OUT_DIR, f);
   if (fs.existsSync(p)) { fs.unlinkSync(p); console.log("  Removed: " + f); }
