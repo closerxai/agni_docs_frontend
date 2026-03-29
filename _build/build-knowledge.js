@@ -7,7 +7,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const ROOT = __dirname;
+const ROOT = path.join(__dirname, "..");
 const OUT_FILE = path.join(ROOT, "api", "knowledge.json");
 
 // Auto-discover all directories containing .mdx files

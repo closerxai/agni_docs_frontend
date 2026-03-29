@@ -2,7 +2,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const OUT_DIR = path.join(__dirname, "out");
+const PROJECT_ROOT = path.join(__dirname, "..");
+const OUT_DIR = path.join(PROJECT_ROOT, "out");
 const BASE_URL = "https://agni-docs-frontend.vercel.app";
 
 function findHtmlFiles(dir) {
@@ -36,7 +37,7 @@ function getPageType(pagePath) {
 // ===== SCAN MDX FILES FOR OPENAPI FRONTMATTER =====
 function scanMdxEndpoints() {
   var map = {};
-  var apiRefDir = path.join(__dirname, "api-reference");
+  var apiRefDir = path.join(PROJECT_ROOT, "api-reference");
   if (!fs.existsSync(apiRefDir)) return map;
 
   function scanDir(dir, prefix) {
@@ -74,13 +75,13 @@ var endpointMap = scanMdxEndpoints();
 console.log("  Found " + Object.keys(endpointMap).length + " API endpoint pages");
 
 // 1. Copy override files
-fs.copyFileSync(path.join(__dirname, "agni-overrides.js"), path.join(OUT_DIR, "agni-overrides.js"));
-fs.copyFileSync(path.join(__dirname, "agni-overrides.css"), path.join(OUT_DIR, "agni-overrides.css"));
+fs.copyFileSync(path.join(PROJECT_ROOT, "agni-overrides.js"), path.join(OUT_DIR, "agni-overrides.js"));
+fs.copyFileSync(path.join(PROJECT_ROOT, "agni-overrides.css"), path.join(OUT_DIR, "agni-overrides.css"));
 // NOTE: agni-playground.js/css and agni-sdk.js/css are disabled.
 // Mintlify has a built-in API playground ("Try it" button) that works natively.
 // The custom playground was fighting with React hydration and causing crashes.
 // Copy openapi.json so Mintlify's built-in playground can use it
-var openapiSrc = path.join(__dirname, "openapi.json");
+var openapiSrc = path.join(PROJECT_ROOT, "openapi.json");
 if (fs.existsSync(openapiSrc)) {
   fs.copyFileSync(openapiSrc, path.join(OUT_DIR, "openapi.json"));
   console.log("  Copied openapi.json");
@@ -89,7 +90,7 @@ console.log("  Copied override files");
 
 // 2. Copy SEO files (robots.txt, llms.txt, llms-full.txt)
 ["robots.txt", "llms.txt", "llms-full.txt"].forEach(function (f) {
-  var src = path.join(__dirname, f);
+  var src = path.join(PROJECT_ROOT, f);
   if (fs.existsSync(src)) {
     fs.copyFileSync(src, path.join(OUT_DIR, f));
     console.log("  Copied " + f);

@@ -6,16 +6,8 @@
 drafts/
 *.draft.mdx
 
-# Node.js build scripts (NOT browser scripts)
-build-knowledge.js
-postbuild.js
-add-language-examples.js
-
-# Disabled custom playground/SDK (using Mintlify built-in)
-agni-playground.js
-agni-playground.css
-agni-sdk.js
-agni-sdk.css
+# Build scripts directory
+_build/
 
 # API directory (serverless functions, not docs)
 api/

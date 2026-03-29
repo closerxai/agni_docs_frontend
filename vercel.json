@@ -1,5 +1,5 @@
 {
-  "buildCommand": "node build-knowledge.js && npx mintlify@latest export && mkdir -p out && cd out && unzip -o ../export.zip && cd .. && node postbuild.js",
+  "buildCommand": "node _build/build-knowledge.js && npx mintlify@latest export && mkdir -p out && cd out && unzip -o ../export.zip && cd .. && node _build/postbuild.js",
   "outputDirectory": "out",
   "installCommand": "npm install",
   "cleanUrls": true,
