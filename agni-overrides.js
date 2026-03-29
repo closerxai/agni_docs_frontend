@@ -3,13 +3,81 @@
  * Search (Pagefind) + AI Assistant (Claude) + Rebrand
  */
 
-// Suppress Mintlify errors
-window.addEventListener("unhandledrejection", function (e) {
-  if (e.reason && e.reason.message && /Connection closed|WebSocket|socket\.io|transport/i.test(e.reason.message)) e.preventDefault();
-});
-window.addEventListener("error", function (e) {
-  if (e.message && /Connection closed|WebSocket|socket\.io|transport/i.test(e.message)) e.preventDefault();
-});
+// ===== DEBUG: Log ALL errors, network requests, and playground activity =====
+(function () {
+  // Log all unhandled errors
+  window.addEventListener("error", function (e) {
+    if (e.message && /Connection closed|WebSocket|socket\.io|transport/i.test(e.message)) {
+      e.preventDefault();
+      return;
+    }
+    console.error("[Agni Debug] Uncaught error:", e.message, "at", e.filename + ":" + e.lineno);
+  });
+
+  window.addEventListener("unhandledrejection", function (e) {
+    if (e.reason && e.reason.message && /Connection closed|WebSocket|socket\.io|transport/i.test(e.reason.message)) {
+      e.preventDefault();
+      return;
+    }
+    console.error("[Agni Debug] Unhandled promise rejection:", e.reason);
+  });
+
+  // Intercept fetch to log API playground requests
+  var _origFetch = window.fetch;
+  window.fetch = function (input, init) {
+    var url = typeof input === "string" ? input : (input && input.url ? input.url : "");
+    var method = (init && init.method) || "GET";
+
+    // Block socket.io
+    if (url.indexOf("socket.io") !== -1) {
+      return Promise.resolve(new Response("blocked", { status: 499 }));
+    }
+
+    // Log API calls (to ravan.ai)
+    if (url.indexOf("ravan.ai") !== -1 || url.indexOf("api/v1") !== -1) {
+      console.log("[Agni Debug] API Request:", method, url);
+      if (init && init.headers) console.log("[Agni Debug] Headers:", JSON.stringify(init.headers));
+      if (init && init.body) console.log("[Agni Debug] Body:", init.body);
+
+      return _origFetch.apply(this, arguments).then(function (response) {
+        console.log("[Agni Debug] API Response:", response.status, response.statusText, url);
+        // Clone so we can read body without consuming it
+        var clone = response.clone();
+        clone.text().then(function (body) {
+          console.log("[Agni Debug] Response body:", body.substring(0, 500));
+        }).catch(function () {});
+        return response;
+      }).catch(function (err) {
+        console.error("[Agni Debug] API Fetch FAILED:", err.message, url);
+        throw err;
+      });
+    }
+
+    return _origFetch.apply(this, arguments);
+  };
+
+  // Log XHR too
+  var _origXhrOpen = XMLHttpRequest.prototype.open;
+  var _origXhrSend = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.open = function (method, url) {
+    this._agniMethod = method;
+    this._agniUrl = url;
+    if (typeof url === "string" && url.indexOf("socket.io") !== -1) {
+      this._blocked = true;
+      return;
+    }
+    return _origXhrOpen.apply(this, arguments);
+  };
+  XMLHttpRequest.prototype.send = function () {
+    if (this._blocked) return;
+    if (this._agniUrl && (this._agniUrl.indexOf("ravan.ai") !== -1 || this._agniUrl.indexOf("api/v1") !== -1)) {
+      console.log("[Agni Debug] XHR Request:", this._agniMethod, this._agniUrl);
+    }
+    return _origXhrSend.apply(this, arguments);
+  };
+
+  console.log("[Agni Debug] Debug logger active — all API calls will be logged");
+})();
 
 // Block socket.io requests only — preserve all other fetch/XHR behavior
 (function () {
