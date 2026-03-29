@@ -156,11 +156,6 @@ htmlFiles.forEach(function (filePath) {
   // Robots meta
   seoHead += '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />';
 
-  // OpenAPI endpoint meta tag (for playground)
-  if (endpointMap[pagePath]) {
-    seoHead += '<meta name="agni-openapi" content="' + endpointMap[pagePath] + '" />';
-  }
-
   // JSON-LD Schema
   var schema;
   if (pageType === "home") {
