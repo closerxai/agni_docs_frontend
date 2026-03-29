@@ -76,17 +76,16 @@ console.log("  Found " + Object.keys(endpointMap).length + " API endpoint pages"
 // 1. Copy override files
 fs.copyFileSync(path.join(__dirname, "agni-overrides.js"), path.join(OUT_DIR, "agni-overrides.js"));
 fs.copyFileSync(path.join(__dirname, "agni-overrides.css"), path.join(OUT_DIR, "agni-overrides.css"));
-fs.copyFileSync(path.join(__dirname, "agni-playground.js"), path.join(OUT_DIR, "agni-playground.js"));
-fs.copyFileSync(path.join(__dirname, "agni-playground.css"), path.join(OUT_DIR, "agni-playground.css"));
-fs.copyFileSync(path.join(__dirname, "agni-sdk.js"), path.join(OUT_DIR, "agni-sdk.js"));
-fs.copyFileSync(path.join(__dirname, "agni-sdk.css"), path.join(OUT_DIR, "agni-sdk.css"));
-// Copy openapi.json so the playground can fetch it at runtime
+// NOTE: agni-playground.js/css and agni-sdk.js/css are disabled.
+// Mintlify has a built-in API playground ("Try it" button) that works natively.
+// The custom playground was fighting with React hydration and causing crashes.
+// Copy openapi.json so Mintlify's built-in playground can use it
 var openapiSrc = path.join(__dirname, "openapi.json");
 if (fs.existsSync(openapiSrc)) {
   fs.copyFileSync(openapiSrc, path.join(OUT_DIR, "openapi.json"));
   console.log("  Copied openapi.json");
 }
-console.log("  Copied override + playground + SDK files");
+console.log("  Copied override files");
 
 // 2. Copy SEO files (robots.txt, llms.txt, llms-full.txt)
 ["robots.txt", "llms.txt", "llms-full.txt"].forEach(function (f) {
@@ -219,10 +218,8 @@ htmlFiles.forEach(function (filePath) {
     seoHead += '<script type="application/ld+json">' + JSON.stringify(bcSchema) + '</script>';
   }
 
-  // Override CSS + Playground CSS + SDK CSS
+  // Override CSS (playground/SDK disabled — Mintlify's built-in playground is used)
   seoHead += '<link rel="stylesheet" href="/agni-overrides.css">';
-  seoHead += '<link rel="stylesheet" href="/agni-playground.css">';
-  seoHead += '<link rel="stylesheet" href="/agni-sdk.css">';
 
   // Inject into <head>
   var headIdx = html.indexOf("</head>");
@@ -230,10 +227,8 @@ htmlFiles.forEach(function (filePath) {
     html = html.slice(0, headIdx) + seoHead + html.slice(headIdx);
   }
 
-  // Inject JS before </body>
+  // Inject JS before </body> (playground/SDK disabled — using Mintlify built-in)
   var jsTag = '<script src="/agni-overrides.js" defer><\/script>';
-  jsTag += '<script src="/agni-playground.js" defer><\/script>';
-  jsTag += '<script src="/agni-sdk.js" defer><\/script>';
   var bodyIdx = html.lastIndexOf("</body>");
   if (bodyIdx !== -1) {
     html = html.slice(0, bodyIdx) + jsTag + html.slice(bodyIdx);
