@@ -616,9 +616,46 @@
       });
   }
 
+  // ===== PERSISTENT INIT — survives React re-renders =====
+  var playgroundBuilt = false;
+  var initAttempts = 0;
+  var MAX_ATTEMPTS = 20;
+
+  function tryInit() {
+    if (playgroundBuilt && document.getElementById("agni-playground")) return;
+    playgroundBuilt = false;
+    init();
+    if (document.getElementById("agni-playground")) {
+      playgroundBuilt = true;
+    }
+  }
+
+  function startObserver() {
+    // Re-inject playground if React re-renders and removes it
+    var observer = new MutationObserver(function () {
+      if (playgroundBuilt && !document.getElementById("agni-playground")) {
+        playgroundBuilt = false;
+        setTimeout(tryInit, 300);
+      }
+    });
+    var target = document.querySelector("article") || document.querySelector('[role="main"]') || document.querySelector("main") || document.body;
+    observer.observe(target, { childList: true, subtree: true });
+  }
+
+  // Retry init until playground sticks or we give up
+  function retryInit() {
+    initAttempts++;
+    tryInit();
+    if (!playgroundBuilt && initAttempts < MAX_ATTEMPTS) {
+      setTimeout(retryInit, 800);
+    } else if (playgroundBuilt) {
+      startObserver();
+    }
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () { setTimeout(init, 1200); });
+    document.addEventListener("DOMContentLoaded", function () { setTimeout(retryInit, 1200); });
   } else {
-    setTimeout(init, 1200);
+    setTimeout(retryInit, 1200);
   }
 })();
