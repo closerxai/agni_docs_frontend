@@ -11,13 +11,16 @@ window.addEventListener("error", function (e) {
   if (e.message && /Connection closed|WebSocket|socket\.io|transport/i.test(e.message)) e.preventDefault();
 });
 
-// Block socket.io requests entirely by intercepting fetch/XHR
+// Block socket.io requests only — preserve all other fetch/XHR behavior
 (function () {
   var origFetch = window.fetch;
-  window.fetch = function (url) {
-    if (typeof url === "string" && url.indexOf("socket.io") !== -1) {
-      return Promise.reject(new Error("blocked"));
-    }
+  window.fetch = function (input) {
+    try {
+      var urlStr = typeof input === "string" ? input : (input && input.url ? input.url : "");
+      if (urlStr.indexOf("socket.io") !== -1) {
+        return Promise.resolve(new Response("blocked", { status: 499 }));
+      }
+    } catch (e) { /* pass through */ }
     return origFetch.apply(this, arguments);
   };
   var origOpen = XMLHttpRequest.prototype.open;
@@ -505,6 +508,8 @@ function inlineMd(s) {
     // ===== INTERCEPT MINTLIFY SEARCH =====
     function isSearch(el) {
       if (!el) return false;
+      // Never intercept elements inside the API playground or main content
+      if (el.closest && (el.closest('[class*="playground"]') || el.closest('[class*="Playground"]') || el.closest('[class*="openapi"]') || el.closest('[class*="OpenApi"]') || el.closest('[class*="RequestExample"]') || el.closest('[class*="request-example"]') || el.closest("article") || el.closest('[role="main"]'))) return false;
       if (el.id === "search-bar-entry" || el.id === "search-bar-entry-mobile") return true;
       if (el.closest && (el.closest("#search-bar-entry") || el.closest("#search-bar-entry-mobile") || el.closest("[data-search]") || el.closest('[class*="search-bar"]'))) return true;
       if (el.tagName === "INPUT" && el.placeholder && el.placeholder.toLowerCase().indexOf("search") !== -1) return true;
@@ -590,35 +595,42 @@ function inlineMd(s) {
       }
     } catch (e) { /* */ }
 
-    // ===== REBRAND (permanent with debounce) =====
+    // ===== REBRAND (safe — avoids React-managed nodes) =====
     var rebrandTimer = null;
     function rebrand() {
       try {
-        var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-        while (w.nextNode()) {
-          var n = w.currentNode;
-          if (n.nodeValue && /mintlify/i.test(n.nodeValue)) {
-            n.nodeValue = n.nodeValue
-              .replace(/Powered\s+by\s+mintlify/gi, "Agni by Ravan.ai")
-              .replace(/Powered\s+by\s+Mintlify/gi, "Agni by Ravan.ai")
-              .replace(/Built\s+with\s+Mintlify/gi, "Agni by Ravan.ai")
-              .replace(/mintlify/gi, "Agni");
-          }
-        }
+        // Only target the footer area and specific known Mintlify branding spots
+        // Avoid walking the entire DOM which breaks React state
         document.querySelectorAll('a[href*="mintlify.com"]').forEach(function (a) {
           a.href = "https://ravan.ai";
           a.textContent = "Agni by Ravan.ai";
+        });
+        // Target only footer and nav areas for text replacement — never touch article/main content
+        var safeAreas = document.querySelectorAll("footer, nav, [class*='footer'], [class*='Footer']");
+        safeAreas.forEach(function (area) {
+          var w = document.createTreeWalker(area, NodeFilter.SHOW_TEXT);
+          while (w.nextNode()) {
+            var n = w.currentNode;
+            if (n.nodeValue && /mintlify/i.test(n.nodeValue)) {
+              var replaced = n.nodeValue
+                .replace(/Powered\s+by\s+mintlify/gi, "Agni by Ravan.ai")
+                .replace(/Powered\s+by\s+Mintlify/gi, "Agni by Ravan.ai")
+                .replace(/Built\s+with\s+Mintlify/gi, "Agni by Ravan.ai")
+                .replace(/mintlify/gi, "Agni");
+              if (replaced !== n.nodeValue) n.nodeValue = replaced;
+            }
+          }
         });
       } catch (e) { /* */ }
     }
     function debouncedRebrand() {
       if (rebrandTimer) clearTimeout(rebrandTimer);
-      rebrandTimer = setTimeout(rebrand, 200);
+      rebrandTimer = setTimeout(rebrand, 500);
     }
     rebrand();
-    // Permanent observer with debounce — never disconnects
+    // Only observe direct children of body — not subtree — to avoid React conflicts
     var rObs = new MutationObserver(debouncedRebrand);
-    rObs.observe(document.body, { childList: true, subtree: true });
+    rObs.observe(document.body, { childList: true, subtree: false });
 
     console.log("[Agni] v4 loaded");
   }
