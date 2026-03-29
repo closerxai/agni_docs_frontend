@@ -406,18 +406,20 @@
     updateCode();
   }
 
-  // Wait for playground to be built first
+  // Wait for playground to be built first (max 10 seconds)
+  var waitAttempts = 0;
   function waitForPlayground() {
     if (document.getElementById("agni-playground")) {
       init();
-    } else {
-      setTimeout(waitForPlayground, 300);
+    } else if (waitAttempts < 30) {
+      waitAttempts++;
+      setTimeout(waitForPlayground, 350);
     }
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () { setTimeout(waitForPlayground, 1000); });
+    document.addEventListener("DOMContentLoaded", function () { setTimeout(waitForPlayground, 1500); });
   } else {
-    setTimeout(waitForPlayground, 1000);
+    setTimeout(waitForPlayground, 1500);
   }
 })();

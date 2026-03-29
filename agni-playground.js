@@ -13,8 +13,125 @@
   var pagePath = window.location.pathname.replace(/\/$/, "");
   if (pagePath.indexOf("/api-reference/") === -1) return;
   if (pagePath.indexOf("introduction") !== -1) return;
+  if (pagePath.indexOf("after-call") !== -1) return;
 
   var spec = null;
+
+  // ===== ENDPOINT MATCHING =====
+  // Map page URL slugs to openapi operationIds/paths
+  // e.g. /api-reference/agents/create -> POST /api/v1/agents/
+  // e.g. /api-reference/agents/get -> GET /api/v1/agents/{id}/
+
+  // Build keyword hints from the last URL segment
+  function getSlugHints(slug) {
+    var hints = { method: null, keywords: [] };
+    if (slug === "create") { hints.method = "POST"; }
+    else if (slug === "list") { hints.method = "GET"; hints.keywords.push("list"); }
+    else if (slug === "get") { hints.method = "GET"; hints.keywords.push("get"); }
+    else if (slug === "update") { hints.method = "PATCH"; }
+    else if (slug === "delete") { hints.method = "DELETE"; }
+    else if (slug === "start") { hints.method = "POST"; hints.keywords.push("start"); }
+    else if (slug === "pause") { hints.method = "POST"; hints.keywords.push("pause"); }
+    else if (slug === "resume") { hints.method = "POST"; hints.keywords.push("resume"); }
+    else if (slug === "health") { hints.method = "GET"; hints.keywords.push("health"); }
+    else if (slug === "ready") { hints.method = "GET"; hints.keywords.push("ready"); }
+    else { hints.keywords.push(slug); }
+    return hints;
+  }
+
+  function findEndpoint(spec) {
+    // Parse page path: /api-reference/agents/create -> group="agents", action="create"
+    var parts = pagePath.replace("/api-reference/", "").split("/");
+    if (parts.length < 2) return null;
+    var group = parts[0]; // agents, tools, campaigns, etc
+    var action = parts.slice(1).join("-"); // create, list, get, update-status, etc
+    var hints = getSlugHints(parts[parts.length - 1]);
+
+    // Group -> API path segment mapping
+    var groupMap = {
+      "agents": "agents",
+      "tools": "tools",
+      "campaigns": "campaigns",
+      "contacts": "contacts",
+      "telephony": "phone-numbers",
+      "calcom": "calcom",
+      "ghl": "ghl",
+      "rag": "rag",
+      "health": "",
+      "webhooks": "webhooks",
+      "appointments": "",
+      "widget-settings": "widget-settings"
+    };
+
+    var apiSegment = groupMap[group];
+    if (apiSegment === undefined) return null;
+
+    var paths = spec.paths;
+    var bestMatch = null;
+    var bestScore = -1;
+
+    Object.keys(paths).forEach(function (pathKey) {
+      var methods = paths[pathKey];
+      Object.keys(methods).forEach(function (httpMethod) {
+        if (["get", "post", "put", "patch", "delete"].indexOf(httpMethod) === -1) return;
+        var op = methods[httpMethod];
+        var opId = (op.operationId || "").toLowerCase();
+        var summary = (op.summary || "").toLowerCase();
+        var score = 0;
+
+        // Must contain the group's API segment
+        if (apiSegment && pathKey.indexOf(apiSegment) === -1) return;
+
+        // Health endpoints special case
+        if (group === "health") {
+          if (action === "health" && pathKey === "/health") score += 100;
+          else if (action === "ready" && pathKey === "/ready") score += 100;
+          else return;
+        }
+
+        // Appointments special case
+        if (group === "appointments") {
+          if (pathKey.indexOf("appointments/manage") !== -1) score += 50;
+          if (action.indexOf("calcom") !== -1 && pathKey.indexOf("calcom") !== -1) score += 50;
+          if (action.indexOf("ghl") !== -1 && pathKey.indexOf("ghl") !== -1) score += 50;
+        }
+
+        // Method match
+        if (hints.method && httpMethod.toUpperCase() === hints.method) score += 30;
+
+        // Action name matches operationId or summary
+        var actionWords = action.split("-");
+        actionWords.forEach(function (w) {
+          if (opId.indexOf(w) !== -1) score += 15;
+          if (summary.indexOf(w) !== -1) score += 10;
+        });
+
+        // Keyword hints
+        hints.keywords.forEach(function (kw) {
+          if (opId.indexOf(kw) !== -1) score += 15;
+          if (summary.indexOf(kw) !== -1) score += 10;
+        });
+
+        // Penalize paths with extra segments if action is simple
+        var pathSegments = pathKey.split("/").filter(Boolean).length;
+        if (action === "list" || action === "create") {
+          // Simple actions should match simpler paths
+          if (pathSegments <= 4) score += 5;
+        }
+
+        // Exact slug in operationId
+        var actionJoined = action.replace(/-/g, "");
+        if (opId.indexOf(actionJoined) !== -1) score += 25;
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestMatch = { method: httpMethod.toUpperCase(), path: pathKey, operation: op };
+        }
+      });
+    });
+
+    return bestMatch && bestScore > 20 ? bestMatch : null;
+  }
 
   // ===== SCHEMA UTILITIES =====
 
@@ -47,7 +164,6 @@
 
     Object.keys(props).forEach(function (key) {
       var prop = resolveSchema(props[key]);
-      // Include required fields always, optional only at top level
       if (depth > 0 && required.indexOf(key) === -1) return;
 
       if (prop.example !== undefined) {
@@ -270,7 +386,6 @@
         var template = generateTemplate(jsonSchema, 0);
         bodyTextarea.value = JSON.stringify(template, null, 2);
 
-        // Auto-resize
         function autoResize() {
           bodyTextarea.style.height = "auto";
           bodyTextarea.style.height = Math.min(Math.max(bodyTextarea.scrollHeight, 120), 400) + "px";
@@ -281,7 +396,6 @@
         bodySection.appendChild(bodyTextarea);
         container.appendChild(bodySection);
 
-        // Trigger initial resize
         setTimeout(autoResize, 50);
       }
     }
@@ -328,7 +442,6 @@
     // --- Insert into page ---
     if (h1 && h1.parentNode) {
       var ref = h1.nextElementSibling;
-      // Skip past the reading-time badge
       while (ref && ref.classList && ref.classList.contains("agni-reading-time")) {
         ref = ref.nextElementSibling;
       }
@@ -339,7 +452,6 @@
 
     // ===== SEND HANDLER =====
     sendBtn.addEventListener("click", function () {
-      // Validate API key
       var apiKey = authInput.value.trim();
       if (!apiKey) {
         authInput.style.borderColor = "#ef4444";
@@ -348,7 +460,6 @@
         return;
       }
 
-      // Build URL with path params
       var url = API_BASE + endpointPath;
       var missingParam = false;
 
@@ -364,7 +475,6 @@
 
       if (missingParam) return;
 
-      // Add query params
       var qParts = [];
       Object.keys(queryParamInputs).forEach(function (key) {
         var val = queryParamInputs[key].value.trim();
@@ -372,15 +482,11 @@
       });
       if (qParts.length > 0) url += "?" + qParts.join("&");
 
-      // Fetch options
       var opts = {
         method: endpointMethod,
-        headers: {
-          "X-Api-Key": apiKey
-        }
+        headers: { "X-Api-Key": apiKey }
       };
 
-      // Add body for write methods
       if (bodyTextarea && ["POST", "PUT", "PATCH"].indexOf(endpointMethod) !== -1) {
         var bodyVal = bodyTextarea.value.trim();
         if (bodyVal) {
@@ -401,7 +507,6 @@
         }
       }
 
-      // Send request
       sendBtn.disabled = true;
       sendBtn.innerHTML = '<span class="agni-pg-spinner"></span>Sending…';
       responseSection.style.display = "none";
@@ -418,15 +523,11 @@
         .then(function (result) {
           responseSection.style.display = "block";
 
-          // Status badge
           var ok = result.status >= 200 && result.status < 300;
           resStatus.textContent = result.status + " " + result.statusText;
           resStatus.className = "agni-pg-response-status " + (ok ? "success" : "error");
-
-          // Time
           resTime.textContent = result.elapsed + "ms";
 
-          // Body
           try {
             var json = JSON.parse(result.text);
             resBody.textContent = JSON.stringify(json, null, 2);
@@ -452,43 +553,72 @@
 
   // ===== INIT =====
   function init() {
+    // Try meta tag first (injected by postbuild)
     var meta = document.querySelector('meta[name="agni-openapi"]');
-    if (!meta) return;
+    var metaMethod = null;
+    var metaPath = null;
 
-    var content = meta.getAttribute("content");
-    var match = content.match(/^(\w+)\s+(.+)$/);
-    if (!match) return;
-
-    var method = match[1].toUpperCase();
-    var endpointPath = match[2];
+    if (meta) {
+      var mc = meta.getAttribute("content");
+      var mm = mc && mc.match(/^(\w+)\s+(.+)$/);
+      if (mm) {
+        metaMethod = mm[1].toUpperCase();
+        metaPath = mm[2];
+      }
+    }
 
     fetch(SPEC_URL)
-      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
       .then(function (s) {
         spec = s;
 
-        // Find path in spec (try with and without trailing slash)
-        var pathDef = spec.paths[endpointPath];
-        if (!pathDef) {
-          var alt = endpointPath.endsWith("/") ? endpointPath.slice(0, -1) : endpointPath + "/";
-          pathDef = spec.paths[alt];
-          if (pathDef) endpointPath = alt;
+        var method, endpointPath, operation;
+
+        // If meta tag provided the endpoint, use it
+        if (metaMethod && metaPath) {
+          var pathDef = spec.paths[metaPath];
+          if (!pathDef) {
+            var alt = metaPath.endsWith("/") ? metaPath.slice(0, -1) : metaPath + "/";
+            pathDef = spec.paths[alt];
+            if (pathDef) metaPath = alt;
+          }
+          if (pathDef) {
+            operation = pathDef[metaMethod.toLowerCase()];
+            if (operation) {
+              method = metaMethod;
+              endpointPath = metaPath;
+            }
+          }
         }
-        if (!pathDef) return;
 
-        var operation = pathDef[method.toLowerCase()];
-        if (!operation) return;
+        // Fallback: smart match from page URL
+        if (!operation) {
+          var match = findEndpoint(spec);
+          if (match) {
+            method = match.method;
+            endpointPath = match.path;
+            operation = match.operation;
+          }
+        }
 
-        buildPlayground(method, endpointPath, operation);
+        if (method && endpointPath && operation) {
+          buildPlayground(method, endpointPath, operation);
+          console.log("[Agni Playground] Loaded:", method, endpointPath);
+        } else {
+          console.log("[Agni Playground] No endpoint match for:", pagePath);
+        }
       })
       .catch(function (err) {
-        console.warn("[Agni Playground]", err);
+        console.warn("[Agni Playground] Failed to load spec:", err);
       });
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () { setTimeout(init, 800); });
+    document.addEventListener("DOMContentLoaded", function () { setTimeout(init, 1200); });
   } else {
-    setTimeout(init, 800);
+    setTimeout(init, 1200);
   }
 })();
