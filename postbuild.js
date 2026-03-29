@@ -33,12 +33,52 @@ function getPageType(pagePath) {
   return "page";
 }
 
+// ===== SCAN MDX FILES FOR OPENAPI FRONTMATTER =====
+function scanMdxEndpoints() {
+  var map = {};
+  var apiRefDir = path.join(__dirname, "api-reference");
+  if (!fs.existsSync(apiRefDir)) return map;
+
+  function scanDir(dir, prefix) {
+    var entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (var i = 0; i < entries.length; i++) {
+      var entry = entries[i];
+      var fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        scanDir(fullPath, prefix + "/" + entry.name);
+      } else if (entry.name.endsWith(".mdx")) {
+        var pagePath = "/api-reference" + prefix + "/" + entry.name.replace(/\.mdx$/, "");
+        try {
+          var content = fs.readFileSync(fullPath, "utf8");
+          // Extract openapi from YAML frontmatter
+          var fmMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
+          if (fmMatch) {
+            var openapiMatch = fmMatch[1].match(/^openapi:\s*["']?(.+?)["']?\s*$/m);
+            if (openapiMatch) {
+              map[pagePath] = openapiMatch[1].trim();
+            }
+          }
+        } catch (e) { /* skip */ }
+      }
+    }
+  }
+
+  scanDir(apiRefDir, "");
+  return map;
+}
+
 console.log("Agni Docs Post-Build Processing...");
+
+// 0. Scan MDX endpoints
+var endpointMap = scanMdxEndpoints();
+console.log("  Found " + Object.keys(endpointMap).length + " API endpoint pages");
 
 // 1. Copy override files
 fs.copyFileSync(path.join(__dirname, "agni-overrides.js"), path.join(OUT_DIR, "agni-overrides.js"));
 fs.copyFileSync(path.join(__dirname, "agni-overrides.css"), path.join(OUT_DIR, "agni-overrides.css"));
-console.log("  Copied override files");
+fs.copyFileSync(path.join(__dirname, "agni-playground.js"), path.join(OUT_DIR, "agni-playground.js"));
+fs.copyFileSync(path.join(__dirname, "agni-playground.css"), path.join(OUT_DIR, "agni-playground.css"));
+console.log("  Copied override + playground files");
 
 // 2. Copy SEO files (robots.txt, llms.txt, llms-full.txt)
 ["robots.txt", "llms.txt", "llms-full.txt"].forEach(function (f) {
@@ -73,7 +113,7 @@ if (fs.existsSync(snippetsDir)) {
   console.log("  Removed: snippets/");
 }
 
-// 5. Process HTML files — inject SEO tags + override files
+// 5. Process HTML files — inject SEO tags + override files + playground
 var htmlFiles = findHtmlFiles(OUT_DIR);
 console.log("  Processing " + htmlFiles.length + " HTML files for SEO...");
 
@@ -105,6 +145,11 @@ htmlFiles.forEach(function (filePath) {
 
   // Robots meta
   seoHead += '<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />';
+
+  // OpenAPI endpoint meta tag (for playground)
+  if (endpointMap[pagePath]) {
+    seoHead += '<meta name="agni-openapi" content="' + endpointMap[pagePath] + '" />';
+  }
 
   // JSON-LD Schema
   var schema;
@@ -166,8 +211,9 @@ htmlFiles.forEach(function (filePath) {
     seoHead += '<script type="application/ld+json">' + JSON.stringify(bcSchema) + '</script>';
   }
 
-  // Override CSS
+  // Override CSS + Playground CSS
   seoHead += '<link rel="stylesheet" href="/agni-overrides.css">';
+  seoHead += '<link rel="stylesheet" href="/agni-playground.css">';
 
   // Inject into <head>
   var headIdx = html.indexOf("</head>");
@@ -177,6 +223,7 @@ htmlFiles.forEach(function (filePath) {
 
   // Inject JS before </body>
   var jsTag = '<script src="/agni-overrides.js" defer><\/script>';
+  jsTag += '<script src="/agni-playground.js" defer><\/script>';
   var bodyIdx = html.lastIndexOf("</body>");
   if (bodyIdx !== -1) {
     html = html.slice(0, bodyIdx) + jsTag + html.slice(bodyIdx);

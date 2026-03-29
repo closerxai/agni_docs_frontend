@@ -1,0 +1,454 @@
+/* ================================================================
+   Agni API Playground — Custom Try It panel
+   ================================================================ */
+
+#agni-playground {
+  margin: 20px 0 32px;
+  padding: 20px 22px;
+  background: #1a1625;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  color: #ddd;
+  position: relative;
+}
+
+/* --- Header --- */
+.agni-pg-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-wrap: wrap;
+}
+
+.agni-pg-method {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.agni-pg-path {
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  word-break: break-all;
+  background: none;
+  padding: 0;
+}
+
+.agni-pg-title-right {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #FF4500;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* --- Sections --- */
+.agni-pg-section {
+  margin-bottom: 16px;
+}
+
+.agni-pg-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 6px;
+}
+
+.agni-pg-required {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+/* --- Auth row --- */
+.agni-pg-auth-row {
+  display: flex;
+  gap: 6px;
+}
+
+.agni-pg-auth-row .agni-pg-input {
+  flex: 1;
+}
+
+.agni-pg-toggle-vis {
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.agni-pg-toggle-vis:hover {
+  color: #FF7F50;
+  border-color: rgba(255, 69, 0, 0.3);
+}
+
+/* --- Inputs --- */
+.agni-pg-input {
+  width: 100%;
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #ddd;
+  font-size: 13px;
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.agni-pg-input:focus {
+  border-color: rgba(255, 69, 0, 0.5);
+}
+
+.agni-pg-input::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* --- Param rows --- */
+.agni-pg-param-row {
+  margin-bottom: 10px;
+}
+
+.agni-pg-param-row:last-child {
+  margin-bottom: 0;
+}
+
+.agni-pg-param-label {
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+/* --- Textarea --- */
+.agni-pg-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: #0d0d14;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #ddd;
+  font-size: 12.5px;
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  line-height: 1.55;
+  outline: none;
+  resize: vertical;
+  min-height: 120px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  tab-size: 2;
+}
+
+.agni-pg-textarea:focus {
+  border-color: rgba(255, 69, 0, 0.5);
+}
+
+/* --- Send button --- */
+.agni-pg-send {
+  width: 100%;
+  padding: 11px 20px;
+  margin-top: 4px;
+  background: linear-gradient(135deg, #FF4500, #e63e00);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.01em;
+}
+
+.agni-pg-send:hover {
+  background: linear-gradient(135deg, #e63e00, #cc3700);
+  box-shadow: 0 4px 16px rgba(255, 69, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+.agni-pg-send:active {
+  transform: translateY(0);
+}
+
+.agni-pg-send:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --- Spinner --- */
+.agni-pg-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: agni-pg-spin 0.6s linear infinite;
+  margin-right: 8px;
+  vertical-align: -2px;
+}
+
+@keyframes agni-pg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- Response panel --- */
+.agni-pg-response {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  animation: agni-pg-fadeIn 0.25s ease;
+}
+
+@keyframes agni-pg-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.agni-pg-response-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.agni-pg-response-status-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.agni-pg-response-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.agni-pg-response-status {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.agni-pg-response-status.success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.agni-pg-response-status.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.agni-pg-response-time {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: "SF Mono", "Fira Code", Consolas, monospace;
+}
+
+.agni-pg-response-body {
+  background: #0d0d14;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: #ddd;
+  font-size: 12.5px;
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  line-height: 1.55;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 450px;
+  overflow-y: auto;
+  margin: 0;
+}
+
+/* ================================================================
+   LIGHT MODE
+   ================================================================ */
+html.light #agni-playground,
+html:not(.dark) #agni-playground {
+  background: #f9f9fb;
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #333;
+}
+
+html.light .agni-pg-header,
+html:not(.dark) .agni-pg-header {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light .agni-pg-path,
+html:not(.dark) .agni-pg-path {
+  color: #333;
+}
+
+html.light .agni-pg-label,
+html:not(.dark) .agni-pg-label {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+html.light .agni-pg-input,
+html:not(.dark) .agni-pg-input {
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #333;
+}
+
+html.light .agni-pg-input::placeholder,
+html:not(.dark) .agni-pg-input::placeholder {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+html.light .agni-pg-param-label,
+html:not(.dark) .agni-pg-param-label {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+html.light .agni-pg-toggle-vis,
+html:not(.dark) .agni-pg-toggle-vis {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.45);
+}
+
+html.light .agni-pg-toggle-vis:hover,
+html:not(.dark) .agni-pg-toggle-vis:hover {
+  color: #cc3700;
+  border-color: rgba(255, 69, 0, 0.3);
+}
+
+html.light .agni-pg-textarea,
+html:not(.dark) .agni-pg-textarea {
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+html.light .agni-pg-response,
+html:not(.dark) .agni-pg-response {
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light .agni-pg-response-label,
+html:not(.dark) .agni-pg-response-label {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+html.light .agni-pg-response-time,
+html:not(.dark) .agni-pg-response-time {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+html.light .agni-pg-response-body,
+html:not(.dark) .agni-pg-response-body {
+  background: #1e1e2e;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #ddd;
+}
+
+/* ================================================================
+   MOBILE
+   ================================================================ */
+@media (max-width: 768px) {
+  #agni-playground {
+    margin: 14px 0 24px;
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  .agni-pg-header {
+    gap: 8px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+  }
+
+  .agni-pg-path {
+    font-size: 12px;
+  }
+
+  .agni-pg-title-right {
+    display: none;
+  }
+
+  .agni-pg-textarea {
+    font-size: 12px;
+    min-height: 100px;
+  }
+
+  .agni-pg-response-body {
+    font-size: 11.5px;
+    max-height: 300px;
+    padding: 10px 12px;
+  }
+
+  .agni-pg-send {
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  #agni-playground {
+    margin: 10px 0 20px;
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .agni-pg-method {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+
+  .agni-pg-path {
+    font-size: 11px;
+  }
+
+  .agni-pg-auth-row {
+    flex-direction: column;
+  }
+
+  .agni-pg-toggle-vis {
+    align-self: flex-start;
+    padding: 6px 12px;
+  }
+}

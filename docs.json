@@ -19,9 +19,6 @@
     "auth": {
       "method": "key",
       "name": "X-Api-Key"
-    },
-    "playground": {
-      "mode": "simple"
     }
   },
   "navigation": {

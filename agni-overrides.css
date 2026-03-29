@@ -532,33 +532,6 @@ html.light .agni-footer, html:not(.dark) .agni-footer { color: rgba(0,0,0,0.18);
 html.light .agni-footer kbd, html:not(.dark) .agni-footer kbd { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.06); }
 
 /* ================================================================
-   API PLAYGROUND — ensure Mintlify's Try It button & panel are not hidden
-   ================================================================ */
-[class*="playground"],
-[class*="Playground"],
-[class*="api-playground"],
-[class*="ApiPlayground"],
-[class*="openapi"],
-[class*="OpenApi"],
-[class*="request-example"],
-[class*="RequestExample"],
-[class*="response-example"],
-[class*="ResponseExample"] {
-  visibility: visible !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
-}
-
-/* Ensure Radix portals used by the API playground (dropdowns, selects) are not hidden */
-[data-radix-portal]:not(:has([class*="cmdk"])):not(:has([class*="CommandMenu"])):not(:has([class*="search-dialog"])):not(:has([class*="SearchDialog"])) {
-  display: revert !important;
-  visibility: revert !important;
-  pointer-events: revert !important;
-  opacity: revert !important;
-  z-index: revert !important;
-}
-
-/* ================================================================
    BACK TO TOP BUTTON
    ================================================================ */
 #agni-back-to-top {
