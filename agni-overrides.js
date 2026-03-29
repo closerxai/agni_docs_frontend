@@ -529,18 +529,10 @@ function inlineMd(s) {
       if (e.key === "Escape" && ov.classList.contains("active")) { e.preventDefault(); closeSearch(); }
     });
 
-    // ===== KILL MINTLIFY SEARCH DIALOGS (preserve mobile sidebar & API playground) =====
-    function killDialogs() {
-      document.querySelectorAll("[data-radix-portal]").forEach(function (el) {
-        if (el.closest("#agni-search-overlay")) return;
-        // Only hide if it's specifically a command menu / search dialog
-        var hasSearch = el.querySelector('[class*="cmdk"], [class*="CommandMenu"], [class*="search-dialog"], [class*="SearchDialog"]');
-        var hasPlayground = el.querySelector('[class*="playground"], [class*="Playground"], [class*="api-"], [class*="select"], [class*="Select"], [class*="dropdown"], [class*="Dropdown"], [class*="popover"], [class*="Popover"]');
-        if (hasSearch && !hasPlayground) el.style.display = "none";
-      });
-    }
-    var dObs = new MutationObserver(killDialogs);
-    dObs.observe(document.body, { childList: true });
+    // ===== KILL MINTLIFY SEARCH DIALOGS (CSS handles this now) =====
+    // Removed JS-based dialog killing — the CSS selectors for cmdk-dialog,
+    // CommandMenu, search-dialog, SearchDialog are sufficient.
+    // The old JS approach was breaking the mobile sidebar and API playground.
 
     // ===== BACK TO TOP BUTTON =====
     var btt = document.createElement("button");

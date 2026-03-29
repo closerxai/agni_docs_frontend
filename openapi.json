@@ -2522,6 +2522,354 @@
         }
       }
     },
+    "/api/v1/phone-numbers/import": {
+      "get": {
+        "tags": ["PhoneService"],
+        "summary": "List Imported Numbers",
+        "operationId": "ListImportedPhoneNumbers",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListImportedPhoneNumbersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GrpcErrorResponse" },
+                "example": { "code": 16, "message": "API key is missing or invalid", "details": [] }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "success": false, "message": "Something went wrong on our end", "error": { "code": "INTERNAL_ERROR", "message": "An unexpected error occurred. Please try again later." } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/phone-numbers/import/{id}": {
+      "get": {
+        "tags": ["PhoneService"],
+        "summary": "Get Imported Number",
+        "operationId": "GetImportedPhoneNumber",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Imported phone number record ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ImportPhoneNumberResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GrpcErrorResponse" },
+                "example": { "code": 16, "message": "API key is missing or invalid", "details": [] }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "success": false, "message": "Imported number not found", "error": { "code": "NOT_FOUND", "message": "No imported number exists with the given ID" } }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "success": false, "message": "Something went wrong on our end", "error": { "code": "INTERNAL_ERROR", "message": "An unexpected error occurred. Please try again later." } }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["PhoneService"],
+        "summary": "Update Imported Number",
+        "operationId": "UpdateImportedPhoneNumber",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Imported phone number record ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateImportedPhoneNumberRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ImportPhoneNumberResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GrpcErrorResponse" },
+                "example": { "code": 16, "message": "API key is missing or invalid", "details": [] }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "success": false, "message": "Imported number not found", "error": { "code": "NOT_FOUND", "message": "No imported number exists with the given ID" } }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "success": false, "message": "Something went wrong on our end", "error": { "code": "INTERNAL_ERROR", "message": "An unexpected error occurred. Please try again later." } }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["PhoneService"],
+        "summary": "Delete Imported Number",
+        "operationId": "DeleteImportedPhoneNumber",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Imported phone number record ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteImportedPhoneNumberResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GrpcErrorResponse" },
+                "example": { "code": 16, "message": "API key is missing or invalid", "details": [] }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "success": false, "message": "Imported number not found", "error": { "code": "NOT_FOUND", "message": "No imported number exists with the given ID" } }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "success": false, "message": "Something went wrong on our end", "error": { "code": "INTERNAL_ERROR", "message": "An unexpected error occurred. Please try again later." } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/phone-numbers/create/telephony": {
+      "post": {
+        "tags": ["PhoneService"],
+        "summary": "Create Telephony Type",
+        "operationId": "CreateTelephonyType",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateTelephonyTypeRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreateTelephonyTypeResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GrpcErrorResponse" },
+                "example": { "code": 3, "message": "Invalid request parameters", "details": [] }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GrpcErrorResponse" },
+                "example": { "code": 16, "message": "API key is missing or invalid", "details": [] }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "success": false, "message": "Something went wrong on our end", "error": { "code": "INTERNAL_ERROR", "message": "An unexpected error occurred. Please try again later." } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/phone-numbers/add-twilio": {
+      "post": {
+        "tags": ["PhoneService"],
+        "summary": "Add Twilio Number",
+        "operationId": "AddTwilioNumber",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AddTwilioNumberRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AddTwilioNumberResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GrpcErrorResponse" },
+                "example": { "code": 3, "message": "Invalid request parameters", "details": [] }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GrpcErrorResponse" },
+                "example": { "code": 16, "message": "API key is missing or invalid", "details": [] }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "success": false, "message": "Something went wrong on our end", "error": { "code": "INTERNAL_ERROR", "message": "An unexpected error occurred. Please try again later." } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/phone-numbers/selected-telephony": {
+      "get": {
+        "tags": ["PhoneService"],
+        "summary": "Get Selected Telephony",
+        "operationId": "GetSelectedTelephony",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GetSelectedTelephonyResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GrpcErrorResponse" },
+                "example": { "code": 16, "message": "API key is missing or invalid", "details": [] }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "success": false, "message": "No telephony provider configured", "error": { "code": "NOT_FOUND", "message": "No telephony type has been selected for this organization" } }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "success": false, "message": "Something went wrong on our end", "error": { "code": "INTERNAL_ERROR", "message": "An unexpected error occurred. Please try again later." } }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/phone-numbers/twilio-owned-numbers/": {
       "get": {
         "tags": [
@@ -8516,6 +8864,116 @@
               "created_at": {
                 "type": "string"
               }
+            }
+          }
+        }
+      },
+      "ListImportedPhoneNumbersResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "phone": { "type": "string" },
+                "type": { "type": "string" },
+                "name": { "type": "string" },
+                "termination_uri": { "type": "string" },
+                "sip_username": { "type": "string" },
+                "sip_password": { "type": "string" },
+                "status": { "type": "string" },
+                "created_at": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "UpdateImportedPhoneNumberRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Updated friendly name" },
+          "termination_uri": { "type": "string", "description": "Updated SIP termination URI" },
+          "sip_username": { "type": "string", "description": "Updated SIP username" },
+          "sip_password": { "type": "string", "description": "Updated SIP password" }
+        }
+      },
+      "DeleteImportedPhoneNumberResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "message": { "type": "string" }
+        }
+      },
+      "CreateTelephonyTypeRequest": {
+        "type": "object",
+        "required": ["type", "owner_type", "friendly_name"],
+        "properties": {
+          "type": { "type": "string", "description": "Provider type (twilio, telnyx, vonage, custom)" },
+          "owner_type": { "type": "string", "description": "Ownership scope (e.g. organization)" },
+          "friendly_name": { "type": "string", "description": "Display name for this configuration" },
+          "client_id": { "type": "string", "description": "Provider API key or Account SID" },
+          "client_secret": { "type": "string", "description": "Provider Auth Token or API secret" }
+        }
+      },
+      "CreateTelephonyTypeResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "type": { "type": "string" },
+              "owner_type": { "type": "string" },
+              "friendly_name": { "type": "string" },
+              "status": { "type": "string" },
+              "created_at": { "type": "string" },
+              "termination_uri": { "type": "string" },
+              "sip_username": { "type": "string" },
+              "sip_password": { "type": "string" }
+            }
+          }
+        }
+      },
+      "AddTwilioNumberRequest": {
+        "type": "object",
+        "required": ["phone_number", "number_sid"],
+        "properties": {
+          "phone_number": { "type": "string", "description": "Phone number in E.164 format" },
+          "friendly_name": { "type": "string", "description": "Display name" },
+          "price": { "type": "number", "description": "Monthly price" },
+          "per_minute_price_inbound": { "type": "number", "description": "Inbound per-minute rate" },
+          "per_minute_price_outbound": { "type": "number", "description": "Outbound per-minute rate" },
+          "region": { "type": "string", "description": "Region or area code" },
+          "iso_country": { "type": "string", "description": "ISO country code" },
+          "number_sid": { "type": "string", "description": "Twilio number SID (starts with PN)" }
+        }
+      },
+      "AddTwilioNumberResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/PurchasedNumber" }
+        }
+      },
+      "GetSelectedTelephonyResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "provider": { "type": "string", "description": "Active provider type" },
+              "owner_type": { "type": "string", "description": "Ownership scope" },
+              "last_four_sid": { "type": "string", "description": "Last 4 chars of API key" },
+              "last_four_auth": { "type": "string", "description": "Last 4 chars of Auth Token" }
             }
           }
         }
