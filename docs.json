@@ -11,6 +11,16 @@
   "background": {
     "style": "grid"
   },
+  "openapi": [
+    "openapi.json"
+  ],
+  "api": {
+    "baseUrl": "https://api.ravan.ai",
+    "auth": {
+      "method": "key",
+      "name": "X-Api-Key"
+    }
+  },
   "navigation": {
     "tabs": [
       {

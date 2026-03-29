@@ -8905,7 +8905,8 @@
         "type": "object",
         "properties": {
           "success": { "type": "boolean" },
-          "message": { "type": "string" }
+          "message": { "type": "string" },
+          "data": { "type": "object" }
         }
       },
       "CreateTelephonyTypeRequest": {
@@ -9032,29 +9033,43 @@
       "HealthResponse": {
         "type": "object",
         "properties": {
-          "status": {
-            "type": "string",
-            "description": "Health status",
-            "example": "healthy"
-          },
-          "service": {
-            "type": "string",
-            "description": "Service name",
-            "example": "integration_service"
-          },
-          "time": {
-            "type": "string",
-            "description": "Current UTC timestamp"
+          "success": { "type": "boolean" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "description": "Health status",
+                "example": "healthy"
+              },
+              "service": {
+                "type": "string",
+                "description": "Service name",
+                "example": "integration_service"
+              },
+              "time": {
+                "type": "string",
+                "description": "Current UTC timestamp"
+              }
+            }
           }
         }
       },
       "ReadyResponse": {
         "type": "object",
         "properties": {
-          "status": {
-            "type": "string",
-            "description": "Readiness status",
-            "example": "ready"
+          "success": { "type": "boolean" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "description": "Readiness status",
+                "example": "ready"
+              }
+            }
           }
         }
       },
