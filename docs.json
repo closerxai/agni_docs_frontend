@@ -11,9 +11,7 @@
   "background": {
     "style": "grid"
   },
-  "openapi": [
-    "openapi.json"
-  ],
+  "openapi": "openapi-minimal.json",
   "api": {
     "baseUrl": "https://api.ravan.ai",
     "auth": {
