@@ -9,5 +9,8 @@ drafts/
 # Build scripts directory
 _build/
 
+# Claude Code config
+CLAUDE.md
+
 # API directory (serverless functions, not docs)
 api/
